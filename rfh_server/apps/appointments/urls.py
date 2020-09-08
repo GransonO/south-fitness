@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import AppointmentsViews, AppointmentState, AppointmentSpecificView
+from .views import (AppointmentsViews, AppointmentState,
+                    AppointmentSpecificView, AppointmentGeneralView)
 
 urlpatterns = [
     path('',
@@ -14,4 +15,8 @@ urlpatterns = [
         'user/<user_id>',
         AppointmentSpecificView.as_view(),
         name='appointmentSpecific'),
+    path(
+        'all/',
+        AppointmentGeneralView.as_view(),
+        name='AppointmentGeneralView'),
 ]

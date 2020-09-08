@@ -127,10 +127,18 @@ class AppointmentState(views.APIView):
 
 
 class AppointmentSpecificView(ListAPIView):
-    """Get a user specific transactions"""
+    """Get a user specific appointments"""
     serializer_class = AppointmentSerializer
 
     def get_queryset(self):
         return AppointmentsDB.objects.filter(
             patientID=self.kwargs['user_id']
             ).order_by('timestamp')
+
+
+class AppointmentGeneralView(ListAPIView):
+    """Get all users appointments"""
+    serializer_class = AppointmentSerializer
+
+    def get_queryset(self):
+        return AppointmentsDB.objects.filter().order_by('timestamp')
