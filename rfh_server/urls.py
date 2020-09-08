@@ -20,6 +20,7 @@ from django.urls import path, include
 from .apps.text_process import urls as process_urls
 from .apps.mpesa import urls as mpesaUrls
 from .apps.appointments import urls as appointmentUrls
+from .apps.notifications import urls as notificationUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,4 +39,9 @@ urlpatterns = [
         'appointments/',
         include(appointmentUrls),
         name="appointments"),
+
+    path(
+        'notifications/',
+        include(notificationUrls),
+        name="notifications"),
 ]

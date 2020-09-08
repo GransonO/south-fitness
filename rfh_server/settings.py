@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rfh_server.apps.text_process',
     'rfh_server.apps.mpesa',
     'rfh_server.apps.appointments',
+    'rfh_server.apps.notifications',
 
     # third party apps
     'corsheaders',
