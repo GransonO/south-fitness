@@ -14,41 +14,44 @@ class AppointmentsViews(views.APIView):
 
     @staticmethod
     def post(request):
-        """ Reassign Tier groups to members """
+        """ Add appointment to DB """
         passedData = request.data
-        print("The passedData is -------------: {}".format(passedData))
+        try:
+            # Save data to DB
+            appointment_data = AppointmentsDB(
+                doctorID=passedData["doctorID"],
+                doctorName=passedData["doctorName"],
+                stateColor=passedData["state_color"],
+                status=passedData["status"],
+                dateString=passedData["date"],
+                timeString=passedData["time"],
+                hospitalID=passedData["hospital_id"],
+                hospitalPhone=passedData["hospital_phone"],
+                appointmentID=passedData["id"],
+                patientID=passedData["patient_id"],
+                paymentType=passedData["paymentType"],
+                patientPhone=passedData["phone_no"],
+                appointmentState=passedData["state"],
+                summary=passedData["summary"],
+                appointmentType=passedData["type"],
+                timestamp=passedData["timeStamp"],
+            )
+            appointment_data.save()
+            return Response({
+                "status": "success",
+                "code": 1
+                }, status.HTTP_200_OK)
 
-        body = passedData['Body']
-        callback_body = body['stkCallback']
-        MerchantRequestID = callback_body['MerchantRequestID']
-        ResultCode = callback_body['ResultCode']
-        ResultDesc = callback_body['ResultDesc']
-        CallbackMetadata = callback_body['CallbackMetadata']
-
-        Item = CallbackMetadata['Item']
-        if(len(Item) < 5):
-            Amount = Item[0]['Value']
-            MpesaReceiptNumber = Item[1]['Value']
-            TransactionDate = Item[2]['Value']
-            PhoneNumber = Item[3]['Value']
-        else:
-            Amount = Item[0]['Value']
-            MpesaReceiptNumber = Item[1]['Value']
-            TransactionDate = Item[3]['Value']
-            PhoneNumber = Item[4]['Value']
-
-        # Save data to DB
-        mpesa_data = AppointmentsDB(
-            MerchantRequestID=MerchantRequestID,
-            ResultCode=ResultCode,
-            ResultDesc=ResultDesc,
-            Amount=Amount,
-            MpesaReceiptNumber=MpesaReceiptNumber,
-            TransactionDate=TransactionDate,
-            Client_phone=PhoneNumber
-        )
-        mpesa_data.save()
-        return Response({"DONE"}, status.HTTP_200_OK)
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Appointment Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
 
     @staticmethod
     def put(request):
@@ -108,50 +111,16 @@ class AppointmentState(views.APIView):
             )
             # return true if appointment can be added
             return Response({
-                    "count": (result.count() < requiredCount)
+                    "count": (result.count() <= requiredCount)
                 }, status.HTTP_200_OK)
 
         except Exception as E:
             print("Error: {}".format(E))
             bugsnag.notify(
-                Exception('Transaction Put: {}'.format(E))
+                Exception('Appointment Check: {}'.format(E))
             )
             return Response({
                 "error": "{}".format(E),
                 "status": "failed",
                 "code": 0
                 }, status.HTTP_200_OK)
-
-    @staticmethod
-    def put(request):
-        """Get the Mpesa value deposited"""
-        passedData = request.data
-        trans_num = passedData["MerchantRequestID"]
-        try:
-            result = AppointmentsDB.objects.get(
-                MerchantRequestID=trans_num)
-            print("The responce is : {}".format(result))
-            return Response({
-                    "status": "success",
-                    "code": 1,
-                    "customer_phone": result.Client_phone,
-                    "receipt_number": result.MpesaReceiptNumber,
-                    "amount": result.Amount,
-                }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('Transaction Put: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "code": 0
-                }, status.HTTP_200_OK)
-
-    @staticmethod
-    def get(request):
-        passed_data = request.data
-        print("The passedData is ------------------: {}".format(passed_data))
-        return Response({"Hit the appointments channel"}, status.HTTP_200_OK)
