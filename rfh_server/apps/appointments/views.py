@@ -131,4 +131,6 @@ class AppointmentSpecificView(ListAPIView):
     serializer_class = AppointmentSerializer
 
     def get_queryset(self):
-        return AppointmentsDB.objects.filter(patientID=self.kwargs['user_id'])
+        return AppointmentsDB.objects.filter(
+            patientID=self.kwargs['user_id']
+            ).order_by('timestamp')
