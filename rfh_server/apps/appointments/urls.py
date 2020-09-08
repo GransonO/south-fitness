@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AppointmentsViews, AppointmentState
+from .views import AppointmentsViews, AppointmentState, AppointmentSpecificView
 
 urlpatterns = [
     path('',
@@ -10,4 +10,8 @@ urlpatterns = [
          AppointmentState.as_view(),
          name="appointmentState"
          ),
+    path(
+        'user/<user_id>',
+        AppointmentSpecificView.as_view(),
+        name='appointmentSpecific'),
 ]

@@ -4,6 +4,8 @@ from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .models import AppointmentsDB
+from rest_framework.generics import ListAPIView
+from .serializers import AppointmentSerializer
 
 
 class AppointmentsViews(views.APIView):
@@ -27,6 +29,7 @@ class AppointmentsViews(views.APIView):
                 timeString=passedData["time"],
                 hospitalID=passedData["hospital_id"],
                 hospitalPhone=passedData["hospital_phone"],
+                hospitalName=passedData["center"],
                 appointmentID=passedData["id"],
                 patientID=passedData["patient_id"],
                 paymentType=passedData["paymentType"],
@@ -57,17 +60,14 @@ class AppointmentsViews(views.APIView):
     def put(request):
         """Get the Mpesa value deposited"""
         passedData = request.data
-        trans_num = passedData["MerchantRequestID"]
+        user_id = passedData["user_id"]
         try:
-            result = AppointmentsDB.objects.get(
-                MerchantRequestID=trans_num)
-            print("The responce is : {}".format(result))
+            result = AppointmentsDB.objects.filter(patientID=user_id)
+            print("------------ The responce is : {}".format(result))
             return Response({
                     "status": "success",
                     "code": 1,
-                    "customer_phone": result.Client_phone,
-                    "receipt_number": result.MpesaReceiptNumber,
-                    "amount": result.Amount,
+                    "results": []
                 }, status.HTTP_200_OK)
 
         except Exception as E:
@@ -124,3 +124,11 @@ class AppointmentState(views.APIView):
                 "status": "failed",
                 "code": 0
                 }, status.HTTP_200_OK)
+
+
+class AppointmentSpecificView(ListAPIView):
+    """Get a user specific transactions"""
+    serializer_class = AppointmentSerializer
+
+    def get_queryset(self):
+        return AppointmentsDB.objects.filter(patientID=self.kwargs['user_id'])

@@ -12,6 +12,7 @@ class AppointmentsDB(models.Model):
     timeString = models.CharField(max_length=250, default='non')
     hospitalID = models.CharField(max_length=250, default='non')
     hospitalPhone = models.CharField(max_length=250, default='non')
+    hospitalName = models.CharField(max_length=250, default='non')
     appointmentID = models.CharField(unique=True, max_length=250, default='non')
     patientID = models.CharField(max_length=250, default='non')
     paymentType = models.CharField(max_length=250, default='non')
