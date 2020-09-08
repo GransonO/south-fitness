@@ -14,12 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
 from .apps.text_process import urls as process_urls
 from .apps.mpesa import urls as mpesaUrls
+from .apps.appointments import urls as appointmentUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,4 +33,9 @@ urlpatterns = [
         'mpesa_callback/',
         include(mpesaUrls),
         name="mpesaUrls"),
+
+    path(
+        'appointments/',
+        include(appointmentUrls),
+        name="appointments"),
 ]
