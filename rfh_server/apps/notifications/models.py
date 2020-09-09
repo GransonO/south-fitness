@@ -10,6 +10,7 @@ class NotificationsDB(models.Model):
     title = models.CharField(max_length=250, default='non')
     details = models.CharField(max_length=550, default='non')
     viewed = models.IntegerField(default=0)
+    seen = models.BooleanField(default=False)
     date = models.DateTimeField(default=datetime.now)
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)

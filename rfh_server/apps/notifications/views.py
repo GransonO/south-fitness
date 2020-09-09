@@ -3,7 +3,10 @@ import bugsnag
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.generics import ListAPIView
+from django.db.models import Q
 from .models import NotificationsDB
+from .serializers import NotificationSerializer
 
 
 class Notifications(views.APIView):
@@ -48,14 +51,65 @@ class Notifications(views.APIView):
         print("The passedData is ------------------: {}".format(passed_data))
         return Response({"Hit the appointments channel"}, status.HTTP_200_OK)
 
-# class AppointmentSpecificView(ListAPIView):
-#     """Get a user specific appointments"""
-#     serializer_class = AppointmentSerializer
+    @staticmethod
+    def put(request):
+        passedData = request.data
+        try:
+            updateColumn = NotificationsDB.objects.get(
+                notification_id=passedData["notification_id"]
+                )
 
-#     def get_queryset(self):
-#         return AppointmentsDB.objects.filter(
-#             patientID=self.kwargs['user_id']
-#             ).order_by('timestamp')
+            totalViews = updateColumn.viewed + 1
+            NotificationsDB.objects.filter(
+                notification_id=passedData["notification_id"]).update(
+                        viewed=totalViews,
+                        seen=True
+                    )
+            return Response({
+                    "status": "success",
+                    "code": 1
+                    }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Appointment Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
+
+class NotificationAllView(ListAPIView):
+    """Get a user specific appointments"""
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        return NotificationsDB.objects.filter().order_by('date')
+
+
+class NotificationSpecificView(ListAPIView):
+    """Get a user specific appointments"""
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        return NotificationsDB.objects.filter(
+            notification_id=self.kwargs['notification_id']
+            ).order_by('date')
+
+
+class NotificationUserView(ListAPIView):
+    """Get a user specific appointments"""
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        criterion1 = Q(user_id__contains=self.kwargs['user_id'])
+        criterion2 = Q(user_id__contains="all")
+        return NotificationsDB.objects.filter(
+            criterion1 | criterion2
+            ).order_by('date')
 
 
 # class AppointmentGeneralView(ListAPIView):
