@@ -5,11 +5,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
-from .models import NotificationsDB
-from .serializers import NotificationSerializer
+from .models import SupportDB
+from .serializers import SupportSerializer
 
 
-class Notifications(views.APIView):
+class Support(views.APIView):
     """
         Add notifications details and save in DB
     """
@@ -21,14 +21,16 @@ class Notifications(views.APIView):
         passedData = request.data
         try:
             # Save data to DB
-            notifications_data = NotificationsDB(
-                notification_id=passedData["notification_id"],
+            support_data = SupportDB(
+                support_id=passedData["support_id"],
                 user_id=passedData["user_id"],
                 title=passedData["title"],
                 details=passedData["details"],
-                viewed=passedData["viewed"]
+                image=passedData["image"],
+                response=passedData["response"],
+                tracker=passedData["tracker"]
             )
-            notifications_data.save()
+            support_data.save()
             return Response({
                 "status": "success",
                 "code": 1
@@ -55,15 +57,9 @@ class Notifications(views.APIView):
     def put(request):
         passedData = request.data
         try:
-            updateColumn = NotificationsDB.objects.get(
-                notification_id=passedData["notification_id"]
-                )
-
-            totalViews = updateColumn.viewed + 1
-            NotificationsDB.objects.filter(
-                notification_id=passedData["notification_id"]).update(
-                        viewed=totalViews,
-                        seen=True
+            SupportDB.objects.filter(
+                support_id=passedData["support_id"]).update(
+                        response=passedData["response"],
                     )
             return Response({
                     "status": "success",
@@ -82,31 +78,28 @@ class Notifications(views.APIView):
                 }, status.HTTP_200_OK)
 
 
-class NotificationAllView(ListAPIView):
+class SupportAllView(ListAPIView):
     """Get a user specific appointments"""
-    serializer_class = NotificationSerializer
+    serializer_class = SupportSerializer
 
     def get_queryset(self):
-        return NotificationsDB.objects.filter().order_by('date')
+        return SupportDB.objects.filter().order_by('dateTime')
 
 
-class NotificationSpecificView(ListAPIView):
+class SupportSpecificView(ListAPIView):
     """Get a user specific appointments"""
-    serializer_class = NotificationSerializer
+    serializer_class = SupportSerializer
 
     def get_queryset(self):
-        return NotificationsDB.objects.filter(
-            notification_id=self.kwargs['notification_id']
-            ).order_by('date')
+        return SupportDB.objects.filter(
+            notification_id=self.kwargs['support_id']
+            ).order_by('dateTime')
 
 
-class NotificationUserView(ListAPIView):
+class SupportUserView(ListAPIView):
     """Get a user specific appointments"""
-    serializer_class = NotificationSerializer
+    serializer_class = SupportSerializer
 
     def get_queryset(self):
-        criterion1 = Q(user_id__contains=self.kwargs['user_id'])
-        criterion2 = Q(user_id__contains="all")
-        return NotificationsDB.objects.filter(
-            criterion1 | criterion2
-            ).order_by('date')
+        criterion = Q(user_id__contains=self.kwargs['user_id'])
+        return SupportDB.objects.filter(criterion).order_by('dateTime')

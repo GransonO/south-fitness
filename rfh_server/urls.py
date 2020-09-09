@@ -21,6 +21,7 @@ from .apps.text_process import urls as process_urls
 from .apps.mpesa import urls as mpesaUrls
 from .apps.appointments import urls as appointmentUrls
 from .apps.notifications import urls as notificationUrls
+from .apps.support import urls as supportUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,4 +45,9 @@ urlpatterns = [
         'notifications/',
         include(notificationUrls),
         name="notifications"),
+
+    path(
+        'support/',
+        include(supportUrls),
+        name="support"),
 ]
