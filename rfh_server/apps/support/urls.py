@@ -8,7 +8,7 @@ urlpatterns = [
          name="support"
          ),
 
-    path('<notification_id>',
+    path('<support_id>',
          SupportSpecificView.as_view(),
          name="specific_support"
          ),
