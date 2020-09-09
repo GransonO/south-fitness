@@ -1,19 +1,29 @@
 from rest_framework.serializers import ModelSerializer
-from .models import ProfilesRefDB
+from .models import ProfilesDB
 
 
-# class SupportSerializer(ModelSerializer):
+class ProfileSerializer(ModelSerializer):
 
-#     class Meta:
-#         model = SupportDB
-#         fields = [
-#             "support_id",
-#             "user_id",
-#             "title",
-#             "details",
-#             "image",
-#             "response",
-#             "tracker",
-#             "dateTime",
-#             "updatedAt"
-#         ]
+    class Meta:
+        model = ProfilesDB
+        fields = [
+            "UserRefId",
+            "birthDate",
+            "chattingWith",
+            "doc",
+            "email",
+            "firstname",
+            "lastname",
+            "gender",
+            "userId",
+            "nickname",
+            "phone",
+            "photoUrl",
+            "relatives",
+            "insurance",
+            "address",
+            "addressId",
+            "addressName",
+            "latitude",
+            "longitude",
+        ]

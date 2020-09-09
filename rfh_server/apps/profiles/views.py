@@ -4,85 +4,102 @@ from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
-from .models import ProfilesRefDB
-# from .serializers import SupportSerializer
+from .models import ProfilesRefDB, ProfilesDB
+from .serializers import ProfileSerializer
 
 
-# class Profiles(views.APIView):
-#     """
-#         Add notifications details and save in DB
-#     """
-#     permission_classes = [AllowAny]
+class Profiles(views.APIView):
+    """
+        Add Profiles details and save in DB
+    """
+    permission_classes = [AllowAny]
 
-#     @staticmethod
-#     def post(request):
-#         """ Add appointment to DB """
-#         passedData = request.data
-#         try:
-#             # Save data to DB
-#             support_data = SupportDB(
-#                 support_id=passedData["support_id"],
-#                 user_id=passedData["user_id"],
-#                 title=passedData["title"],
-#                 details=passedData["details"],
-#                 image=passedData["image"],
-#                 response=passedData["response"],
-#                 tracker=passedData["tracker"]
-#             )
-#             support_data.save()
-#             return Response({
-#                 "status": "success",
-#                 "code": 1
-#                 }, status.HTTP_200_OK)
+    @staticmethod
+    def post(request):
+        """ Add Profiles to DB """
+        passedData = request.data
+        try:
+            # Save data to DB
+            support_data = ProfilesDB(
+                    UserRefId=passedData["UserRefId"],
+                    birthDate=passedData["birthDate"],
+                    chattingWith=passedData["chattingWith"],
+                    doc=passedData["doc"],
+                    email=passedData["email"],
+                    firstname=passedData["firstname"],
+                    lastname=passedData["lastname"],
+                    gender=passedData["gender"],
+                    userId=passedData["userId"],
+                    nickname=passedData["nickname"],
+                    phone=passedData["phone"],
+                    photoUrl=passedData["photoUrl"],
+                    relatives=passedData["relatives"],
+                    insurance=passedData["insurance"],
+                    address=passedData["address"],
+                    addressId=passedData["addressId"],
+                    addressName=passedData["addressName"],
+                    latitude=passedData["latitude"],
+                    longitude=passedData["longitude"],
+            )
+            support_data.save()
+            return Response({
+                "status": "success",
+                "code": 1
+                }, status.HTTP_200_OK)
 
-#         except Exception as E:
-#             print("Error: {}".format(E))
-#             bugsnag.notify(
-#                 Exception('Appointment Post: {}'.format(E))
-#             )
-#             return Response({
-#                 "error": "{}".format(E),
-#                 "status": "failed",
-#                 "code": 0
-#                 }, status.HTTP_200_OK)
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Appointment Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
 
-#     @staticmethod
-#     def get(request):
-#         passed_data = request.data
-#         print("The passedData is ------------------: {}".format(passed_data))
-#         return Response({"Hit the appointments channel"}, status.HTTP_200_OK)
+    @staticmethod
+    def put(request):
+        passedData = request.data
+        # Check This later
+        try:
+            ProfilesDB.objects.filter(
+                userId=passedData["userId"]).update(
+                        response=passedData["response"],
+                    )
+            return Response({
+                    "status": "success",
+                    "code": 1
+                    }, status.HTTP_200_OK)
 
-#     @staticmethod
-#     def put(request):
-#         passedData = request.data
-#         try:
-#             SupportDB.objects.filter(
-#                 support_id=passedData["support_id"]).update(
-#                         response=passedData["response"],
-#                     )
-#             return Response({
-#                     "status": "success",
-#                     "code": 1
-#                     }, status.HTTP_200_OK)
-
-#         except Exception as E:
-#             print("Error: {}".format(E))
-#             bugsnag.notify(
-#                 Exception('Appointment Post: {}'.format(E))
-#             )
-#             return Response({
-#                 "error": "{}".format(E),
-#                 "status": "failed",
-#                 "code": 0
-#                 }, status.HTTP_200_OK)
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Appointment Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
 
 
-# class ProfilesAllView(ListAPIView):
-#     """Get a user specific appointments"""
-#     serializer_class = SupportSerializer
+class ProfilesAllView(ListAPIView):
+    """Get a user specific appointments"""
+    serializer_class = ProfileSerializer
 
-#     def get_queryset(self):
-#         return SupportDB.objects.filter().order_by('dateTime')
+    def get_queryset(self):
+        return ProfilesDB.objects.filter().order_by('createdAt')
+
+
+class ProfileSpecificView(ListAPIView):
+    """Get a user specific appointments"""
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        return ProfilesDB.objects.filter(
+            userId=self.kwargs['userId']
+            ).order_by('createdAt')
 
 
 class ProfileRef(views.APIView):
