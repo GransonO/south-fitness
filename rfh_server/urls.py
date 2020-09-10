@@ -23,6 +23,7 @@ from .apps.appointments import urls as appointmentUrls
 from .apps.notifications import urls as notificationUrls
 from .apps.support import urls as supportUrls
 from .apps.profiles import urls as profilesUrls
+from .apps.fcm import urls as fcmUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -56,4 +57,9 @@ urlpatterns = [
         'profiles/',
         include(profilesUrls),
         name="profiles"),
+
+    path(
+        'fcm/',
+        include(fcmUrls),
+        name="fcm"),
 ]

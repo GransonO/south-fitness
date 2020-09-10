@@ -20,7 +20,7 @@ class Profiles(views.APIView):
         passedData = request.data
         try:
             # Save data to DB
-            support_data = ProfilesDB(
+            profile_data = ProfilesDB(
                     UserRefId=passedData["UserRefId"],
                     birthDate=passedData["birthDate"],
                     chattingWith=passedData["chattingWith"],
@@ -41,7 +41,7 @@ class Profiles(views.APIView):
                     latitude=passedData["latitude"],
                     longitude=passedData["longitude"],
             )
-            support_data.save()
+            profile_data.save()
             return Response({
                 "status": "success",
                 "code": 1
