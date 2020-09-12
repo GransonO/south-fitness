@@ -6,6 +6,9 @@ from rest_framework.permissions import AllowAny
 from .models import AppointmentsDB
 from rest_framework.generics import ListAPIView
 from .serializers import AppointmentSerializer
+from datetime import datetime
+from django.db.models import Q
+from django.utils import timezone
 
 
 class AppointmentsViews(views.APIView):
@@ -131,8 +134,11 @@ class AppointmentSpecificView(ListAPIView):
     serializer_class = AppointmentSerializer
 
     def get_queryset(self):
+        now = timezone.now()
+        criterion1 = Q(patientID__contains=self.kwargs['user_id'])
+        criterion2 = Q(timestamp__gte=now)
         return AppointmentsDB.objects.filter(
-            patientID=self.kwargs['user_id']
+            criterion1 & criterion2
             ).order_by('timestamp')
 
 
@@ -141,4 +147,5 @@ class AppointmentGeneralView(ListAPIView):
     serializer_class = AppointmentSerializer
 
     def get_queryset(self):
-        return AppointmentsDB.objects.filter().order_by('timestamp')
+        now = timezone.now()
+        return AppointmentsDB.objects.filter(timestamp__gte=now).order_by('timestamp')

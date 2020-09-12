@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rfh_server.apps.support',
     'rfh_server.apps.profiles',
     'rfh_server.apps.fcm',
+    'rfh_server.apps.staff',
 
     # third party apps
     'corsheaders',
