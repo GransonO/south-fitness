@@ -123,7 +123,7 @@ class ProfileRef(views.APIView):
                 )
                 ProfilesRef_data.save()
                 return Response({
-                    "message": "User REF added"
+                    "message": "User REF added",
                     "status": "success",
                     "code": 1
                     }, status.HTTP_200_OK)
