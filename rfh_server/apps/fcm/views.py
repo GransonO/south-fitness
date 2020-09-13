@@ -21,8 +21,10 @@ class FcmRecord(views.APIView):
         try:
             # Check if it exists
             result = FcmDB.objects.filter(user_id=passedData["user_id"])
+            print("--------------------------------{}".format(result.count()))
             if (result.count() < 1):
                 # Save data to DB
+                print("--------------------------------Added to DB")
                 fcm_data = FcmDB(
                     token=passedData["token"],
                     user_id=passedData["user_id"],
@@ -35,6 +37,7 @@ class FcmRecord(views.APIView):
                     }, status.HTTP_200_OK)
             else:
                 # Update FCM
+                print("--------------------------------Updated")
                 FcmDB.objects.filter(user_id=passedData["user_id"]).update(
                         token=passedData["token"],
                         platform=passedData["platform"]

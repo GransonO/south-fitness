@@ -7,6 +7,7 @@ from rest_framework.generics import ListAPIView
 from .models import StaffDB
 from .serializers import StaffSerializer
 from datetime import datetime
+import requests
 
 
 class Staff(views.APIView):
@@ -85,6 +86,67 @@ class StaffState(views.APIView):
     permission_classes = [AllowAny]
 
     @staticmethod
+    def post(request):
+        passedData = request.data
+        try:
+            doctorState = StaffDB.objects.get(
+                staffID=passedData["staffID"]
+                )
+            currentlyOnCall = doctorState.currentlyOnCall
+            onlineStatus = doctorState.onlineStatus
+            currentState = True
+            doctorToken = doctorState.staffToken
+            doctorName = doctorState.staffToken
+            message = "Hello {}, you have an online video call. The patient is ready".format(doctorState.staffName)
+            if(currentlyOnCall & onlineStatus):
+                currentState = False
+                message = "Hello {}, you have an online video call. The patient is ready. Please login to your RFH doctor's app".format(doctorState.staffName)
+
+            notifyDoctor(doctorToken, message)
+
+            return Response({
+                    "available": currentState,
+                    "status": "success",
+                    "code": 1
+                    }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Appointment Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
+    def notifyDoctor(doctorToken, message):
+        """Send notification to the doctor"""
+        url = 'https://fcm.googleapis.com/fcm/send'
+
+        myHeaders={
+            "Authorization": "key=AAAAxTAONtw:APA91bHOkfYKzBkGvUj4NMzK8JTaWHDwf8g_GAxDeMPvijZ2IdWu3C1mjdsIRSKl1c8oBaGP4C7YSrSsJ-H09zofTepJEREMu7-8KTV5oSK9lqlBoCtyNb8wDJIHBG7IHkQXC4V3dbRU",
+            "content-type": "application/json"
+            }
+
+        messageBody={
+            "title": "RFH Online consultation reminder",
+            "text": message
+        }
+
+        myData = { 
+            "registration_ids": [doctorToken],
+            "notification" : messageBody,
+            "data": {
+                "page": "NOTIFICATION"
+            }
+        }
+
+        requests.post(url, headers=myHeaders, data=myData)
+
+
+    @staticmethod
     def put(request):
         passedData = request.data
         try:
@@ -92,7 +154,7 @@ class StaffState(views.APIView):
                 staffID=passedData["staffID"]).update(
                         onlineStatus=passedData["onlineStatus"],
                         currentlyOnCall=passedData["currentlyOnCall"],
-                        # lastLoggedIn=datetime.now,
+                        staffToken=passedData["staffToken"],
                     )
             return Response({
                     "status": "success",

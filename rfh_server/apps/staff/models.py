@@ -16,6 +16,7 @@ class StaffDB(models.Model):
     onlineStatus = models.BooleanField(default=False) # if logged in doctors phone
     lastLoggedIn = models.DateTimeField(default=datetime.now)
     currentlyOnCall = models.BooleanField(default=False) # if oncall with a patient
+    staffToken = models.CharField(max_length=550, default='non')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)
