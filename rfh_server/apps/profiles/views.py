@@ -129,7 +129,7 @@ class ProfileRef(views.APIView):
                     }, status.HTTP_200_OK)
             else:
                 return Response({
-                    "message": "User REF exists"
+                    "message": "User REF exists",
                     "status": "success",
                     "code": 1
                     }, status.HTTP_200_OK)
