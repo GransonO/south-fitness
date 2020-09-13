@@ -96,7 +96,6 @@ class StaffState(views.APIView):
             onlineStatus = doctorState.onlineStatus
             currentState = True
             doctorToken = doctorState.staffToken
-            doctorName = doctorState.staffToken
             message = "Hello {}, you have an online video call. The patient is ready".format(doctorState.staffName)
             if(currentlyOnCall & onlineStatus):
                 currentState = False
@@ -136,7 +135,7 @@ class StaffState(views.APIView):
         }
 
         myData = { 
-            "registration_ids": [doctorToken],
+            "registration_ids": ["eRWaP_4KRgmssHS4VF73Fw:APA91bGgMOybJuq9D1avh_Tmc7xB2zpGboTfdwYOPP7uF3jlkcjDw-_ReQHT3EBpEYY8sZ-OurY2elyc9ButzXJ0rwJmHs9b0vzj6IvKwVko65kEtoIFO4EAE91Zm3974yYEBjFLF8EC"],
             "notification" : messageBody,
             "data": {
                 "page": "NOTIFICATION"
