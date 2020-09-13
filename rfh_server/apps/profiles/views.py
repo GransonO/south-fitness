@@ -113,17 +113,26 @@ class ProfileRef(views.APIView):
         """ Add REF No to DB """
         passedData = request.data
         try:
-            # Save data to DB
-            ProfilesRef_data = ProfilesRefDB(
-                refNum=passedData["refNum"],
-                user_id=passedData["user_id"],
-                hospital=passedData["hospital"]
-            )
-            ProfilesRef_data.save()
-            return Response({
-                "status": "success",
-                "code": 1
-                }, status.HTTP_200_OK)
+            result = ProfilesRefDB.objects.filter(user_id=passedData["user_id"])
+            if(result.count() < 1):
+                # Save data to DB
+                ProfilesRef_data = ProfilesRefDB(
+                    refNum=passedData["refNum"],
+                    user_id=passedData["user_id"],
+                    hospital=passedData["hospital"]
+                )
+                ProfilesRef_data.save()
+                return Response({
+                    "message": "User REF added"
+                    "status": "success",
+                    "code": 1
+                    }, status.HTTP_200_OK)
+            else:
+                return Response({
+                    "message": "User REF exists"
+                    "status": "success",
+                    "code": 1
+                    }, status.HTTP_200_OK)
 
         except Exception as E:
             print("Error: {}".format(E))
