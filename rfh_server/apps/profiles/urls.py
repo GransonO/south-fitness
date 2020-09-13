@@ -23,5 +23,5 @@ urlpatterns = [
     path('ref/',
          ProfileRef.as_view(),
          name="refs"
-         )
+         ),
 ]

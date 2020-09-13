@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-     Staff, StaffAllView,
+     Staff, StaffAllView,StaffSpecificEmail,
      StaffSpecificView, StaffState
      )
 
@@ -23,5 +23,10 @@ urlpatterns = [
     path('state/',
          StaffState.as_view(),
          name="staff state"
-         )
+         ),
+
+    path('email/<staff_email>',
+         StaffSpecificEmail.as_view(),
+         name="specific email"
+         ),
 ]
