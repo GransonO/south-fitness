@@ -4,6 +4,7 @@ from datetime import datetime
 class StaffDB(models.Model):
     """Staff DB"""
     enabled = models.BooleanField(default=False)
+    isAdmin = models.BooleanField(default=False)
     hospitalID = models.CharField(max_length=250, default='non', null=True)
     
     staffID = models.CharField(unique=True, max_length=250, default='non')

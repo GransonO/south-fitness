@@ -8,6 +8,7 @@ class StaffSerializer(ModelSerializer):
         model = StaffDB
         fields = [
             "enabled",
+            "isAdmin",
             "hospitalID",
             "staffID",
             "staffEmail",
