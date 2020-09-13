@@ -8,6 +8,7 @@ from .models import StaffDB
 from .serializers import StaffSerializer
 from datetime import datetime
 import requests
+import json
 
 
 class Staff(views.APIView):
@@ -101,9 +102,10 @@ class StaffState(views.APIView):
                 currentState = False
                 message = "Hello {}, you have an online video call. The patient is ready. Please login to your RFH doctor's app".format(doctorState.staffName)
 
-            notifyDoctor(doctorToken, message)
+            StaffState.notifyDoctor(doctorToken, message)
 
             return Response({
+                    "doctorToken": doctorToken,
                     "available": currentState,
                     "status": "success",
                     "code": 1
@@ -135,14 +137,15 @@ class StaffState(views.APIView):
         }
 
         myData = { 
-            "registration_ids": ["eRWaP_4KRgmssHS4VF73Fw:APA91bGgMOybJuq9D1avh_Tmc7xB2zpGboTfdwYOPP7uF3jlkcjDw-_ReQHT3EBpEYY8sZ-OurY2elyc9ButzXJ0rwJmHs9b0vzj6IvKwVko65kEtoIFO4EAE91Zm3974yYEBjFLF8EC"],
+            "registration_ids": [doctorToken],
             "notification" : messageBody,
             "data": {
                 "page": "NOTIFICATION"
             }
         }
 
-        requests.post(url, headers=myHeaders, data=myData)
+        x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
+        print("message sent : {}".format(x))
 
 
     @staticmethod
