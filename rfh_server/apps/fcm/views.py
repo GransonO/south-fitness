@@ -22,6 +22,7 @@ class FcmRecord(views.APIView):
             # Check if it exists
             result = FcmDB.objects.filter(user_id=passedData["user_id"])
             print("--------------------------------{}".format(result.count()))
+            print("--------------------------------{}".format(passedData))
             if (result.count() < 1):
                 # Save data to DB
                 print("--------------------------------Added to DB")
