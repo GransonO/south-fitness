@@ -192,6 +192,17 @@ class StaffSpecificView(ListAPIView):
             staffID=self.kwargs['staffID']
             ).order_by('createdAt')
 
+
+class StaffDoctorsView(ListAPIView):
+    """Get a user specific appointments"""
+    serializer_class = StaffSerializer
+
+    def get_queryset(self):
+        return StaffDB.objects.filter(
+            staffDepartment='1001'
+            ).order_by('createdAt')
+
+
 class StaffSpecificEmail(ListAPIView):
     """Get a user specific appointments"""
     serializer_class = StaffSerializer
