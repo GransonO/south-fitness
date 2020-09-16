@@ -63,10 +63,13 @@ class Profiles(views.APIView):
         passedData = request.data
         # Check This later
         try:
-            ProfilesDB.objects.filter(
-                userId=passedData["userId"]).update(
-                        response=passedData["response"],
-                    )
+
+            customer = ProfilesDB.objects.get(userId=passedData["userId"])
+            serializer = ProfileSerializer(
+                customer, data=passedData, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
             return Response({
                     "status": "success",
                     "code": 1

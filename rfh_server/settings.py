@@ -33,9 +33,6 @@ env = environ.Env(
 
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
