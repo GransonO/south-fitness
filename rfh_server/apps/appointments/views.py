@@ -63,9 +63,9 @@ class AppointmentsViews(views.APIView):
     def put(request):
         """Get the Mpesa value deposited"""
         passedData = request.data
-        passedId = passedData["appointmentID"]
         try:
-            result = AppointmentsDB.objects.filter(appointmentID=passedId)
+            result = AppointmentsDB.objects.get(
+                appointmentID=passedData["appointmentID"])
             serializer = AppointmentSerializer(
                 result, data=passedData, partial=True)
             serializer.is_valid(raise_exception=True)

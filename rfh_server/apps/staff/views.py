@@ -6,7 +6,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 from .models import StaffDB
 from .serializers import StaffSerializer
-from datetime import datetime
 import requests
 import json
 
