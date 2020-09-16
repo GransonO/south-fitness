@@ -6,11 +6,11 @@ urlpatterns = [
          FcmRecord.as_view(),
          name="fcm_records"
          ),
-     path('<user_id>',
+    path('<user_id>',
          UserFcmRecord.as_view(),
          name="user_fcm_records"
          ),
-     path('all/',
+    path('all/',
          AllFcmRecords.as_view(),
          name="all_fcm_records"
          ),

@@ -52,16 +52,11 @@ class Staff(views.APIView):
     def put(request):
         passedData = request.data
         try:
-            StaffDB.objects.filter(
-                staffID=passedData["staffID"]).update(
-                        hospitalID=passedData["hospitalID"],
-                        staffID=passedData["staffID"],
-                        staffEmail=passedData["staffEmail"],
-                        staffName=passedData["staffName"],
-                        staffImage=passedData["staffImage"],
-                        staffDepartment=passedData["staffDepartment"],
-                        staffPhone=passedData["staffPhone"],
-                    )
+            customer = StaffDB.objects.get(staffID=passedData["staffID"])
+            serializer = StaffSerializer(
+                customer, data=passedData, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response({
                     "status": "success",
                     "code": 1

@@ -67,6 +67,7 @@ class UserFcmRecord(ListAPIView):
     def get_queryset(self):
         return FcmDB.objects.filter(user_id=self.kwargs['user_id'])
 
+
 class AllFcmRecords(ListAPIView):
     """Get all FCM"""
     serializer_class = FcmSerializer
