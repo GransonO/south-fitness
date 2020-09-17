@@ -138,7 +138,20 @@ class AppointmentSpecificView(ListAPIView):
 
     def get_queryset(self):
         now = timezone.now()
-        criterion1 = Q(patientID__contains=self.kwargs['user_id'])
+        criterion1 = Q(patientID__exact=self.kwargs['user_id'])
+        criterion2 = Q(timestamp__gte=now)
+        return AppointmentsDB.objects.filter(
+            criterion1 & criterion2
+            ).order_by('timestamp')
+
+
+class AppointmentDoctorSpecific(ListAPIView):
+    """Get a doctors specific appointments"""
+    serializer_class = AppointmentSerializer
+
+    def get_queryset(self):
+        now = timezone.now()
+        criterion1 = Q(doctorID__exact=self.kwargs['doctorID'])
         criterion2 = Q(timestamp__gte=now)
         return AppointmentsDB.objects.filter(
             criterion1 & criterion2
@@ -151,4 +164,5 @@ class AppointmentGeneralView(ListAPIView):
 
     def get_queryset(self):
         now = timezone.now()
-        return AppointmentsDB.objects.filter(timestamp__gte=now).order_by('timestamp')
+        return AppointmentsDB.objects.filter(
+            timestamp__gte=now).order_by('timestamp')
