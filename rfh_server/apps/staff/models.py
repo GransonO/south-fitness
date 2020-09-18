@@ -11,7 +11,7 @@ class StaffDB(models.Model):
     staffID = models.CharField(unique=True, max_length=250, default='non')
     staffEmail = models.CharField(unique=True, max_length=250, default='non')
     staffName = models.CharField(max_length=250, default='non')
-    staffGender = models.CharField(max_length=250, default='non')
+    staffGender = models.CharField(max_length=250, default='Male')
     staffImage = models.CharField(max_length=250, default='non')
     staffDepartment = models.CharField(max_length=250, default='non')
     staffPhone = models.CharField(unique=True, max_length=250, default='non')
