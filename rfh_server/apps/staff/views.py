@@ -120,19 +120,19 @@ class StaffState(views.APIView):
         """Send notification to the doctor"""
         url = 'https://fcm.googleapis.com/fcm/send'
 
-        myHeaders={
+        myHeaders = {
             "Authorization": "key=AAAAxTAONtw:APA91bHOkfYKzBkGvUj4NMzK8JTaWHDwf8g_GAxDeMPvijZ2IdWu3C1mjdsIRSKl1c8oBaGP4C7YSrSsJ-H09zofTepJEREMu7-8KTV5oSK9lqlBoCtyNb8wDJIHBG7IHkQXC4V3dbRU",
             "content-type": "application/json"
             }
 
-        messageBody={
+        messageBody = {
             "title": "RFH Online consultation reminder",
             "text": message
         }
 
         myData = { 
-            "registration_ids": [doctorToken],
-            "notification" : messageBody,
+            "registration_ids":[doctorToken],
+            "notification":messageBody,
             "data": {
                 "page": "NOTIFICATION"
             }
@@ -140,7 +140,6 @@ class StaffState(views.APIView):
 
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         print("message sent : {}".format(x))
-
 
     @staticmethod
     def put(request):

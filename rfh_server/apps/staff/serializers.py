@@ -20,5 +20,6 @@ class StaffSerializer(ModelSerializer):
             "lastLoggedIn",
             "currentlyOnCall",
             "staffGender",
+            "staffToken",
             "createdAt"
         ]
