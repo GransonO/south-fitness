@@ -30,6 +30,7 @@ class Staff(views.APIView):
                     staffImage=passedData["staffImage"],
                     staffDepartment=passedData["staffDepartment"],
                     staffPhone=passedData["staffPhone"],
+                    staffGender=passedData["staffGender"]
                 )
             staff_data.save()
             return Response({
@@ -88,11 +89,10 @@ class StaffState(views.APIView):
                 staffID=passedData["staffID"]
                 )
             currentlyOnCall = doctorState.currentlyOnCall
-            onlineStatus = doctorState.onlineStatus
-            currentState = True
+            currentState = doctorState.onlineStatus
             doctorToken = doctorState.staffToken
             message = "Hello {}, you have an online video call. The patient is ready".format(doctorState.staffName)
-            if(currentlyOnCall & onlineStatus):
+            if(currentlyOnCall):
                 currentState = False
                 message = "Hello {}, you have an online video call. The patient is ready. Please login to your RFH doctor's app".format(doctorState.staffName)
 

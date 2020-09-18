@@ -19,5 +19,6 @@ class StaffSerializer(ModelSerializer):
             "onlineStatus",
             "lastLoggedIn",
             "currentlyOnCall",
+            "staffGender",
             "createdAt"
         ]
