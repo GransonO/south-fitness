@@ -4,11 +4,13 @@ from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .models import AppointmentsDB
+from ..staff.models import StaffDB
 from rest_framework.generics import ListAPIView
 from .serializers import AppointmentSerializer
-from datetime import datetime
 from django.db.models import Q
 from django.utils import timezone
+import requests
+import json
 
 
 class AppointmentsViews(views.APIView):
@@ -43,6 +45,18 @@ class AppointmentsViews(views.APIView):
                 timestamp=passedData["timeStamp"],
             )
             appointment_data.save()
+            staffData = StaffDB.objects.filter()
+            allTokens = []
+            for x in staffData:
+                allTokens.append(x.staffToken)
+
+            apType = "General"
+            if(passedData["type"] == 2):
+                apType = "Online"
+
+            message = "A new {} appointment has been posted".format(apType)
+
+            AppointmentsViews.notifyStaff(allTokens, message)
             return Response({
                 "status": "success",
                 "code": 1
@@ -58,6 +72,29 @@ class AppointmentsViews(views.APIView):
                 "status": "failed",
                 "code": 0
                 }, status.HTTP_200_OK)
+
+    def notifyStaff(allTokens, message):
+        """Send notification to the doctor"""
+        url = 'https://fcm.googleapis.com/fcm/send'
+
+        myHeaders = {
+            "Authorization": "key=AAAAxTAONtw:APA91bHOkfYKzBkGvUj4NMzK8JTaWHDwf8g_GAxDeMPvijZ2IdWu3C1mjdsIRSKl1c8oBaGP4C7YSrSsJ-H09zofTepJEREMu7-8KTV5oSK9lqlBoCtyNb8wDJIHBG7IHkQXC4V3dbRU",
+            "content-type": "application/json"
+            }
+
+        messageBody = {
+            "title": "New Appointment",
+            "text": message,
+            "icon": "https://res.cloudinary.com/dolwj4vkq/image/upload/v1578849920/RFH/RFH-colored-white-icon.png",
+        }
+
+        myData = {
+            "registration_ids": allTokens,
+            "notification": messageBody,
+        }
+
+        x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
+        print("message sent : {}".format(x))
 
     @staticmethod
     def put(request):

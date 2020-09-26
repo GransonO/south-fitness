@@ -130,9 +130,9 @@ class StaffState(views.APIView):
             "text": message
         }
 
-        myData = { 
-            "registration_ids":[doctorToken],
-            "notification":messageBody,
+        myData = {
+            "registration_ids": [doctorToken],
+            "notification": messageBody,
             "data": {
                 "page": "NOTIFICATION"
             }

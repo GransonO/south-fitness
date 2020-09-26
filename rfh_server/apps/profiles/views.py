@@ -78,7 +78,7 @@ class Profiles(views.APIView):
         except Exception as E:
             print("Error: {}".format(E))
             bugsnag.notify(
-                Exception('Appointment Post: {}'.format(E))
+                Exception('Profile Post: {}'.format(E))
             )
             return Response({
                 "error": "{}".format(E),
