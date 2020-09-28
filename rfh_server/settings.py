@@ -97,7 +97,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'rfh_server.wsgi.application'
 CORS_ORIGIN_ALLOW_ALL = True
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["178.62.85.46","localhost","127.0.0.1","rfh-epitome-api.co.ke","www.rfh-epitome-api.co.ke"]
 
 
 # Database

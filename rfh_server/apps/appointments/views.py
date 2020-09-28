@@ -4,11 +4,11 @@ from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .models import AppointmentsDB
-from ..staff.models import StaffDB
 from rest_framework.generics import ListAPIView
 from .serializers import AppointmentSerializer
 from django.db.models import Q
 from django.utils import timezone
+from ..staff.models import StaffDB
 import requests
 import json
 

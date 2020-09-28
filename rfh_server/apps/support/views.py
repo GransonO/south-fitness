@@ -7,6 +7,9 @@ from rest_framework.generics import ListAPIView
 from django.db.models import Q
 from .models import SupportDB
 from .serializers import SupportSerializer
+from ..staff.models import StaffDB
+import requests
+import json
 
 
 class Support(views.APIView):
@@ -31,6 +34,13 @@ class Support(views.APIView):
                 tracker=passedData["tracker"]
             )
             support_data.save()
+            staffData = StaffDB.objects.filter()
+            allTokens = []
+            for x in staffData:
+                allTokens.append(x.staffToken)
+
+            message = "A new support has been posted"
+            Support.notifyStaff(allTokens, message)
             return Response({
                 "status": "success",
                 "code": 1
@@ -46,6 +56,29 @@ class Support(views.APIView):
                 "status": "failed",
                 "code": 0
                 }, status.HTTP_200_OK)
+
+    def notifyStaff(allTokens, message):
+        """Send notification to the doctor"""
+        url = 'https://fcm.googleapis.com/fcm/send'
+
+        myHeaders = {
+            "Authorization": "key=AAAAxTAONtw:APA91bHOkfYKzBkGvUj4NMzK8JTaWHDwf8g_GAxDeMPvijZ2IdWu3C1mjdsIRSKl1c8oBaGP4C7YSrSsJ-H09zofTepJEREMu7-8KTV5oSK9lqlBoCtyNb8wDJIHBG7IHkQXC4V3dbRU",
+            "content-type": "application/json"
+            }
+
+        messageBody = {
+            "title": "New support",
+            "text": message,
+            "icon": "https://res.cloudinary.com/dolwj4vkq/image/upload/v1578849920/RFH/RFH-colored-white-icon.png",
+        }
+
+        myData = {
+            "registration_ids": allTokens,
+            "notification": messageBody,
+        }
+
+        x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
+        print("message sent : {}".format(x))
 
     @staticmethod
     def get(request):
