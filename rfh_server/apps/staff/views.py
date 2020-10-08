@@ -1,13 +1,17 @@
 # Create your views here.
 import bugsnag
+import requests
+import json
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from .models import StaffDB
 from .serializers import StaffSerializer
-import requests
-import json
 
 
 class Staff(views.APIView):
@@ -53,11 +57,15 @@ class Staff(views.APIView):
     def put(request):
         passedData = request.data
         try:
-            customer = StaffDB.objects.get(staffID=passedData["staffID"])
+            staff = StaffDB.objects.get(staffID=passedData["staffID"])
             serializer = StaffSerializer(
-                customer, data=passedData, partial=True)
+                staff, data=passedData, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+
+            if(passedData["notify"]):
+                Staff.email(staff.staffName, staff.staffEmail)
+
             return Response({
                     "status": "success",
                     "code": 1
@@ -73,6 +81,16 @@ class Staff(views.APIView):
                 "status": "failed",
                 "code": 0
                 }, status.HTTP_200_OK)
+
+    @staticmethod
+    def email(name, email):
+        print("------ name: {}. Email:{}".format(name, email))
+        subject = 'Welcome to RFH Online Doctor'
+        html_message = render_to_string("email.html", {'context': 'values'})
+        plain_message = strip_tags(html_message)
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [email]
+        send_mail(subject, plain_message, email_from, recipient_list, html_message=html_message)
 
 
 class StaffState(views.APIView):
