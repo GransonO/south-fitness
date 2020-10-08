@@ -63,7 +63,7 @@ class Staff(views.APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
-            if(passedData["notify"]):
+            if(passedData["notify"] == True):
                 Staff.email(staff.staffName, staff.staffEmail)
 
             return Response({
