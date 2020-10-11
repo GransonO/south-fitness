@@ -3,9 +3,9 @@ import bugsnag
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .models import AppointmentsDB
+from .models import AppointmentsDB, SOSAppointments
 from rest_framework.generics import ListAPIView
-from .serializers import AppointmentSerializer
+from .serializers import AppointmentSerializer, SOSSerializer
 from django.db.models import Q
 from django.utils import timezone
 from ..staff.models import StaffDB
@@ -45,18 +45,41 @@ class AppointmentsViews(views.APIView):
                 timestamp=passedData["timeStamp"],
             )
             appointment_data.save()
-            staffData = StaffDB.objects.filter()
-            allTokens = []
-            for x in staffData:
-                allTokens.append(x.staffToken)
 
             apType = "General"
             if(passedData["type"] == 2):
                 apType = "Online"
 
+            if(passedData["type"] == 0):
+                apType = "Emergency"
+
             message = "A new {} appointment has been posted".format(apType)
 
-            AppointmentsViews.notifyStaff(allTokens, message)
+            if(passedData["type"] == 0):
+                # Immediate request
+                # Save SOS data
+                sos_data = SOSAppointments(
+                    sosID=passedData["id"],
+                    patientID=passedData["patient_id"],
+                    summary=passedData["summary"],
+                    sosStatus=True
+                )
+                sos_data.save()
+                # 1. Check for all online doctors
+                staffData = StaffDB.objects.filter(
+                    onlineStatus=True,
+                    staffDepartment="1001"
+                )
+                allTokens = []
+                for x in staffData:
+                    allTokens.append(x.staffToken)
+                # 2. Send FCM to all
+                AppointmentsViews.notifyOnlineStaff(allTokens, message) 
+
+                # 3. Receive post request from first acceptor
+                # 4. If none accepts, resend after 2 mins
+
+
             return Response({
                 "status": "success",
                 "code": 1
@@ -73,12 +96,12 @@ class AppointmentsViews(views.APIView):
                 "code": 0
                 }, status.HTTP_200_OK)
 
-    def notifyStaff(allTokens, message):
+    def notifyOnlineStaff(allTokens, message):
         """Send notification to the doctor"""
         url = 'https://fcm.googleapis.com/fcm/send'
 
         myHeaders = {
-            "Authorization": "key=AAAAxTAONtw:APA91bHOkfYKzBkGvUj4NMzK8JTaWHDwf8g_GAxDeMPvijZ2IdWu3C1mjdsIRSKl1c8oBaGP4C7YSrSsJ-H09zofTepJEREMu7-8KTV5oSK9lqlBoCtyNb8wDJIHBG7IHkQXC4V3dbRU",
+            "Authorization": "key=AAAAFXoiEbA:APA91bGIVyHsWKPt31ZoeCbi7zSqYIXyZQ3eS7Tq0aMpFT58BVWGe6KhlF_rpCIecZJGAKOotIRkhvDtlTHoXF1lyo7XAdsCxGn3pG5wYnvcTusMJHwiAnAWy1-sBaO89QFJs59DlBhL",
             "content-type": "application/json"
             }
 
@@ -203,3 +226,12 @@ class AppointmentGeneralView(ListAPIView):
         now = timezone.now()
         return AppointmentsDB.objects.filter(
             timestamp__gte=now).order_by('timestamp')
+
+class EmergencyView(ListAPIView):
+    """Get all users SOSAppointments"""
+    serializer_class = SOSSerializer
+
+    def get_queryset(self):
+        now = timezone.now()
+        return SOSAppointments.objects.filter(
+            sosStatus__exact=True).order_by('timestamp')
