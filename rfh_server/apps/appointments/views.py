@@ -287,7 +287,7 @@ class EmergencyStateView(views.APIView):
         myData = {
             "registration_ids": [patientToken],
             "notification": {
-                "title": "Doctor found",
+                "title": "Emergency doctor found",
                 "text": "We've found a doctor to assist you.",
                 "icon": "https://res.cloudinary.com/dolwj4vkq/image/upload/v1578849920/RFH/RFH-colored-white-icon.png",
             },
@@ -298,5 +298,16 @@ class EmergencyStateView(views.APIView):
             }
         }
 
+        background = {
+            "registration_ids": [patientToken],
+            "data": {
+                "sosStatus": "accepted",
+                "page": "SOS",
+                "docId": docId,
+            }
+        }
+
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
+        y = requests.post(url, headers=myHeaders, data=json.dumps(background))
         print("message sent : {}".format(x))
+        print("message sent : {}".format(y))
