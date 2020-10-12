@@ -66,9 +66,10 @@ class AppointmentsViews(views.APIView):
                 )
                 sos_data.save()
                 # 1. Check for all online doctors
+                criterion1 = Q(onlineStatus__exact=True)
+                criterion2 = Q(staffDepartment="1001")
                 staffData = StaffDB.objects.filter(
-                    onlineStatus=True,
-                    staffDepartment="1001"
+                    criterion1 & criterion2
                 )
                 allTokens = []
                 for x in staffData:
@@ -228,10 +229,44 @@ class AppointmentGeneralView(ListAPIView):
             timestamp__gte=now).order_by('timestamp')
 
 class EmergencyView(ListAPIView):
-    """Get all users SOSAppointments"""
+    """Get all users appointments"""
     serializer_class = SOSSerializer
 
     def get_queryset(self):
         now = timezone.now()
         return SOSAppointments.objects.filter(
             sosStatus__exact=True).order_by('timestamp')
+
+class EmergencyStateView(views.APIView):
+    """Get all users appointments"""
+    serializer_class = SOSSerializer
+    @staticmethod
+    def put(request):
+        passedData = request.data
+        try:
+            result = SOSAppointments.objects.get(
+                sosID=passedData["sosID"])
+            count = result.trialCount + 1
+            passedData["trialCount"] = count
+            print("--------------------***-------------------- {}".format(passedData))
+            serializer = SOSSerializer(
+                result, data=passedData, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            return Response({
+                    "status": "success",
+                    "code": 1
+                    }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Transaction Put: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
