@@ -9,6 +9,7 @@ from .serializers import AppointmentSerializer, SOSSerializer
 from django.db.models import Q
 from django.utils import timezone
 from ..staff.models import StaffDB
+from ..fcm.models import FcmDB
 import requests
 import json
 
@@ -254,6 +255,10 @@ class EmergencyStateView(views.APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
+            result = FcmDB.objects.get(
+                user_id=passedData["patientID"])
+
+            EmergencyStateView.notifyPatient(result.token, passedData["doctorID"])
             return Response({
                     "status": "success",
                     "code": 1
@@ -270,3 +275,28 @@ class EmergencyStateView(views.APIView):
                 "code": 0
                 }, status.HTTP_200_OK)
 
+    def notifyPatient(patientToken, docId):
+        """Send notification to the doctor"""
+        url = 'https://fcm.googleapis.com/fcm/send'
+
+        myHeaders = {
+            "Authorization": "key=AAAAFXoiEbA:APA91bGIVyHsWKPt31ZoeCbi7zSqYIXyZQ3eS7Tq0aMpFT58BVWGe6KhlF_rpCIecZJGAKOotIRkhvDtlTHoXF1lyo7XAdsCxGn3pG5wYnvcTusMJHwiAnAWy1-sBaO89QFJs59DlBhL",
+            "content-type": "application/json"
+            }
+
+        myData = {
+            "registration_ids": [patientToken],
+            "notification": {
+                "title": "Doctor found",
+                "text": "We've found a doctor to assist you.",
+                "icon": "https://res.cloudinary.com/dolwj4vkq/image/upload/v1578849920/RFH/RFH-colored-white-icon.png",
+            },
+            "data": {
+                "sosStatus": "accepted",
+                "page": "SOS",
+                "docId": docId,
+            }
+        }
+
+        x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
+        print("message sent : {}".format(x))
