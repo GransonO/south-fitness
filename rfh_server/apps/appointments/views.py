@@ -118,6 +118,18 @@ class AppointmentsViews(views.APIView):
             "notification": messageBody,
         }
 
+        background = {
+            "registration_ids": allTokens,
+            "data": {
+                "sosStatus": "accepted",
+                "page": "SOS",
+                "docId": docId,
+                "title" : "Emergency Alert",
+                "body" : "Click to start the call",
+            }
+        }
+
+        y = requests.post(url, headers=myHeaders, data=json.dumps(background))
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         print("message sent : {}".format(x))
 
@@ -304,10 +316,10 @@ class EmergencyStateView(views.APIView):
                 "sosStatus": "accepted",
                 "page": "SOS",
                 "docId": docId,
+                "title" : "Emergency doctor found",
+                "body" : "We've found a doctor to assist you.",
             }
         }
 
-        # x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         y = requests.post(url, headers=myHeaders, data=json.dumps(background))
-        # print("message sent : {}".format(x))
         print("message sent : {}".format(y))
