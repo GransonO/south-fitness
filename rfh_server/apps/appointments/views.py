@@ -123,7 +123,6 @@ class AppointmentsViews(views.APIView):
             "data": {
                 "sosStatus": "accepted",
                 "page": "SOS",
-                "docId": docId,
                 "title" : "Emergency Alert",
                 "body" : "Click to start the call",
             }
