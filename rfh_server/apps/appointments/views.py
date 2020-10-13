@@ -108,7 +108,7 @@ class AppointmentsViews(views.APIView):
             }
 
         messageBody = {
-            "title": "New Appointment",
+            "title": "Emergency alert",
             "text": message,
             "icon": "https://res.cloudinary.com/dolwj4vkq/image/upload/v1578849920/RFH/RFH-colored-white-icon.png",
         }
@@ -117,7 +117,8 @@ class AppointmentsViews(views.APIView):
             "registration_ids": allTokens,
             "notification": messageBody,
             "data": {
-                "sosStatus": "accepted",
+                "patientId": passedData["patient_id"],
+                "sosID": passedData["id"]
                 "page": "SOS",
                 "title" : "Emergency Alert",
                 "body" : "Click to start the call",
@@ -127,7 +128,7 @@ class AppointmentsViews(views.APIView):
         background = {
             "registration_ids": allTokens,
             "data": {
-                "sosStatus": "accepted",
+                "patientId": passedData["patient_id"],
                 "page": "SOS",
                 "title" : "Emergency Alert",
                 "body" : "Click to start the call",
