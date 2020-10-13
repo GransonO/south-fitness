@@ -309,5 +309,5 @@ class EmergencyStateView(views.APIView):
 
         # x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         y = requests.post(url, headers=myHeaders, data=json.dumps(background))
-        print("message sent : {}".format(x))
+        # print("message sent : {}".format(x))
         print("message sent : {}".format(y))
