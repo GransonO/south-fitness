@@ -118,7 +118,7 @@ class AppointmentsViews(views.APIView):
             "notification": messageBody,
             "data": {
                 "patientId": passedData["patient_id"],
-                "sosID": passedData["id"]
+                "sosID": passedData["id"],
                 "page": "SOS",
                 "title" : "Emergency Alert",
                 "body" : "Click to start the call",
