@@ -19,7 +19,7 @@ class AppointmentsDB(models.Model):
     patientPhone = models.CharField(max_length=250, default='non')
     appointmentState = models.CharField(max_length=250, default='non')
     summary = models.CharField(max_length=550, default='non')
-    appointmentType = models.IntegerField(default='0')
+    appointmentType = models.IntegerField(default=0)
     timestamp = models.DateTimeField(default=datetime.now)
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)

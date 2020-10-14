@@ -129,6 +129,7 @@ class AppointmentsViews(views.APIView):
             "registration_ids": allTokens,
             "data": {
                 "patientId": passedData["patient_id"],
+                "sosID": passedData["id"],
                 "page": "SOS",
                 "title" : "Emergency Alert",
                 "body" : "Click to start the call",
@@ -220,8 +221,9 @@ class AppointmentSpecificView(ListAPIView):
         now = timezone.now()
         criterion1 = Q(patientID__exact=self.kwargs['user_id'])
         criterion2 = Q(timestamp__gte=now)
+        criterion3 = Q(appointmentType__gt=0)
         return AppointmentsDB.objects.filter(
-            criterion1 & criterion2
+            criterion1 & criterion2 & criterion3
             ).order_by('timestamp')
 
 
@@ -312,6 +314,8 @@ class EmergencyStateView(views.APIView):
                 "sosStatus": "accepted",
                 "page": "SOS",
                 "docId": docId,
+                "title" : "Emergency doctor found",
+                "body" : "We've found a doctor to assist you.",
             }
         }
 
