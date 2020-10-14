@@ -76,7 +76,7 @@ class AppointmentsViews(views.APIView):
                 for x in staffData:
                     allTokens.append(x.staffToken)
                 # 2. Send FCM to all
-                AppointmentsViews.notifyOnlineStaff(allTokens, message) 
+                AppointmentsViews.notifyOnlineStaff(allTokens, message, passedData) 
 
                 # 3. Receive post request from first acceptor
                 # 4. If none accepts, resend after 2 mins
@@ -98,7 +98,7 @@ class AppointmentsViews(views.APIView):
                 "code": 0
                 }, status.HTTP_200_OK)
 
-    def notifyOnlineStaff(allTokens, message):
+    def notifyOnlineStaff(allTokens, message, passedData):
         """Send notification to the doctor"""
         url = 'https://fcm.googleapis.com/fcm/send'
 
