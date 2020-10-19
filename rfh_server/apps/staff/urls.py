@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
      Staff, StaffAllView, StaffSpecificEmail,
-     StaffSpecificView, StaffState, StaffDoctorsView
+     StaffSpecificView, StaffState, StaffDoctorsView,
+     AllAvailableDocs
      )
 
 urlpatterns = [
@@ -33,5 +34,10 @@ urlpatterns = [
     path('doctors/',
          StaffDoctorsView.as_view(),
          name="all doctors"
+         ),
+
+    path('avail/',
+         StaffDoctorsView.as_view(),
+         name="Available doctors"
          ),
 ]

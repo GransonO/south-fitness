@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.db.models import Q
 from .models import StaffDB
 from .serializers import StaffSerializer
 
@@ -222,3 +223,17 @@ class StaffSpecificEmail(ListAPIView):
         return StaffDB.objects.filter(
             staffEmail=self.kwargs['staff_email']
             ).order_by('createdAt')
+
+
+class AllAvailableDocs(ListAPIView):
+    """Get a user specific appointments"""
+    serializer_class = StaffSerializer
+
+    def get_queryset(self):
+        now = timezone.now()
+        criterion1 = Q(onlineStatus=True)
+        criterion2 = Q(currentlyOnCall=False)
+        criterion3 = Q(enabled=True)
+        return StaffDB.objects.filter(
+            criterion1 & criterion2 & criterion3
+            )
