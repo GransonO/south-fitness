@@ -342,6 +342,6 @@ class userEmergencies(ListAPIView):
     def get_queryset(self):
         now = timezone.now()
         criterion1 = Q(patientID__exact=self.kwargs['user_id'])
-        criterion2 = Q(sosStatus__exact=True)
+        criterion2 = Q(iscomplete__exact=False)
         return SOSAppointments.objects.filter(
             criterion1 & criterion2).order_by('timestamp')

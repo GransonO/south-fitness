@@ -39,6 +39,7 @@ class SOSAppointments(models.Model):
     sosStatus = models.BooleanField(default=True)
     trialCount = models.IntegerField(default='0')
     timestamp = models.DateTimeField(default=datetime.now)
+    iscomplete = models.BooleanField(default=True)
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)
