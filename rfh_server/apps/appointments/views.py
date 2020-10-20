@@ -278,7 +278,10 @@ class EmergencyStateView(views.APIView):
             result = FcmDB.objects.get(
                 user_id=passedData["patientID"])
 
-            EmergencyStateView.notifyPatient(result.token, passedData["doctorID"])
+            if(passedData["sosID"]):
+                pass
+            else:
+                EmergencyStateView.notifyPatient(result.token, passedData["doctorID"])
             return Response({
                     "status": "success",
                     "code": 1
