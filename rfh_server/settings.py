@@ -24,8 +24,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'j43uwc5v2q^(p%s8xco0+$tmzx)$2h_7*+o)hg6ws4*2l*6x6c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 env = environ.Env(
     # set casting, default value

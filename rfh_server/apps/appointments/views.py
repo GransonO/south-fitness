@@ -334,3 +334,14 @@ class EmergencyStateView(views.APIView):
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         print("message sent : {}".format(y))
         print("message sent : {}".format(x))
+
+class userEmergencies(ListAPIView):
+    """Get all users appointments"""
+    serializer_class = SOSSerializer
+
+    def get_queryset(self):
+        now = timezone.now()
+        criterion1 = Q(patientID__exact=self.kwargs['user_id'])
+        criterion2 = Q(sosStatus__exact=True)
+        return SOSAppointments.objects.filter(
+            criterion1 & criterion2).order_by('timestamp')

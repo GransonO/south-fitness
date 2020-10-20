@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (AppointmentsViews,
                     AppointmentState, AppointmentDoctorSpecific,
                     AppointmentSpecificView, AppointmentGeneralView,
-                    EmergencyView, EmergencyStateView)
+                    EmergencyView, EmergencyStateView, userEmergencies)
 
 urlpatterns = [
     path('',
@@ -39,4 +39,9 @@ urlpatterns = [
         'sos/state/',
         EmergencyStateView.as_view(),
         name='EmergencyStateView'),
+
+    path(
+        'sos/<user_id>',
+        userEmergencies.as_view(),
+        name='userEmergencies'),
 ]
