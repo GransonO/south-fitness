@@ -275,12 +275,10 @@ class EmergencyStateView(views.APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
-            result = FcmDB.objects.get(
-                user_id=passedData["patientID"])
-
             if(passedData["sosID"]):
                 pass
             else:
+                result = FcmDB.objects.get(user_id=passedData["patientID"])
                 EmergencyStateView.notifyPatient(result.token, passedData["doctorID"])
             return Response({
                     "status": "success",
