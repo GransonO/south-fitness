@@ -40,5 +40,6 @@ class SOSSerializer(ModelSerializer):
             "sosStatus",
             "trialCount",
             "timestamp",
-            "createdAt"
+            "createdAt",
+            "iscomplete"
         ]
