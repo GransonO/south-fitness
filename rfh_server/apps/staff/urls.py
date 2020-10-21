@@ -37,7 +37,7 @@ urlpatterns = [
          ),
 
     path('avail/',
-         StaffDoctorsView.as_view(),
+         AllAvailableDocs.as_view(),
          name="Available doctors"
          ),
 ]

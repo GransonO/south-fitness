@@ -230,7 +230,6 @@ class AllAvailableDocs(ListAPIView):
     serializer_class = StaffSerializer
 
     def get_queryset(self):
-        now = timezone.now()
         criterion1 = Q(onlineStatus=True)
         criterion2 = Q(currentlyOnCall=False)
         criterion3 = Q(enabled=True)
