@@ -419,6 +419,7 @@ class EmergencyStateView(views.APIView):
                     earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
                     currentAmount=theDoctor.currentAmount + (appResult.amountPayed * 0.7)
                 )
+                doctors_update.save()
 
 class userEmergencies(ListAPIView):
     """Get all users appointments"""
