@@ -45,6 +45,8 @@ class AppointmentsViews(views.APIView):
                 appointmentState=passedData["state"],
                 summary=passedData["summary"],
                 appointmentType=passedData["type"],
+                amountPayed=passedData["amountPayed"],
+                mpesaPaymentId=passedData["mpesaPaymentId"],
                 timestamp=passedData["timeStamp"],
             )
             appointment_data.save()

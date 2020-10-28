@@ -23,6 +23,8 @@ class AppointmentSerializer(ModelSerializer):
             "appointmentState",
             "summary",
             "appointmentType",
+            "mpesaPaymentId",
+            "amountPayed",
             "timestamp",
             "createdAt"
         ]
