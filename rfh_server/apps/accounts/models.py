@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Accounts(models.Model):
 
-    appointmentId = models.CharField(unique=True, max_length=250, default='non')
+    appointmentID = models.CharField(unique=True, max_length=250, default='non')
     patientID = models.CharField(max_length=250, default='non')
     doctorID = models.CharField(max_length=250, default='non')
     amountPaid = models.IntegerField(default=0)

@@ -7,7 +7,7 @@ class AccountSerializer(ModelSerializer):
     class Meta:
         model = Accounts
         fields = [
-            "appointmentId",
+            "appointmentID",
             "patientID",
             "doctorID",
             "amountPaid",
