@@ -10,6 +10,8 @@ from django.db.models import Q
 from django.utils import timezone
 from ..staff.models import StaffDB
 from ..fcm.models import FcmDB
+from ..accounts.models import Accounts, DoctorAccount
+from ..accounts.serializers import AccountSerializer, DoctorAccountSerializer
 import requests
 import json
 
@@ -265,18 +267,24 @@ class EmergencyStateView(views.APIView):
     def put(request):
         passedData = request.data
         try:
-            result = SOSAppointments.objects.get(
+            sosResult = SOSAppointments.objects.get(
                 sosID=passedData["sosID"])
-            count = result.trialCount + 1
+            count = sosResult.trialCount + 1
             passedData["trialCount"] = count
             print("--------------------***-------------------- {}".format(passedData))
             serializer = SOSSerializer(
-                result, data=passedData, partial=True)
+                sosResult, data=passedData, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
             if(passedData["iscomplete"]):
-                pass
+                # Update account state
+                if(passedData["sosID"] != null):
+                    # is SOS
+                    EmergencyStateView.accounts(passedData, True)
+                else:
+                    # is not SOS
+                    EmergencyStateView.accounts(passedData, False)
             else:
                 result = FcmDB.objects.get(user_id=passedData["patientID"])
                 EmergencyStateView.notifyPatient(result.token, passedData["doctorID"])
@@ -335,6 +343,80 @@ class EmergencyStateView(views.APIView):
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         print("message sent : {}".format(y))
         print("message sent : {}".format(x))
+
+    def accounts(passedData, status):
+        if(status):
+            # is SOS
+            # Appointment
+            appResult = AppointmentsDB.objects.get(
+                appointmentID=passedData["sosID"])
+            # SOS
+            sosResult = SOSAppointments.objects.get(
+                sosID=passedData["sosID"])
+            #  Update accounts
+            account_data = Accounts(
+                doctorID=sosResult.doctorID,
+                appointmentID=sosResult.sosID,
+                patientID=sosResult.patientID,
+                amountPaid=appResult.amountPayed,
+                doctorsAmount=(appResult.amountPayed * 0.7),
+                paymentId=appResult.mpesaPaymentId)
+            account_data.save()
+            # Update Doctors data
+            doctorResult = DoctorAccount.objects.filter(
+                doctorID=sosResult.doctorID)
+            if(len(doctorResult) < 1):
+                # create new
+                docData = DoctorAccount(
+                    doctorID=sosResult.doctorID,
+                    callCount=1,
+                    earnedTotal=(appResult.amountPayed * 0.7),
+                    currentAmount=(appResult.amountPayed * 0.7)
+                )
+                docData.save()
+            else:
+                theDoctor = doctorResult[0]
+                doctors_update = DoctorAccount(
+                    doctorID=theDoctor.doctorID,
+                    callCount=theDoctor.callCount + 1,
+                    earnedTotal=doctorResult.earnedTotal + (appResult.amountPayed * 0.7),
+                    currentAmount=doctorResult.currentAmount + (appResult.amountPayed * 0.7)
+                )
+        else:
+             # is NOT SOS
+            # Appointment
+            appResult = AppointmentsDB.objects.get(
+                appointmentID=passedData["appointmentId"])
+
+            #  Update accounts
+            account_data = Accounts(
+                doctorID=appResult.doctorID,
+                appointmentID=appResult.appointmentID,
+                patientID=appResult.patientID,
+                amountPaid=appResult.amountPayed,
+                doctorsAmount=(appResult.amountPayed * 0.7),
+                paymentId=appResult.mpesaPaymentId)
+            account_data.save()
+            # Update Doctors data
+            doctorResult = DoctorAccount.objects.filter(
+                doctorID=appResult.doctorID)
+            if(len(doctorResult) < 1):
+                # create new
+                docData = DoctorAccount(
+                    doctorID=appResult.doctorID,
+                    callCount=1,
+                    earnedTotal=(appResult.amountPayed * 0.7),
+                    currentAmount=(appResult.amountPayed * 0.7)
+                )
+                docData.save()
+            else:
+                theDoctor = doctorResult[0]
+                doctors_update = DoctorAccount(
+                    doctorID=theDoctor.doctorID,
+                    callCount=theDoctor.callCount + 1,
+                    earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
+                    currentAmount=theDoctor.currentAmount + (appResult.amountPayed * 0.7)
+                )
 
 class userEmergencies(ListAPIView):
     """Get all users appointments"""

@@ -19,6 +19,8 @@ class AppointmentsDB(models.Model):
     patientPhone = models.CharField(max_length=250, default='non')
     appointmentState = models.CharField(max_length=250, default='non')
     summary = models.CharField(max_length=550, default='non')
+    mpesaPaymentId = models.CharField(max_length=550, default='non')
+    amountPayed = models.IntegerField(default=0)
     appointmentType = models.IntegerField(default=0)
     timestamp = models.DateTimeField(default=datetime.now)
 
