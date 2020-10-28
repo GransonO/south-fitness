@@ -381,8 +381,8 @@ class EmergencyStateView(views.APIView):
                 doctors_update = DoctorAccount(
                     doctorID=theDoctor.doctorID,
                     callCount=theDoctor.callCount + 1,
-                    earnedTotal=doctorResult.earnedTotal + (appResult.amountPayed * 0.7),
-                    currentAmount=doctorResult.currentAmount + (appResult.amountPayed * 0.7)
+                    earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
+                    currentAmount=theDoctor.currentAmount + (appResult.amountPayed * 0.7)
                 )
         else:
              # is NOT SOS
