@@ -25,6 +25,7 @@ from .apps.support import urls as supportUrls
 from .apps.profiles import urls as profilesUrls
 from .apps.fcm import urls as fcmUrls
 from .apps.staff import urls as staffUrls
+from .apps.accounts import urls as accountsUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -68,4 +69,9 @@ urlpatterns = [
         'staff/',
         include(staffUrls),
         name="staff"),
+
+    path(
+        'accounts/',
+        include(accountsUrls),
+        name="accounts"),
 ]
