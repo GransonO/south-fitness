@@ -273,25 +273,28 @@ class EmergencyStateView(views.APIView):
                 sosID=passedData["sosID"])
             count = sosResult.trialCount + 1
             passedData["trialCount"] = count
-            print("--------------------***-------------------- {}".format(passedData))
             serializer = SOSSerializer(
                 sosResult, data=passedData, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
+            result = FcmDB.objects.get(user_id=passedData["patientID"])
             if(passedData["iscomplete"]):
                 # Update account state
                 if(passedData["sosID"] != "null"):
                     # is SOS
-                    print("--------------------***-------------------- is SOS")
-                    EmergencyStateView.accounts(passedData, True)
+                    EmergencyStateView.accounts(passedData, True, result.token)
                 else:
                     # is not SOS
-                    print("--------------------***-------------------- is NOT SOS")
-                    EmergencyStateView.accounts(passedData, False)
+                    EmergencyStateView.accounts(passedData, False, result.token)
             else:
-                result = FcmDB.objects.get(user_id=passedData["patientID"])
-                EmergencyStateView.notifyPatient(result.token, passedData["doctorID"])
+                EmergencyStateView.notifyPatient(
+                    result.token,
+                    passedData["doctorID"],
+                    passedData["sosID"],
+                    "Emergency doctor found",
+                    "We've found a doctor to assist you.",
+                    "SOS")
             return Response({
                     "status": "success",
                     "code": 1
@@ -308,7 +311,7 @@ class EmergencyStateView(views.APIView):
                 "code": 0
                 }, status.HTTP_200_OK)
 
-    def notifyPatient(patientToken, docId):
+    def notifyPatient(patientToken, docId, sosID, title, body, page):
         """Send notification to the doctor"""
         url = 'https://fcm.googleapis.com/fcm/send'
 
@@ -320,15 +323,16 @@ class EmergencyStateView(views.APIView):
         myData = {
             "registration_ids": [patientToken],
             "notification": {
-                "title": "Emergency doctor found",
-                "text": "We've found a doctor to assist you.",
+                "title": title,
+                "text": body,
             },
             "data": {
                 "sosStatus": "accepted",
-                "page": "SOS",
+                "page": page,
+                "sosID": sosID,
                 "docId": docId,
-                "title" : "Emergency doctor found",
-                "body" : "We've found a doctor to assist you.",
+                "title" : title,
+                "body" : body,
             }
         }
 
@@ -336,10 +340,11 @@ class EmergencyStateView(views.APIView):
             "registration_ids": [patientToken],
             "data": {
                 "sosStatus": "accepted",
-                "page": "SOS",
+                "page": page,
+                "sosID": sosID,
                 "docId": docId,
-                "title" : "Emergency doctor found",
-                "body" : "We've found a doctor to assist you.",
+                "title" : title,
+                "body" : body,
             }
         }
 
@@ -348,10 +353,9 @@ class EmergencyStateView(views.APIView):
         print("message sent : {}".format(y))
         print("message sent : {}".format(x))
 
-    def accounts(passedData, status):
+    def accounts(passedData, status, token):
         if(status):
             # is SOS
-            print("--------------------IS SOS -------------------- {}".format(status))
             # Appointment
             appResult = AppointmentsDB.objects.get(
                 appointmentID=passedData["sosID"])
@@ -359,8 +363,6 @@ class EmergencyStateView(views.APIView):
             sosResult = SOSAppointments.objects.get(
                 sosID=passedData["sosID"])
             #  Update accounts
-            print("--------------------appResult -------------------- {}".format(appResult))
-            print("--------------------sosResult -------------------- {}".format(sosResult))
             account_data = Accounts(
                 doctorID=sosResult.doctorID,
                 appointmentID=sosResult.sosID,
@@ -372,7 +374,6 @@ class EmergencyStateView(views.APIView):
             # Update Doctors data
             doctorResult = DoctorAccount.objects.filter(
                 doctorID=sosResult.doctorID)
-            print("--------------------doctorResult -------------------- {}".format(doctorResult))
             if(len(doctorResult) < 1):
                 # create new
                 docData = DoctorAccount(
@@ -384,7 +385,6 @@ class EmergencyStateView(views.APIView):
                 docData.save()
             else:
                 theDoctor = doctorResult[0]
-                print("--------------------theDoctor -------------------- {}".format(theDoctor))
                 doctorResult.update(
                     callCount=theDoctor.callCount + 1,
                     earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
@@ -425,6 +425,14 @@ class EmergencyStateView(views.APIView):
                     earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
                     currentAmount=theDoctor.currentAmount + (appResult.amountPayed * 0.7)
                 )
+
+        EmergencyStateView.notifyPatient(
+            result.token,
+            "",
+            "",
+            "Session complete",
+            "Your session has been completed",
+            "NOTIFICATION")
 
 class userEmergencies(ListAPIView):
     """Get all users appointments"""
