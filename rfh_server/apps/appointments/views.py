@@ -283,9 +283,11 @@ class EmergencyStateView(views.APIView):
                 # Update account state
                 if(passedData["sosID"] != "null"):
                     # is SOS
+                    print("--------------------***-------------------- is SOS")
                     EmergencyStateView.accounts(passedData, True)
                 else:
                     # is not SOS
+                    print("--------------------***-------------------- is NOT SOS")
                     EmergencyStateView.accounts(passedData, False)
             else:
                 result = FcmDB.objects.get(user_id=passedData["patientID"])
@@ -349,6 +351,7 @@ class EmergencyStateView(views.APIView):
     def accounts(passedData, status):
         if(status):
             # is SOS
+            print("--------------------IS SOS -------------------- {}".format(status))
             # Appointment
             appResult = AppointmentsDB.objects.get(
                 appointmentID=passedData["sosID"])
@@ -356,6 +359,8 @@ class EmergencyStateView(views.APIView):
             sosResult = SOSAppointments.objects.get(
                 sosID=passedData["sosID"])
             #  Update accounts
+            print("--------------------appResult -------------------- {}".format(appResult))
+            print("--------------------sosResult -------------------- {}".format(sosResult))
             account_data = Accounts(
                 doctorID=sosResult.doctorID,
                 appointmentID=sosResult.sosID,
@@ -367,6 +372,7 @@ class EmergencyStateView(views.APIView):
             # Update Doctors data
             doctorResult = DoctorAccount.objects.filter(
                 doctorID=sosResult.doctorID)
+            print("--------------------doctorResult -------------------- {}".format(doctorResult))
             if(len(doctorResult) < 1):
                 # create new
                 docData = DoctorAccount(
@@ -378,8 +384,8 @@ class EmergencyStateView(views.APIView):
                 docData.save()
             else:
                 theDoctor = doctorResult[0]
-                doctors_update = DoctorAccount(
-                    doctorID=theDoctor.doctorID,
+                print("--------------------theDoctor -------------------- {}".format(theDoctor))
+                doctorResult.update(
                     callCount=theDoctor.callCount + 1,
                     earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
                     currentAmount=theDoctor.currentAmount + (appResult.amountPayed * 0.7)
@@ -413,6 +419,7 @@ class EmergencyStateView(views.APIView):
                 docData.save()
             else:
                 theDoctor = doctorResult[0]
+                print("doctorResult - - - - - -> {}".format(theDoctor))
                 doctorResult.update(
                     callCount=theDoctor.callCount + 1,
                     earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
