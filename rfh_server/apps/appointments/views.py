@@ -413,13 +413,11 @@ class EmergencyStateView(views.APIView):
                 docData.save()
             else:
                 theDoctor = doctorResult[0]
-                doctors_update = DoctorAccount(
-                    doctorID=theDoctor.doctorID,
+                doctorResult.update(
                     callCount=theDoctor.callCount + 1,
                     earnedTotal=theDoctor.earnedTotal + (appResult.amountPayed * 0.7),
                     currentAmount=theDoctor.currentAmount + (appResult.amountPayed * 0.7)
                 )
-                doctors_update.save()
 
 class userEmergencies(ListAPIView):
     """Get all users appointments"""
