@@ -279,7 +279,7 @@ class EmergencyStateView(views.APIView):
 
             if(passedData["iscomplete"]):
                 # Update account state
-                if(passedData["sosID"] != null):
+                if(passedData["sosID"] != "null"):
                     # is SOS
                     EmergencyStateView.accounts(passedData, True)
                 else:
