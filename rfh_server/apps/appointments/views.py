@@ -289,13 +289,23 @@ class EmergencyStateView(views.APIView):
                     # is not SOS
                     EmergencyStateView.accounts(passedData, False, result.token)
             else:
-                EmergencyStateView.notifyPatient(
-                    result.token,
-                    passedData["doctorID"],
-                    passedData["sosID"],
-                    "Emergency doctor found",
-                    "We've found a doctor to assist you.",
-                    "SOS")
+                if(passedData["docComplete"]):
+                    EmergencyStateView.notifyPatient(
+                        result.token,
+                        passedData["doctorID"],
+                        passedData["sosID"],
+                        "Emergency session complete",
+                        "The doctor completed your session. Kindly confirm if the session was successful",
+                        "NOTIFICATION")
+                else:
+                    EmergencyStateView.notifyPatient(
+                        result.token,
+                        passedData["doctorID"],
+                        passedData["sosID"],
+                        "Emergency doctor found",
+                        "We've found a doctor to assist you.",
+                        "SOS")
+
             return Response({
                     "status": "success",
                     "code": 1
