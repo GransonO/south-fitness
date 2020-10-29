@@ -67,7 +67,8 @@ class AppointmentsViews(views.APIView):
                     sosID=passedData["id"],
                     patientID=passedData["patient_id"],
                     summary=passedData["summary"],
-                    sosStatus=True
+                    sosStatus=True,
+                    docComplete=False
                 )
                 sos_data.save()
                 # 1. Check for all online doctors
