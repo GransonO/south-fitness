@@ -298,6 +298,16 @@ class EmergencyStateView(views.APIView):
                         docComplete=True,
                         totalCallTime=passedData["totalCallTime"]
                         )
+                    
+                    notifications_data = NotificationsDB(
+                        notification_id=passedData["sosID"],
+                        user_id=passedData["patientID"],
+                        title="Emergency session complete",
+                        details="The doctor completed your session. Kindly confirm if the session was successful",
+                        viewed=False
+                    )
+                    notifications_data.save()
+
                     EmergencyStateView.notifyPatient(
                         result.token,
                         passedData["doctorID"],
