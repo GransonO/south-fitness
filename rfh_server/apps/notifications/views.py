@@ -109,4 +109,4 @@ class NotificationUserView(ListAPIView):
         criterion2 = Q(user_id__contains="all")
         return NotificationsDB.objects.filter(
             criterion1 | criterion2
-            ).order_by('date')
+            ).order_by('-date')

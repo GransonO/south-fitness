@@ -299,7 +299,6 @@ class EmergencyStateView(views.APIView):
                         docComplete=True,
                         totalCallTime=passedData["totalCallTime"]
                         )
-                    
                     notifications_data = NotificationsDB(
                         notification_id="notify-{}".format(passedData["sosID"]),
                         user_id=passedData["patientID"],
@@ -392,7 +391,7 @@ class EmergencyStateView(views.APIView):
             # SOS
             sosResult = SOSAppointments.objects.get(
                 sosID=passedData["sosID"])
-            #  Update accounts
+            # Update accounts
             account_data = Accounts(
                 doctorID=sosResult.doctorID,
                 appointmentID=sosResult.sosID,
@@ -435,6 +434,7 @@ class EmergencyStateView(views.APIView):
                 doctorsAmount=(appResult.amountPayed * 0.7),
                 paymentId=appResult.mpesaPaymentId)
             account_data.save()
+
             # Update Doctors data
             doctorResult = DoctorAccount.objects.filter(
                 doctorID=appResult.doctorID)
