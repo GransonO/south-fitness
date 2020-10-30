@@ -290,6 +290,14 @@ class EmergencyStateView(views.APIView):
                     EmergencyStateView.accounts(passedData, False, result.token)
             else:
                 if(passedData["docComplete"]):
+                    # Doctor done
+                    sosResult = SOSAppointments.objects.filter(
+                        sosID=passedData["sosID"])
+                    sosResult.update(
+                        iscomplete=False,
+                        docComplete=True,
+                        totalCallTime=passedData["totalCallTime"]
+                        )
                     EmergencyStateView.notifyPatient(
                         result.token,
                         passedData["doctorID"],
@@ -438,7 +446,7 @@ class EmergencyStateView(views.APIView):
                 )
 
         EmergencyStateView.notifyPatient(
-            result.token,
+            token,
             "",
             "",
             "Session complete",

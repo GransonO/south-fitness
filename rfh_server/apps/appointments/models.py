@@ -39,10 +39,11 @@ class SOSAppointments(models.Model):
     patientID = models.CharField(max_length=250, default='non')
     doctorID = models.CharField(max_length=250, default='non')
     sosStatus = models.BooleanField(default=True)
-    trialCount = models.IntegerField(default='0')
+    trialCount = models.IntegerField(default=0)
     timestamp = models.DateTimeField(default=datetime.now)
     iscomplete = models.BooleanField(default=False)
     docComplete = models.BooleanField(default=False)
+    totalCallTime = models.IntegerField(default=0)
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)
