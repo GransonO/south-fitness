@@ -301,7 +301,7 @@ class EmergencyStateView(views.APIView):
                         )
                     
                     notifications_data = NotificationsDB(
-                        notification_id=passedData["sosID"],
+                        notification_id="notify-{}".format(passedData["sosID"]),
                         user_id=passedData["patientID"],
                         title="Emergency session complete",
                         details="The doctor completed your session. Kindly confirm if the session was successful",
