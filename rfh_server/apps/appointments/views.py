@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.utils import timezone
 from ..staff.models import StaffDB
 from ..fcm.models import FcmDB
+from ..fcm.notifications import NotificationsDB
 from ..accounts.models import Accounts, DoctorAccount
 from ..accounts.serializers import AccountSerializer, DoctorAccountSerializer
 import requests
