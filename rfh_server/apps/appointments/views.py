@@ -267,6 +267,38 @@ class EmergencyView(ListAPIView):
 class EmergencyStateView(views.APIView):
     """Get all users appointments"""
     serializer_class = SOSSerializer
+
+    @staticmethod
+    def post(request):
+        passedData = request.data
+        try:
+            sosResult = SOSAppointments.objects.get(
+                sosID=passedData["sosID"])
+            if(sosResult.sosStatus):
+                # SOS Call active
+                return Response({
+                    "status": "success",
+                    "code": True,
+                    "sosID": passedData["sosID"]
+                    }, status.HTTP_200_OK)
+            else:
+                # SOS Call taken
+                return Response({
+                    "status": "taken",
+                    "code": False,
+                    "sosID": passedData["sosID"]
+                    }, status.HTTP_200_OK)
+        except Exception as E:
+                    print("Error: {}".format(E))
+                    bugsnag.notify(
+                        Exception('Transaction Put: {}'.format(E))
+                    )
+                    return Response({
+                        "error": "{}".format(E),
+                        "status": "failed",
+                        "code": False
+                        }, status.HTTP_200_OK)
+
     @staticmethod
     def put(request):
         passedData = request.data
@@ -326,7 +358,8 @@ class EmergencyStateView(views.APIView):
 
             return Response({
                     "status": "success",
-                    "code": 1
+                    "code": 1,
+                    "sosID": passedData["sosID"]
                     }, status.HTTP_200_OK)
 
         except Exception as E:
