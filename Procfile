@@ -1,3 +1,3 @@
 release: bash ./release-tasks.sh
-web: gunicorn rfh_server.wsgi —-log-file -
+web: gunicorn south_fitness_server.wsgi —-log-file -
 worker: python manage.py qcluster
