@@ -23,7 +23,7 @@ class Profiles(views.APIView):
             profile_data = ProfilesDB(
                     fullname=passed_data["fullname"],
                     email=passed_data["email"],
-                    birthDate=passed_data["birthDate"],
+                    # birthDate=passed_data["birthDate"],
                     activation_code=passed_data["activation_code"],
                     team=passed_data["team"].upper(),
                     # Part 2
