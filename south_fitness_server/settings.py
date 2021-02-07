@@ -109,7 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'south_fitness_server.wsgi.application'
 CORS_ORIGIN_ALLOW_ALL = True
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "south-fitness.herokuapp.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "south-fitness.herokuapp.com", "*"]
 AUTH_USER_MODEL = 'authentication.User'
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
