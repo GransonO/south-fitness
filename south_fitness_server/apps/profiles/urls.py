@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-     ProfileRef, Profiles,
+     Profiles,
      ProfilesAllView, ProfileSpecificView
      )
 
@@ -18,10 +18,5 @@ urlpatterns = [
     path('all/',
          ProfilesAllView.as_view(),
          name="all profiles"
-         ),
-
-    path('ref/',
-         ProfileRef.as_view(),
-         name="refs"
-         ),
+         )
 ]

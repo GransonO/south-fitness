@@ -26,6 +26,7 @@ from .apps.profiles import urls as profilesUrls
 from .apps.fcm import urls as fcmUrls
 from .apps.staff import urls as staffUrls
 from .apps.accounts import urls as accountsUrls
+from .apps.authentication import urls as authUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -74,4 +75,9 @@ urlpatterns = [
         'accounts/',
         include(accountsUrls),
         name="accounts"),
+
+    path(
+        'auth/',
+        include(authUrls),
+        name="authentication"),
 ]

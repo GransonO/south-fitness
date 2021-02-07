@@ -4,7 +4,7 @@ from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
-from .models import ProfilesRefDB, ProfilesDB
+from .models import ProfilesDB
 from .serializers import ProfileSerializer
 
 
@@ -17,29 +17,25 @@ class Profiles(views.APIView):
     @staticmethod
     def post(request):
         """ Add Profiles to DB """
-        passedData = request.data
+        passed_data = request.data
         try:
             # Save data to DB
             profile_data = ProfilesDB(
-                    UserRefId=passedData["UserRefId"],
-                    birthDate=passedData["birthDate"],
-                    chattingWith=passedData["chattingWith"],
-                    doc=passedData["doc"],
-                    email=passedData["email"],
-                    firstname=passedData["firstname"],
-                    lastname=passedData["lastname"],
-                    gender=passedData["gender"],
-                    userId=passedData["userId"],
-                    nickname=passedData["nickname"],
-                    phone=passedData["phone"],
-                    photoUrl=passedData["photoUrl"],
-                    relatives=passedData["relatives"],
-                    insurance=passedData["insurance"],
-                    address=passedData["address"],
-                    addressId=passedData["addressId"],
-                    addressName=passedData["addressName"],
-                    latitude=passedData["latitude"],
-                    longitude=passedData["longitude"],
+                    fullname=passed_data["fullname"],
+                    email=passed_data["email"],
+                    birthDate=passed_data["birthDate"],
+                    activation_code=passed_data["activation_code"],
+                    team=passed_data["team"].upper(),
+                    # Part 2
+                    gender=passed_data["gender"],
+                    height=passed_data["height"],
+                    weight=passed_data["weight"],
+                    # Goals
+                    goal=passed_data["goal"],
+                    # Discipline
+                    discipline=passed_data["discipline"],
+                    # Work Out Duration
+                    workout_duration=passed_data["workout_duration"],
             )
             profile_data.save()
             return Response({
@@ -60,13 +56,13 @@ class Profiles(views.APIView):
 
     @staticmethod
     def put(request):
-        passedData = request.data
+        passed_data = request.data
         # Check This later
         try:
 
-            customer = ProfilesDB.objects.get(userId=passedData["userId"])
+            participant = ProfilesDB.objects.get(email=passed_data["email"])
             serializer = ProfileSerializer(
-                customer, data=passedData, partial=True)
+                participant, data=passed_data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
@@ -101,71 +97,5 @@ class ProfileSpecificView(ListAPIView):
 
     def get_queryset(self):
         return ProfilesDB.objects.filter(
-            userId=self.kwargs['userId']
+            email=self.kwargs['email']
             ).order_by('createdAt')
-
-
-class ProfileRef(views.APIView):
-    """
-        Deal with Prefs
-    """
-    permission_classes = [AllowAny]
-
-    @staticmethod
-    def post(request):
-        """ Add REF No to DB """
-        passedData = request.data
-        try:
-            result = ProfilesRefDB.objects.filter(user_id=passedData["user_id"])
-            if(result.count() < 1):
-                # Save data to DB
-                ProfilesRef_data = ProfilesRefDB(
-                    refNum=passedData["refNum"],
-                    user_id=passedData["user_id"],
-                    hospital=passedData["hospital"]
-                )
-                ProfilesRef_data.save()
-                return Response({
-                    "message": "User REF added",
-                    "status": "success",
-                    "code": 1
-                    }, status.HTTP_200_OK)
-            else:
-                return Response({
-                    "message": "User REF exists",
-                    "status": "success",
-                    "code": 1
-                    }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('ProfilesRef Post: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "code": 0
-                }, status.HTTP_200_OK)
-
-    @staticmethod
-    def put(request):
-        passedData = request.data
-        try:
-            result = ProfilesRefDB.objects.filter(refNum=passedData["refNum"])
-            return Response({
-                    "status": "success",
-                    "exists": (0 < result.count()),
-                    "code": 1
-                    }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('ProfilesRef Post: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "code": 0
-                }, status.HTTP_200_OK)

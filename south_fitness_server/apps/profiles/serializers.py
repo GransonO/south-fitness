@@ -7,23 +7,6 @@ class ProfileSerializer(ModelSerializer):
     class Meta:
         model = ProfilesDB
         fields = [
-            "UserRefId",
-            "birthDate",
-            "chattingWith",
-            "doc",
-            "email",
-            "firstname",
-            "lastname",
-            "gender",
-            "userId",
-            "nickname",
-            "phone",
-            "photoUrl",
-            "relatives",
-            "insurance",
-            "address",
-            "addressId",
-            "addressName",
-            "latitude",
-            "longitude",
+            "fullname", "email", "birthDate", "activation_code", "team",
+            "gender", "height", "weight", "goal", "discipline", "workout_duration"
         ]

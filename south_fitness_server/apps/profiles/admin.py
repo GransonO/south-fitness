@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import ProfilesRefDB, ProfilesDB
+from .models import ProfilesDB
 
 # Register your models here.
 
-admin.site.register(ProfilesRefDB)
 admin.site.register(ProfilesDB)

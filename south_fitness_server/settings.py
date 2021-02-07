@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'j43uwc5v2q^(p%s8xco0+$tmzx)$2h_7*+o)hg6ws4*2l*6x6c'
-
+REFRESH_TOKEN_SECRET = 'j436uwc5v2q^(p%s8xco0+$tzx)$2h_7*+o)hg6wvs4*2l*6x6c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 # DEBUG = False
@@ -54,12 +54,23 @@ INSTALLED_APPS = [
     'south_fitness_server.apps.fcm',
     'south_fitness_server.apps.staff',
     'south_fitness_server.apps.accounts',
+    'south_fitness_server.apps.authentication',
 
     # third party apps
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     'background_task',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'south_fitness_server.apps.authentication.CustomAuth.SafeJWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,7 +83,6 @@ MIDDLEWARE = [
 
     # third party apps
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'bugsnag.django.middleware.BugsnagMiddleware',
 
     # recomended for serving static files
@@ -99,9 +109,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'south_fitness_server.wsgi.application'
 CORS_ORIGIN_ALLOW_ALL = True
-ALLOWED_HOSTS = ["178.62.85.46", "localhost", "127.0.0.1", "rfh-epitome-api.co.ke", "www.rfh-epitome-api.co.ke"]
-
-
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "south-fitness.herokuapp.com"]
+AUTH_USER_MODEL = 'authentication.User'
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+]
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
