@@ -264,6 +264,7 @@ class ResetPass(views.APIView):
                     user_email=passed_data["email"],
                 )
                 reset_data.save()
+                ResetPass.send_email(passed_data["email"], random_code)
                 return Response({
                     "status": "reset success",
                     "code": 1
@@ -331,3 +332,20 @@ class ResetPass(views.APIView):
 
             return response
 
+    @staticmethod
+    def send_email(email, code):
+        subject = 'Password reset'
+        body = 'We received a request to reset your password. If you made the request, use the code {} to complete the process'.format(code)
+        message = """
+                    <html>
+                    <head></head>
+                    <body>
+                        <h2>Well hello there enthusiast</h2>
+                        <p>{}</p>
+                        <h5>For you</h5>
+                    </body>
+                    </html>
+                    """.format(body)
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [email, ]
+        send_mail(subject, message=body, from_email=email_from, recipient_list=recipient_list, html_message=message)
