@@ -27,6 +27,8 @@ from .apps.fcm import urls as fcmUrls
 from .apps.staff import urls as staffUrls
 from .apps.accounts import urls as accountsUrls
 from .apps.authentication import urls as authUrls
+from .apps.videos import urls as videoUrls
+from .apps.teams import urls as teamsUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -67,6 +69,11 @@ urlpatterns = [
         name="fcm"),
 
     path(
+        'videos/',
+        include(videoUrls),
+        name="videos"),
+
+    path(
         'staff/',
         include(staffUrls),
         name="staff"),
@@ -80,4 +87,9 @@ urlpatterns = [
         'auth/',
         include(authUrls),
         name="authentication"),
+
+    path(
+        'team/',
+        include(teamsUrls),
+        name="teams"),
 ]

@@ -3,6 +3,8 @@ import bugsnag
 import datetime
 import jwt
 import random
+
+from django.core.mail import send_mail
 from rest_framework import exceptions
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
@@ -11,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from ..profiles.models import ProfilesDB
-from .models import Reset
+from .models import Reset, Activation
 
 from .serializers import UserSerializer
 
@@ -40,11 +42,31 @@ class Register(views.APIView):
                 user.email = passed_data["email"]
 
                 user.save()
+                try:
+                    # Save data to DB
+                    print("--------------------------------Added to DB")
+                    random_code = random.randint(1000, 9999)
+                    activation_data = Activation(
+                        activation_code=random_code,
+                        user_email=passed_data["email"],
+                    )
+                    activation_data.save()
+                    Register.send_email(passed_data["email"], passed_data["firstname"], random_code)
+                except Exception as E:
+                    print("Activation error: {}".format(E))
+                    bugsnag.notify(
+                        Exception('Activation error: {}'.format(E))
+                    )
+                    return Response({
+                            "status": "failed",
+                            "message": "Registration failed",
+                            "code": 0
+                            }, status.HTTP_200_OK)
 
                 return Response({
                         "status": "success",
                         "message": "Registration success",
-                        "code": 1  # user added to db
+                        "code": 1
                         }, status.HTTP_200_OK)
             else:
                 return Response({
@@ -61,6 +83,7 @@ class Register(views.APIView):
             return Response({
                 "error": "{}".format(E),
                 "status": "failed error occurred",
+                "message": "Registration failed",
                 "code": 0
                 }, status.HTTP_200_OK)
 
@@ -77,6 +100,24 @@ class Register(views.APIView):
         except Exception as e:
             print("------------------Exception: {}".format(e))
             return False
+
+    @staticmethod
+    def send_email(email, name, code):
+        subject = 'Welcome {} to South Fitness'.format(name)
+        body = 'Your path to wellness starts here. Use activation code: {} to activate your account.'.format(code)
+        message = """
+                    <html>
+                    <head></head>
+                    <body>
+                        <h2>Well hello there enthusiast</h2>
+                        <p>{}</p>
+                        <h5>For you</h5>
+                    </body>
+                    </html>
+                    """.format(body)
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [email, ]
+        send_mail(subject, message, email_from, recipient_list)
 
 
 class Login(views.APIView):
@@ -181,8 +222,7 @@ def generate_access_token(user):
         'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=5),
         'iat': datetime.datetime.utcnow(),
     }
-    access_token = jwt.encode(access_token_payload,
-                              settings.SECRET_KEY, algorithm='HS256')\
+    access_token = jwt.encode(access_token_payload, settings.SECRET_KEY, algorithm='HS256')
         # .decode('utf-8')
     return access_token
 

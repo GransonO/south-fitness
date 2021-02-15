@@ -50,11 +50,13 @@ INSTALLED_APPS = [
     'south_fitness_server.apps.appointments',
     'south_fitness_server.apps.notifications',
     'south_fitness_server.apps.support',
+    'south_fitness_server.apps.videos',
     'south_fitness_server.apps.profiles',
     'south_fitness_server.apps.fcm',
     'south_fitness_server.apps.staff',
     'south_fitness_server.apps.accounts',
     'south_fitness_server.apps.authentication',
+    'south_fitness_server.apps.teams',
 
     # third party apps
     'corsheaders',
@@ -126,7 +128,6 @@ DATABASES = {
     'default': env.db()
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -182,11 +183,9 @@ STATICFILES_DIRS = (
 # Efficiently resizes the served static files.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Email data
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'rfh.epitome@gmail.com'
-EMAIL_HOST_PASSWORD = 'iybdcxvsbyucnqty'
-DEFAULT_FROM_EMAIL = 'default from email'
+EMAIL_HOST_USER = 'africaapeiron@gmail.com'
+EMAIL_HOST_PASSWORD = 'Power3942'

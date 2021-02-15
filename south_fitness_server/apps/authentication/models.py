@@ -18,3 +18,17 @@ class Reset(models.Model):
         """ String representation of db object """
         return 'platform : {} ,user_id: {}'.format(
             self.reset_code, self.user_email)
+
+
+class Activation(models.Model):
+    """Profiles ref Number"""
+    activation_code = models.IntegerField()
+    user_email = models.CharField(unique=True, max_length=250, default='non')
+
+    createdAt = models.DateTimeField(auto_now_add=True, null=True)
+    updatedAt = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        """ String representation of db object """
+        return 'platform : {} ,user_id: {}'.format(
+            self.activation_code, self.user_email)
