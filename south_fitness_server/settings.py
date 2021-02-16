@@ -183,9 +183,11 @@ STATICFILES_DIRS = (
 # Efficiently resizes the served static files.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Email data
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'africaapeiron@gmail.com'
-EMAIL_HOST_PASSWORD = 'Power3942'
+EMAIL_HOST_USER = 'rfh.epitome@gmail.com'
+EMAIL_HOST_PASSWORD = 'iybdcxvsbyucnqty'
+DEFAULT_FROM_EMAIL = 'default from email'

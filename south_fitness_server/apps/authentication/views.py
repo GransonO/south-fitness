@@ -267,7 +267,8 @@ class ResetPass(views.APIView):
                 ResetPass.send_email(passed_data["email"], random_code)
                 return Response({
                     "status": "reset success",
-                    "code": 1
+                    "code": 1,
+                    "success": True
                     }, status.HTTP_200_OK)
             else:
                 # Update Reset
@@ -276,9 +277,11 @@ class ResetPass(views.APIView):
                 Reset.objects.filter(user_email=passed_data["email"]).update(
                     reset_code=random_code,
                     )
+                ResetPass.send_email(passed_data["email"], random_code)
                 return Response({
                         "status": "reset success",
-                        "code": 1
+                        "code": 1,
+                        "success": True
                         }, status.HTTP_200_OK)
 
         except Exception as E:
@@ -289,7 +292,8 @@ class ResetPass(views.APIView):
             return Response({
                 # "error": "{}".format(E),
                 "status": "reset failed",
-                "code": 0
+                "code": 0,
+                "success": False
                 }, status.HTTP_200_OK)
 
     @staticmethod
@@ -334,6 +338,7 @@ class ResetPass(views.APIView):
 
     @staticmethod
     def send_email(email, code):
+        print("----------------------------------------- Resetting password")
         subject = 'Password reset'
         body = 'We received a request to reset your password. If you made the request, use the code {} to complete the process'.format(code)
         message = """
