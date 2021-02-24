@@ -90,9 +90,11 @@ class Videos(views.APIView):
         passedData = request.data
         try:
             vid_data = VideosDB.objects.get(video_id=passedData["video_id"])
+
             VideosDB.objects.filter(
                 video_id=passedData["video_id"]).update(
                     views_count=vid_data.views_count + 1,
+                    participants="{},{}".format(vid_data.participants, passedData["team"].upper())
                     )
             return Response({
                     "status": "success",

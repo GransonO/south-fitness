@@ -19,6 +19,7 @@ class VideoSerializer(ModelSerializer):
             "isScheduled",
             "scheduledTime",
             "isComplete",
+            "participants",
             "video_call_id",
             "video_call_token",
             "video_channel_name",

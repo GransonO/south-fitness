@@ -16,6 +16,8 @@ class VideosDB(models.Model):
     scheduledTime = models.DateTimeField(null=True)
     isComplete = models.BooleanField(default=False)
 
+    participants = models.CharField(max_length=5000, null=True)
+
     video_call_id = models.CharField(max_length=5000, null=True)
     video_call_token = models.CharField(max_length=5000, null=True)
     video_channel_name = models.CharField(max_length=5000, null=True)
