@@ -5,8 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 from .models import VideosDB
-from .serializers import SupportSerializer
-from ..staff.models import StaffDB
+from .serializers import VideoSerializer
 import requests
 import json
 
@@ -20,17 +19,19 @@ class Videos(views.APIView):
     @staticmethod
     def post(request):
         """ Add appointment to DB """
-        passedData = request.data
+        passed_data = request.data
         try:
             # Save data to DB
             video_data = VideosDB(
-                video_id=passedData["video_id"],
-                uploaded_by=passedData["uploaded_by"],
-                title=passedData["title"],
-                details=passedData["details"],
-                video_url=passedData["video_url"],
-                views_count=passedData["views_count"],
-                type=passedData["type"]
+                video_id=passed_data["video_id"],
+                uploaded_by=passed_data["uploaded_by"],
+                instructor=passed_data["instructor"],
+                title=passed_data["title"],
+                details=passed_data["details"],
+                video_url=passed_data["video_url"],
+                views_count=passed_data["views_count"],
+                type=passed_data["type"],
+                session_id=passed_data["session_id"]
             )
             video_data.save()
             # staffData = StaffDB.objects.filter()
@@ -82,17 +83,16 @@ class Videos(views.APIView):
 
     @staticmethod
     def get(request):
-        passed_data = request.data
-        print("The passedData is ------------------: {}".format(passed_data))
-        return Response({"Hit the appointments channel"}, status.HTTP_200_OK)
+        pass
 
     @staticmethod
     def put(request):
         passedData = request.data
         try:
+            vid_data = VideosDB.objects.get(video_id=passedData["video_id"])
             VideosDB.objects.filter(
                 video_id=passedData["video_id"]).update(
-                    views_count=passedData["views_count"],
+                    views_count=vid_data.views_count + 1,
                     )
             return Response({
                     "status": "success",
@@ -102,7 +102,7 @@ class Videos(views.APIView):
         except Exception as E:
             print("Error: {}".format(E))
             bugsnag.notify(
-                Exception('Appointment Post: {}'.format(E))
+                Exception('Update Videos count: {}'.format(E))
             )
             return Response({
                 "error": "{}".format(E),
@@ -113,17 +113,19 @@ class Videos(views.APIView):
 
 class VideoAllView(ListAPIView):
     """Get a user specific appointments"""
-    serializer_class = SupportSerializer
+    permission_classes = [AllowAny]
+    serializer_class = VideoSerializer
 
     def get_queryset(self):
-        return VideosDB.objects.filter().order_by('dateTime')
+        return VideosDB.objects.filter().order_by('createdAt')
 
 
 class VideoSpecificView(ListAPIView):
     """Get a user specific appointments"""
-    serializer_class = SupportSerializer
+    permission_classes = [AllowAny]
+    serializer_class = VideoSerializer
 
     def get_queryset(self):
         return VideosDB.objects.filter(
             video_id=self.kwargs['video_id']
-            ).order_by('dateTime')
+            ).order_by('createdAt')

@@ -16,6 +16,7 @@ from ..profiles.models import ProfilesDB
 from .models import Reset, Activation
 
 from .serializers import UserSerializer
+from ..profiles.serializers import ProfileSerializer
 
 
 class Register(views.APIView):
@@ -164,11 +165,11 @@ class Login(views.APIView):
             if (username is None) or (password is None):
                 raise exceptions.AuthenticationFailed(
                     'username and password required')
-            participant = ProfilesDB.objects.filter(email=passed_data["email"])
             passed_user = User.objects.filter(username=username)
             if passed_user.exists():
 
                 user = User.objects.filter(username=username).first()
+                profile = ProfilesDB.objects.filter(email=passed_data["email"])
                 if user is None:
                     raise exceptions.AuthenticationFailed('user not found')
                 le_user = authenticate(username=username, password=password)
@@ -182,6 +183,7 @@ class Login(views.APIView):
                     return response
 
                 serialized_user = UserSerializer(user).data
+                serialized_profile = ProfileSerializer(profile).data
 
                 access_token = generate_access_token(user)
                 refresh_token = generate_refresh_token(user)
@@ -190,8 +192,9 @@ class Login(views.APIView):
                 response.data = {
                     'access_token': access_token,
                     'user': serialized_user,
+                    'profile': serialized_profile,
                     "status": "success",
-                    "isRegistered": participant.count() > 0,
+                    "isRegistered": profile.count() > 0,
                     "message": "Login success",
                     "code": 1
                 }

@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import (Test, Teams, TeamsAllView,
+from .views import (Teams, TeamsAllView,
                     TeamsSpecificView, TeamsUserView)
 
 urlpatterns = [
     path('',
-         Test.as_view(),
+         Teams.as_view(),
          name="teams"
          ),
 
@@ -18,7 +18,7 @@ urlpatterns = [
          name="specific_user_support"
          ),
 
-    path('all/',
+    path('all',
          TeamsAllView.as_view(),
          name="all_support"
          )

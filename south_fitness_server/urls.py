@@ -17,36 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from .apps.text_process import urls as process_urls
-from .apps.mpesa import urls as mpesaUrls
-from .apps.appointments import urls as appointmentUrls
 from .apps.notifications import urls as notificationUrls
 from .apps.support import urls as supportUrls
 from .apps.profiles import urls as profilesUrls
 from .apps.fcm import urls as fcmUrls
 from .apps.staff import urls as staffUrls
-from .apps.accounts import urls as accountsUrls
 from .apps.authentication import urls as authUrls
 from .apps.videos import urls as videoUrls
 from .apps.teams import urls as teamsUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path(
-        'text_process/',
-        include(process_urls),
-        name='process'),
-
-    path(
-        'mpesa_callback/',
-        include(mpesaUrls),
-        name="mpesaUrls"),
-
-    path(
-        'appointments/',
-        include(appointmentUrls),
-        name="appointments"),
 
     path(
         'notifications/',
@@ -77,11 +58,6 @@ urlpatterns = [
         'staff/',
         include(staffUrls),
         name="staff"),
-
-    path(
-        'accounts/',
-        include(accountsUrls),
-        name="accounts"),
 
     path(
         'auth/',

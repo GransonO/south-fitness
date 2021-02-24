@@ -7,8 +7,6 @@ from rest_framework.generics import ListAPIView
 from django.db.models import Q
 from .models import TeamsDB
 from .serializers import TeamsSerializer
-import requests
-import json
 
 
 class Teams(views.APIView):
@@ -48,60 +46,6 @@ class Teams(views.APIView):
                 "status": "failed",
                 "code": 0
                 }, status.HTTP_200_OK)
-
-    @staticmethod
-    def get(request):
-        passed_data = request.data
-        print("The passedData is ------------------: {}".format(passed_data))
-        return Response({"Hit the appointments channel"}, status.HTTP_200_OK)
-
-    @staticmethod
-    def put(request):
-        passedData = request.data
-        try:
-            TeamsDB.objects.filter(
-                support_id=passedData["support_id"]).update(
-                        response=passedData["response"],
-                    )
-            return Response({
-                    "status": "success",
-                    "code": 1
-                    }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('Appointment Post: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "code": 0
-                }, status.HTTP_200_OK)
-
-
-class Test(views.APIView):
-
-    permission_classes = [AllowAny]
-
-    @staticmethod
-    def get(request):
-        nums = [1, 2, 147, 483, 647]
-        for num in nums:
-            x = int("{0:b}".format(num))
-            print("*********{}".format(x))
-            a = Test.solution(x)
-            print("-------------------{}".format(a))
-        return Response({"THIS HAS BEEN RETURNED"}, status.HTTP_200_OK)
-
-    @staticmethod
-    def solution(n):
-        # write your code in Python 3.6
-        x = (str(n).split("01"))
-        print("-----***-----{}".format(x))
-        if max(x) is '' or '10':
-            return 0
-        return len(max(x))
 
 
 class TeamsAllView(ListAPIView):

@@ -45,16 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # created apps
-    'south_fitness_server.apps.text_process',
-    'south_fitness_server.apps.mpesa',
-    'south_fitness_server.apps.appointments',
     'south_fitness_server.apps.notifications',
     'south_fitness_server.apps.support',
     'south_fitness_server.apps.videos',
     'south_fitness_server.apps.profiles',
     'south_fitness_server.apps.fcm',
     'south_fitness_server.apps.staff',
-    'south_fitness_server.apps.accounts',
     'south_fitness_server.apps.authentication',
     'south_fitness_server.apps.teams',
 

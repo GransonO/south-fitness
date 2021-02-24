@@ -72,7 +72,6 @@ class Profiles(views.APIView):
         passed_data = request.data
         # Check This later
         try:
-
             participant = ProfilesDB.objects.get(email=passed_data["email"])
             serializer = ProfileSerializer(
                 participant, data=passed_data, partial=True)
