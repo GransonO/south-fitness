@@ -169,6 +169,7 @@ class Login(views.APIView):
             if passed_user.exists():
 
                 user = User.objects.filter(username=username).first()
+                xfactor = ProfilesDB.objects.filter(email=passed_data["email"]).first()
                 profile = ProfilesDB.objects.filter(email=passed_data["email"])
                 if user is None:
                     raise exceptions.AuthenticationFailed('user not found')
@@ -183,7 +184,7 @@ class Login(views.APIView):
                     return response
 
                 serialized_user = UserSerializer(user).data
-                serialized_profile = ProfileSerializer(profile).data
+                serialized_profile = ProfileSerializer(xfactor).data
 
                 access_token = generate_access_token(user)
                 refresh_token = generate_refresh_token(user)
