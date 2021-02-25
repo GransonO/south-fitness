@@ -13,6 +13,7 @@ class VideosDB(models.Model):
     views_count = models.IntegerField(default=0)
     type = models.CharField(max_length=250, default='non')
     session_id = models.CharField(max_length=250, default='non')
+    duration = models.CharField(max_length=250, default='10 mins')
     isScheduled = models.BooleanField(default=False)
     scheduledTime = models.DateTimeField(null=True)
     isComplete = models.BooleanField(default=False)

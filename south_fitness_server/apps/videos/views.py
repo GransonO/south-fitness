@@ -32,7 +32,8 @@ class Videos(views.APIView):
                 views_count=passed_data["views_count"],
                 type=passed_data["type"],
                 session_id=passed_data["session_id"],
-                image_url=passed_data["image_url"]
+                image_url=passed_data["image_url"],
+                duration=passed_data["duration"]
             )
             video_data.save()
             # staffData = StaffDB.objects.filter()

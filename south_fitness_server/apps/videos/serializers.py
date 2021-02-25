@@ -18,6 +18,7 @@ class VideoSerializer(ModelSerializer):
             "type",
             "session_id",
             "isScheduled",
+            "duration",
             "scheduledTime",
             "isComplete",
             "isLive",
