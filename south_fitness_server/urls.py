@@ -25,6 +25,7 @@ from .apps.staff import urls as staffUrls
 from .apps.authentication import urls as authUrls
 from .apps.videos import urls as videoUrls
 from .apps.teams import urls as teamsUrls
+from .apps.blogs import urls as blogsUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -68,4 +69,9 @@ urlpatterns = [
         'team/',
         include(teamsUrls),
         name="teams"),
+
+    path(
+        'blog/',
+        include(blogsUrls),
+        name="blog"),
 ]
