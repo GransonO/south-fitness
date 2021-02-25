@@ -9,12 +9,14 @@ class VideosDB(models.Model):
     title = models.CharField(max_length=250, default='non')
     details = models.CharField(max_length=1050, default='non')
     video_url = models.CharField(max_length=1050, default='non')
+    image_url = models.CharField(max_length=1050, default='non')
     views_count = models.IntegerField(default=0)
     type = models.CharField(max_length=250, default='non')
     session_id = models.CharField(max_length=250, default='non')
     isScheduled = models.BooleanField(default=False)
     scheduledTime = models.DateTimeField(null=True)
     isComplete = models.BooleanField(default=False)
+    isLive = models.BooleanField(default=False)
 
     participants = models.CharField(max_length=5000, null=True)
 
