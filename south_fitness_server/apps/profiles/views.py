@@ -97,6 +97,7 @@ class Profiles(views.APIView):
 
 class ProfilesAllView(ListAPIView):
     """Get a user specific appointments"""
+    permission_classes = [AllowAny]
     serializer_class = ProfileSerializer
 
     def get_queryset(self):
@@ -105,6 +106,7 @@ class ProfilesAllView(ListAPIView):
 
 class ProfileSpecificView(ListAPIView):
     """Get a user specific appointments"""
+    permission_classes = [AllowAny]
     serializer_class = ProfileSerializer
 
     def get_queryset(self):

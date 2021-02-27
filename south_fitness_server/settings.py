@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'south_fitness_server.apps.blogs',
     'south_fitness_server.apps.authentication',
     'south_fitness_server.apps.teams',
+    'south_fitness_server.apps.challenges',
 
     # third party apps
     'corsheaders',
