@@ -80,6 +80,7 @@ class Challenges(views.APIView):
 
 class ChallengesAllView(ListAPIView):
     """Get a user specific appointments"""
+    permission_classes = [AllowAny]
     serializer_class = ChallengeSerializer
 
     def get_queryset(self):
@@ -88,6 +89,7 @@ class ChallengesAllView(ListAPIView):
 
 class ChallengeSpecificView(ListAPIView):
     """Get a user specific appointments"""
+    permission_classes = [AllowAny]
     serializer_class = ChallengeSerializer
 
     def get_queryset(self):
