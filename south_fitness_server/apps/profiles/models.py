@@ -11,6 +11,10 @@ class ProfilesDB(models.Model):
     team = models.CharField(max_length=250, default='non')
 
     gender = models.CharField(max_length=250, default='non')
+    image = models.CharField(
+        max_length=1250,
+        default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1611063420/jade/profiles/avatar.jpg'
+    )
     height = models.FloatField(default=0.0)
     weight = models.FloatField(default=0.0)
 

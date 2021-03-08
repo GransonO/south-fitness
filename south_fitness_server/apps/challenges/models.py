@@ -22,3 +22,7 @@ class MvtChallenge(models.Model):
         """ String representation of db object """
         return 'team : {} ,user_id: {}'.format(
             self.team, self.user_id)
+
+
+class GroupedPerformance(models.Model):
+    """User combined performance"""
