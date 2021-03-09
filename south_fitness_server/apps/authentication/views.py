@@ -104,21 +104,22 @@ class Register(views.APIView):
 
     @staticmethod
     def send_email(email, name, code):
+        print("----------------------------------------- Resetting password")
         subject = 'Welcome {} to South Fitness'.format(name)
         body = 'Your path to wellness starts here. Use activation code: {} to activate your account.'.format(code)
         message = """
                     <html>
                     <head></head>
                     <body>
-                        <h2>Well hello there enthusiast</h2>
+                        <h5>Well hello there enthusiast</h5>
                         <p>{}</p>
-                        <h5>For you</h5>
+                        <h5>South Fitness</h5>
                     </body>
                     </html>
                     """.format(body)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
-        send_mail(subject, message, email_from, recipient_list)
+        send_mail(subject, message, email_from, recipient_list, html_message=message)
 
 
 class Login(views.APIView):
@@ -349,12 +350,12 @@ class ResetPass(views.APIView):
                     <html>
                     <head></head>
                     <body>
-                        <h2>Well hello there enthusiast</h2>
+                        <h5>Well hello there enthusiast</h5>
                         <p>{}</p>
-                        <h5>For you</h5>
+                        <h5>South Fitness</h5>
                     </body>
                     </html>
                     """.format(body)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
-        send_mail(subject, message=body, from_email=email_from, recipient_list=recipient_list, html_message=message)
+        send_mail(subject, message, email_from, recipient_list, html_message=message)
