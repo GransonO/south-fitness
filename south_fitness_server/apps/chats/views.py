@@ -119,7 +119,7 @@ class Groups(views.APIView):
                 group_id=channel_uuid,
                 creator_name=passedData["creator_name"],
                 group_slogan=passedData["group_slogan"],
-                channel_id=channel_uuid
+                channel_id=channel_uuid,
             )
             group_data.save()
             return Response({

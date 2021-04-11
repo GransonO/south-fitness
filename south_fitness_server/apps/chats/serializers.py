@@ -29,5 +29,6 @@ class GroupSerializer(ModelSerializer):
                 "creator_name",
                 "group_slogan",
                 "channel_id",
+                "group_image",
                 "createdAt",
         ]
