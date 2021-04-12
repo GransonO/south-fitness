@@ -13,7 +13,7 @@ class ProfilesDB(models.Model):
     gender = models.CharField(max_length=250, default='non')
     image = models.CharField(
         max_length=1250,
-        default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1611063420/jade/profiles/avatar.jpg'
+        default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1618227174/South_Fitness/profile_images/GREEN_AVATAR.jpg'
     )
     height = models.FloatField(default=0.0)
     weight = models.FloatField(default=0.0)
@@ -21,6 +21,8 @@ class ProfilesDB(models.Model):
     goal = models.CharField(max_length=550, default='non')
     discipline = models.CharField(max_length=550, default='non')
     workout_duration = models.CharField(max_length=550, default='non')
+    user_type = models.CharField(max_length=100, default='user')
+    institution = models.CharField(max_length=100, default='SOUTH_FITNESS')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)
