@@ -3,7 +3,7 @@ from django.db import models
 
 class VideosDB(models.Model):
 
-    video_id = models.CharField(unique=True, max_length=250)
+    video_id = models.CharField(unique=True, max_length=550)
     uploaded_by = models.CharField(max_length=250, default='non')
     instructor = models.CharField(max_length=250, default='non')
     title = models.CharField(max_length=250, default='non')
@@ -11,8 +11,8 @@ class VideosDB(models.Model):
     video_url = models.CharField(max_length=1050, default='non')
     image_url = models.CharField(max_length=1050, default='non')
     views_count = models.IntegerField(default=0)
-    type = models.CharField(max_length=250, default='non')
-    session_id = models.CharField(max_length=250, default='non')
+    type = models.CharField(max_length=550, default='non')
+    session_id = models.CharField(max_length=550, default='non')
     duration = models.CharField(max_length=250, default='10 mins')
     isScheduled = models.BooleanField(default=False)
     scheduledTime = models.TimeField(null=True)
