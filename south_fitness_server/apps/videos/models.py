@@ -15,7 +15,8 @@ class VideosDB(models.Model):
     session_id = models.CharField(max_length=250, default='non')
     duration = models.CharField(max_length=250, default='10 mins')
     isScheduled = models.BooleanField(default=False)
-    scheduledTime = models.DateTimeField(null=True)
+    scheduledTime = models.TimeField(null=True)
+    scheduledDate = models.DateField(null=True)
     isComplete = models.BooleanField(default=False)
     isLive = models.BooleanField(default=False)
 

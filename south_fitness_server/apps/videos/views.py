@@ -1,4 +1,6 @@
 # Create your views here.
+import uuid
+
 import bugsnag
 from rest_framework import views,  status
 from rest_framework.response import Response
@@ -20,29 +22,27 @@ class Videos(views.APIView):
     def post(request):
         """ Add appointment to DB """
         passed_data = request.data
+
+        video_uuid = uuid.uuid1()
+        session_uuid = uuid.uuid1()
         try:
             # Save data to DB
             video_data = VideosDB(
-                video_id=passed_data["video_id"],
+                video_id=video_uuid,
                 uploaded_by=passed_data["uploaded_by"],
                 instructor=passed_data["instructor"],
                 title=passed_data["title"],
                 details=passed_data["details"],
                 video_url=passed_data["video_url"],
-                views_count=passed_data["views_count"],
                 type=passed_data["type"],
-                session_id=passed_data["session_id"],
+                session_id=session_uuid,
                 image_url=passed_data["image_url"],
-                duration=passed_data["duration"]
+                duration=passed_data["duration"],
+                scheduledTime=passed_data["scheduledTime"],
+                scheduledDate=passed_data["scheduledDate"]
             )
             video_data.save()
-            # staffData = StaffDB.objects.filter()
-            # allTokens = []
-            # for x in staffData:
-            #     allTokens.append(x.staffToken)
-            #
-            # message = "A new support has been posted"
-            # Support.notifyStaff(allTokens, message)
+
             return Response({
                 "status": "success",
                 "code": 1
