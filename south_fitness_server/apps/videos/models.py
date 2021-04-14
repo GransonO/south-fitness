@@ -20,7 +20,7 @@ class VideosDB(models.Model):
     isComplete = models.BooleanField(default=False)
     isLive = models.BooleanField(default=False)
 
-    participants = models.CharField(max_length=5000, null=True)
+    participants = models.CharField(max_length=5000, default='non')
 
     video_call_id = models.CharField(max_length=5000, null=True)
     video_call_token = models.CharField(max_length=5000, null=True)

@@ -1,11 +1,15 @@
 # Create your views here.
+import os
 import uuid
-
+import time
 import bugsnag
+
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
+
+from .agora.RtcTokenBuilder import RtcTokenBuilder, Role_Attendee
 from .models import VideosDB
 from .serializers import VideoSerializer
 import requests
@@ -133,3 +137,29 @@ class VideoSpecificView(ListAPIView):
         return VideosDB.objects.filter(
             video_id=self.kwargs['video_id']
             ).order_by('createdAt')
+
+
+class TokenGenerator(views.APIView):
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def post(request):
+        passed_data = request.data
+        app_id = 'ecfc8ba2d43744588161f36ff1c71cfc'
+        app_certificate = '8c5f930076ca44108b93099d06020376'
+        channel_name = passed_data["channel_name"]
+        user_account = passed_data["username"]
+        expire_time_in_seconds = 3600
+        current_timestamp = int(time.time())
+        privilege_expired_ts = current_timestamp + expire_time_in_seconds
+
+        token = RtcTokenBuilder.buildTokenWithAccount(
+            app_id, app_certificate, channel_name, user_account, Role_Attendee, privilege_expired_ts)
+
+        VideosDB.objects.filter(
+            video_id=passed_data["video_id"]).update(
+            video_call_id=app_id,
+            video_call_token=token,
+            video_channel_name=channel_name
+        )
+        return Response({'token': token, 'appID': app_id}, status.HTTP_200_OK)

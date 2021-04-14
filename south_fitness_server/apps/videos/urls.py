@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (Videos, VideoAllView, VideoSpecificView)
+from .views import (Videos, VideoAllView, VideoSpecificView, TokenGenerator)
 
 urlpatterns = [
     path('',
@@ -15,5 +15,10 @@ urlpatterns = [
     path('all/',
          VideoAllView.as_view(),
          name="all_videos"
+         ),
+
+    path('access_token/',
+         TokenGenerator.as_view(),
+         name="Generate Token"
          )
 ]
