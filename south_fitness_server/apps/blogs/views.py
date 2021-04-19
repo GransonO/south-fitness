@@ -80,7 +80,7 @@ class BlogAllView(ListAPIView):
     serializer_class = BlogSerializer
 
     def get_queryset(self):
-        return BlogsDB.objects.filter().order_by('createdAt')
+        return BlogsDB.objects.filter().order_by('-createdAt')
 
 
 class BlogSpecificView(ListAPIView):
@@ -91,4 +91,4 @@ class BlogSpecificView(ListAPIView):
     def get_queryset(self):
         return BlogsDB.objects.filter(
             blog_id=self.kwargs['blog_id']
-            ).order_by('createdAt')
+            ).order_by('-createdAt')

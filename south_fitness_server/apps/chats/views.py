@@ -85,7 +85,7 @@ class ChatsAllView(ListAPIView):
     serializer_class = ChatSerializer
 
     def get_queryset(self):
-        return ChatDB.objects.filter(group_id=self.kwargs['group_id']).order_by('createdAt')
+        return ChatDB.objects.filter(group_id=self.kwargs['group_id']).order_by('-createdAt')
 
 
 class ChatSpecificView(ListAPIView):
@@ -173,7 +173,7 @@ class GroupsAllView(ListAPIView):
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        return GroupsDB.objects.filter().order_by('createdAt')
+        return GroupsDB.objects.filter().order_by('-createdAt')
 
 
 class AllGroups(ListAPIView):

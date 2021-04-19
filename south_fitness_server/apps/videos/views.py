@@ -125,7 +125,7 @@ class VideoAllView(ListAPIView):
     serializer_class = VideoSerializer
 
     def get_queryset(self):
-        return VideosDB.objects.filter().order_by('createdAt')
+        return VideosDB.objects.filter().order_by('-createdAt')
 
 
 class VideoSpecificView(ListAPIView):
