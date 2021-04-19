@@ -9,6 +9,7 @@ class BlogSerializer(ModelSerializer):
         fields = [
             "blog_id",
             "uploaded_by",
+            "uploader_id",
             "title",
             "body",
             "uploader_id",
