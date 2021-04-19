@@ -11,6 +11,8 @@ class BlogsDB(models.Model):
     body = models.CharField(max_length=5050, default='non')
     image_url = models.CharField(max_length=1050, default='non')
     views_count = models.IntegerField(default=0)
+    likes_count = models.IntegerField(default=0)
+    comments_count = models.IntegerField(default=0)
     reading_duration = models.CharField(max_length=250, default='10 mins')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)

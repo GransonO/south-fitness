@@ -16,5 +16,7 @@ class BlogSerializer(ModelSerializer):
             "image_url",
             "views_count",
             "reading_duration",
+            "likes_count",
+            "comments_count",
             "updatedAt"
         ]
