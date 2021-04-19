@@ -6,6 +6,7 @@ class BlogsDB(models.Model):
 
     blog_id = models.CharField(unique=True, max_length=250)
     uploaded_by = models.CharField(max_length=250, default='non')
+    uploader_id = models.CharField(max_length=250, default='non')
     title = models.CharField(max_length=250, default='non')
     body = models.CharField(max_length=5050, default='non')
     image_url = models.CharField(max_length=1050, default='non')

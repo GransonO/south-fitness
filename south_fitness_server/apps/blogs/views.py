@@ -22,6 +22,7 @@ class Blog(views.APIView):
             blog_data = BlogsDB(
                 blog_id=passed_data["blog_id"],
                 uploaded_by=passed_data["uploaded_by"],
+                uploader_id=passed_data["uploaded_by"],
                 title=passed_data["title"],
                 body=passed_data["body"],
                 image_url=passed_data["image_url"],

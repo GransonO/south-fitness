@@ -8,6 +8,7 @@ class ProfilesDB(models.Model):
     email = models.CharField(unique=True, max_length=250, default='non')
     birthDate = models.DateTimeField(default=datetime.now)
     activation_code = models.CharField(max_length=250, default='non')
+    user_id = models.CharField(max_length=350, default='non')
     team = models.CharField(max_length=250, default='non')
 
     gender = models.CharField(max_length=250, default='non')

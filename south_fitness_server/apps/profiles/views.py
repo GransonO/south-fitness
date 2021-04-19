@@ -1,4 +1,6 @@
 # Create your views here.
+import uuid
+
 import bugsnag
 from rest_framework import views,  status
 from rest_framework.response import Response
@@ -36,6 +38,7 @@ class Profiles(views.APIView):
                 profile_data = ProfilesDB(
                         fullname=passed_data["fullname"],
                         email=passed_data["email"],
+                        user_id=uuid.uuid1(),
                         # birthDate=passed_data["birthDate"],
                         activation_code=passed_data["activation_code"],
                         team=passed_data["team"].upper(),
