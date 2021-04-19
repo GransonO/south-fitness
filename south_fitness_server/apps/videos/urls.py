@@ -1,10 +1,16 @@
 from django.urls import path
-from .views import (Videos, VideoAllView, VideoSpecificView, TokenGenerator)
+from .views import (Videos, VideoAllView, VideoSpecificView,
+                    TokenGenerator, VideoTrainerSpecific)
 
 urlpatterns = [
     path('',
          Videos.as_view(),
          name="Videos"
+         ),
+
+    path('trainer/<uploader_id>',
+         VideoTrainerSpecific.as_view(),
+         name="trainer_videos"
          ),
 
     path('<video_id>',

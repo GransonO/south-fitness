@@ -5,6 +5,7 @@ class VideosDB(models.Model):
 
     video_id = models.CharField(unique=True, max_length=550)
     uploaded_by = models.CharField(max_length=250, default='non')
+    uploader_id = models.CharField(max_length=350, default='non')
     instructor = models.CharField(max_length=250, default='non')
     title = models.CharField(max_length=250, default='non')
     details = models.CharField(max_length=1050, default='non')

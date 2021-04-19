@@ -8,6 +8,7 @@ class VideoSerializer(ModelSerializer):
         model = VideosDB
         fields = [
             "video_id",
+            "uploader_id",
             "uploaded_by",
             "instructor",
             "title",

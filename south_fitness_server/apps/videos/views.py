@@ -35,6 +35,7 @@ class Videos(views.APIView):
                 video_id=video_uuid,
                 uploaded_by=passed_data["uploaded_by"],
                 instructor=passed_data["instructor"],
+                uploader_id=passed_data["uploader_id"],
                 title=passed_data["title"],
                 details=passed_data["details"],
                 video_url=passed_data["video_url"],
@@ -137,6 +138,17 @@ class VideoSpecificView(ListAPIView):
         return VideosDB.objects.filter(
             video_id=self.kwargs['video_id']
             ).order_by('createdAt')
+
+
+class VideoTrainerSpecific(ListAPIView):
+    """Get a trainer specific"""
+    permission_classes = [AllowAny]
+    serializer_class = VideoSerializer
+
+    def get_queryset(self):
+        return VideosDB.objects.filter(
+            uploader_id=self.kwargs['uploader_id']
+            ).order_by('-createdAt')
 
 
 class TokenGenerator(views.APIView):
