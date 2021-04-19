@@ -15,7 +15,7 @@ urlpatterns = [
          name="Specific Blogs"
          ),
 
-    path('trainer/<uploader_id_id>',
+    path('trainer/<uploader_id>',
          BlogsTrainerSpecific.as_view(),
          name="Trainer Blogs"
          ),
