@@ -11,7 +11,7 @@ class BlogSerializer(ModelSerializer):
             "uploaded_by",
             "title",
             "body",
-            "user_id",
+            "uploader_id",
             "image_url",
             "views_count",
             "reading_duration",
