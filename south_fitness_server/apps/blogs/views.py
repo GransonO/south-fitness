@@ -92,3 +92,14 @@ class BlogSpecificView(ListAPIView):
         return BlogsDB.objects.filter(
             blog_id=self.kwargs['blog_id']
             ).order_by('-createdAt')
+
+
+class BlogsTrainerSpecific(ListAPIView):
+    """Get a trainer specific"""
+    permission_classes = [AllowAny]
+    serializer_class = BlogSerializer
+
+    def get_queryset(self):
+        return BlogsDB.objects.filter(
+            uploader_id=self.kwargs['uploader_id']
+            ).order_by('-createdAt')

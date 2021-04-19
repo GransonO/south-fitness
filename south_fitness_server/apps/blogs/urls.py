@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-     Blog,
+     Blog, BlogsTrainerSpecific,
      BlogAllView, BlogSpecificView
      )
 
@@ -13,6 +13,11 @@ urlpatterns = [
     path('<blog_id>',
          BlogSpecificView.as_view(),
          name="Specific Blogs"
+         ),
+
+    path('trainer/<uploader_id_id>',
+         BlogsTrainerSpecific.as_view(),
+         name="Trainer Blogs"
          ),
 
     path('all/',
