@@ -8,5 +8,5 @@ class ProfileSerializer(ModelSerializer):
         model = ProfilesDB
         fields = [
             "fullname", "email", "birthDate", "activation_code", "team", "image", "gender", "height",
-            "user_id", "weight", "goal", "discipline", "workout_duration", "user_type", "institution"
+            "user_id", "weight", "goal", "discipline", "workout_duration", "user_type", "institution", "createdAt"
         ]
