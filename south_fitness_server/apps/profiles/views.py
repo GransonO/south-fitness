@@ -116,3 +116,14 @@ class ProfileSpecificView(ListAPIView):
         return ProfilesDB.objects.filter(
             email=self.kwargs['email']
             ).order_by('createdAt')
+
+
+class ProfileInstitutionSpecific(ListAPIView):
+    """Get a user specific appointments"""
+    permission_classes = [AllowAny]
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        return ProfilesDB.objects.filter(
+            institution=self.kwargs['institution']
+            ).order_by('createdAt')
