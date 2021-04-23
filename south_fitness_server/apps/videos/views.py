@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 
-from .agora.RtcTokenBuilder import RtcTokenBuilder, Role_Attendee
+from .agora.RtcTokenBuilder import RtcTokenBuilder, Role_Subscriber
 from .models import VideosDB
 from .serializers import VideoSerializer
 import requests
@@ -167,7 +167,7 @@ class TokenGenerator(views.APIView):
         privilege_expired_ts = current_timestamp + expire_time_in_seconds
 
         token = RtcTokenBuilder.buildTokenWithUid(
-            app_id, app_certificate, channel_name, user_account, Role_Attendee, privilege_expired_ts)
+            app_id, app_certificate, channel_name, user_account, Role_Subscriber, privilege_expired_ts)
 
         VideosDB.objects.filter(
             video_id=passed_data["video_id"]).update(
