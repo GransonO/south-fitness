@@ -161,7 +161,7 @@ class TokenGenerator(views.APIView):
         app_id = 'ecfc8ba2d43744588161f36ff1c71cfc'
         app_certificate = '8c5f930076ca44108b93099d06020376'
         channel_name = passed_data["channel_name"]
-        user_account = randint(1, 232)  # passed_data["username"]
+        user_account = passed_data["username"]
         expire_time_in_seconds = 3600
         current_timestamp = int(time.time())
         privilege_expired_ts = current_timestamp + expire_time_in_seconds
