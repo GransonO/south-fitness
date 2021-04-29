@@ -98,6 +98,41 @@ class Profiles(views.APIView):
                 }, status.HTTP_200_OK)
 
 
+class CodeVerify(views.APIView):
+    """Verify User code"""
+    @staticmethod
+    def post(request):
+        """ Add Profiles to DB """
+        passed_data = request.data
+        try:
+            activate = Activation.objects.filter(
+                user_email=passed_data["email"],
+                activation_code=int(passed_data["activation_code"])
+            )
+            if activate.count() < 1:
+                return Response({
+                    "status": "Failed",
+                    "code": 0,
+                    "message": "Update failed, wrong activation code passed"
+                }, status.HTTP_200_OK)
+            else:
+                return Response({
+                    "status": "success",
+                    "code": 1
+                    }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Appointment Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
+
 class ProfilesAllView(ListAPIView):
     """Get a user specific appointments"""
     permission_classes = [AllowAny]

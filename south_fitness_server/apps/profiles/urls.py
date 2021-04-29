@@ -1,12 +1,18 @@
 from django.urls import path
 from .views import (
      Profiles, ProfileInstitutionSpecific,
-     ProfilesAllView, ProfileSpecificView
+     ProfilesAllView, ProfileSpecificView,
+     CodeVerify
      )
 
 urlpatterns = [
     path('',
          Profiles.as_view(),
+         name="profiles"
+         ),
+
+    path('code/verify/',
+         CodeVerify.as_view(),
          name="profiles"
          ),
 
