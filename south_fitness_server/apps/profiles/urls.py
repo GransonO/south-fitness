@@ -11,7 +11,7 @@ urlpatterns = [
          name="profiles"
          ),
 
-    path('code/verify/',
+    path('code/',
          CodeVerify.as_view(),
          name="profiles"
          ),
