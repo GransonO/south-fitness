@@ -100,6 +100,8 @@ class Profiles(views.APIView):
 
 class CodeVerify(views.APIView):
     """Verify User code"""
+    permission_classes = [AllowAny]
+
     @staticmethod
     def post(request):
         """ Add Profiles to DB """
