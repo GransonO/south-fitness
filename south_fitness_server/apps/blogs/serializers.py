@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import BlogsDB
+from .models import BlogsDB, Comments
 
 
 class BlogSerializer(ModelSerializer):
@@ -18,5 +18,19 @@ class BlogSerializer(ModelSerializer):
             "reading_duration",
             "likes_count",
             "comments_count",
+            "updatedAt"
+        ]
+
+
+class CommentsSerializer(ModelSerializer):
+
+    class Meta:
+        model = Comments
+        fields = [
+            "blog_id",
+            "username",
+            "uploader_id",
+            "title",
+            "body",
             "updatedAt"
         ]

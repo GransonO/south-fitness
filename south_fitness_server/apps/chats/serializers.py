@@ -30,5 +30,6 @@ class GroupSerializer(ModelSerializer):
                 "group_slogan",
                 "channel_id",
                 "group_image",
+                "isVerified",
                 "createdAt",
         ]

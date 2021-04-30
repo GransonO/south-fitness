@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
      Blog, BlogsTrainerSpecific,
-     BlogAllView, BlogSpecificView
+     BlogAllView, BlogSpecificView,
+     BlogComments, AllBlogComments
      )
 
 urlpatterns = [
@@ -23,5 +24,15 @@ urlpatterns = [
     path('all/',
          BlogAllView.as_view(),
          name="All Blogs"
+         ),
+
+    path('comments/',
+         BlogComments.as_view(),
+         name="Post Comments"
+         ),
+
+    path('comments/all/',
+         AllBlogComments.as_view(),
+         name="Post Comments"
          )
 ]

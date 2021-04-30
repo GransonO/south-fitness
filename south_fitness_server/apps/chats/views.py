@@ -174,7 +174,7 @@ class GroupsAllView(ListAPIView):
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        return GroupsDB.objects.filter().order_by('-createdAt')
+        return GroupsDB.objects.filter(isVerified=True).order_by('-createdAt')
 
 
 class AllGroups(ListAPIView):
@@ -184,7 +184,7 @@ class AllGroups(ListAPIView):
 
     def get_queryset(self):
         return GroupsDB.objects.filter(
-            is_closed=False
+            is_closed=False, isVerified=True
         ).order_by('createdAt')
 
 
@@ -195,6 +195,7 @@ class InstitutionGroups(ListAPIView):
 
     def get_queryset(self):
         return GroupsDB.objects.filter(
-            is_closed=False, institution=self.kwargs['institute']
+            is_closed=False, institution=self.kwargs['institute'],
+            isVerified=True
         ).order_by('createdAt')
 

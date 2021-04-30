@@ -14,7 +14,7 @@ class ProfilesDB(models.Model):
     gender = models.CharField(max_length=250, default='non')
     image = models.CharField(
         max_length=1250,
-        default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1618227174/South_Fitness/profile_images/GREEN_AVATAR.jpg'
+        default="https://res.cloudinary.com/dolwj4vkq/image/upload/v1619738022/South_Fitness/user__2_.svg"
     )
     height = models.FloatField(default=0.0)
     weight = models.FloatField(default=0.0)
