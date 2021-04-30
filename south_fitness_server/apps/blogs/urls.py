@@ -31,7 +31,7 @@ urlpatterns = [
          name="Post Comments"
          ),
 
-    path('comments/all/',
+    path('comments/all/<blog_id>',
          AllBlogComments.as_view(),
          name="Post Comments"
          )

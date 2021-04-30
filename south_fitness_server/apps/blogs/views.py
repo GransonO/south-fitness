@@ -144,4 +144,6 @@ class AllBlogComments(ListAPIView):
     serializer_class = BlogSerializer
 
     def get_queryset(self):
-        return Comments.objects.filter().order_by('-createdAt')
+        return Comments.objects.filter(
+            blog_id=self.kwargs['blog_id']
+        ).order_by('-createdAt')
