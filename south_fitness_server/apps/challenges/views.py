@@ -121,7 +121,7 @@ class AllRegisteredActivities(views.APIView):
         except Exception as E:
             print("Error: {}".format(E))
             bugsnag.notify(
-                Exception('Video Post: {}'.format(E))
+                Exception('Challenge Post: {}'.format(E))
             )
             return Response({
                 "error": "{}".format(E),
