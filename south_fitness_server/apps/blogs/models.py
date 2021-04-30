@@ -26,12 +26,12 @@ class BlogsDB(models.Model):
 
 class Comments(models.Model):
     """Blog Comments"""
-    blog_id = models.CharField(unique=True, max_length=250)
+    blog_id = models.CharField(max_length=250)
     username = models.CharField(max_length=250, default='non')
     uploader_id = models.CharField(max_length=250, default='non')
     profile_image = models.CharField(
         max_length=550,
-        default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1619738022/South_Fitness/user__2_.svg')
+        default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1619738022/South_Fitness/user.png')
     body = models.CharField(max_length=5050, default='non')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)

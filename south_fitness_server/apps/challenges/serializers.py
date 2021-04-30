@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import MvtChallenge
+from .models import MvtChallenge, JoinedClasses
 
 
 class ChallengeSerializer(ModelSerializer):
@@ -21,4 +21,15 @@ class ChallengeSerializer(ModelSerializer):
 
                 "createdAt",
                 "updatedAt"
+        ]
+
+
+class JoinedClassSerializer(ModelSerializer):
+
+    class Meta:
+        model = JoinedClasses
+        fields = [
+           "video_id",
+            "user_id",
+            "createdAt"
         ]

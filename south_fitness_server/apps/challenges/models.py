@@ -24,5 +24,19 @@ class MvtChallenge(models.Model):
             self.team, self.user_id)
 
 
+class JoinedClasses(models.Model):
+    video_id = models.CharField(max_length=250)
+    user_id = models.CharField(max_length=250, default='non')
+
+    createdAt = models.DateTimeField(auto_now_add=True, null=True)
+    updatedAt = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        """ String representation of db object """
+        return 'video_id : {}'.format(
+            self.video_id)
+
+
 class GroupedPerformance(models.Model):
     """User combined performance"""
+    pass

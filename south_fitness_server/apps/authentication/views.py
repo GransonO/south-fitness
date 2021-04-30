@@ -113,6 +113,7 @@ class Register(views.APIView):
                     <body>
                         <h5>Well hello there enthusiast</h5>
                         <p>{}</p>
+                        <p>Reset your password for your security</p>
                         <h5>South Fitness</h5>
                     </body>
                     </html>
