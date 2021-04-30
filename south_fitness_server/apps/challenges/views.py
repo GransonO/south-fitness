@@ -129,6 +129,25 @@ class AllRegisteredActivities(views.APIView):
                 "code": 0
             }, status.HTTP_200_OK)
 
+    @staticmethod
+    def put(request):
+        passed_data = request.data
+        query = JoinedClasses.objects.filter(video_id=passed_data["video_id"], user_id=passed_data["user_id"],).order_by('createdAt')
+        if query.count() > 0:
+            # user in class
+            return Response({
+                "status": "success",
+                "state": True,
+                "code": 1
+            }, status.HTTP_200_OK)
+        else:
+            # user Not in class
+            return Response({
+                "status": "success",
+                "state": False,
+                "code": 1
+            }, status.HTTP_200_OK)
+
 
 class ChallengesGetAll(ListAPIView):
     """Get a user specific appointments"""
