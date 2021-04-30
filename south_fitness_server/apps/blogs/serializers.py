@@ -30,7 +30,6 @@ class CommentsSerializer(ModelSerializer):
             "blog_id",
             "username",
             "uploader_id",
-            "title",
             "body",
             "profile_image",
             "updatedAt"
