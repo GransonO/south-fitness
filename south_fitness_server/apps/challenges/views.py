@@ -115,6 +115,7 @@ class AllRegisteredActivities(views.APIView):
 
             return Response({
                 "status": "success",
+                "state": True,
                 "code": 1
             }, status.HTTP_200_OK)
 
@@ -126,6 +127,7 @@ class AllRegisteredActivities(views.APIView):
             return Response({
                 "error": "{}".format(E),
                 "status": "failed",
+                "state": False,
                 "code": 0
             }, status.HTTP_200_OK)
 
