@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 from .models import BlogsDB, Comments
-from .serializers import BlogSerializer
+from .serializers import BlogSerializer, CommentsSerializer
 
 
 class Blog(views.APIView):
@@ -118,7 +118,8 @@ class BlogComments(views.APIView):
                 blog_id=passed_data["blog_id"],
                 username=passed_data["username"],
                 uploader_id=passed_data["uploader_id"],
-                body=passed_data["body"]
+                body=passed_data["body"],
+                profile_image=passed_data["user_image"]
             )
             comments_data.save()
             return Response({
@@ -141,7 +142,7 @@ class BlogComments(views.APIView):
 class AllBlogComments(ListAPIView):
     """Get all comments"""
     permission_classes = [AllowAny]
-    serializer_class = BlogSerializer
+    serializer_class = CommentsSerializer
 
     def get_queryset(self):
         return Comments.objects.filter(
