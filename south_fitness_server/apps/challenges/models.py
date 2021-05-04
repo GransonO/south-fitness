@@ -15,6 +15,11 @@ class MvtChallenge(models.Model):
     startTime = models.DateTimeField(auto_now_add=True, null=True)
     endTime = models.DateTimeField(auto_now=True, null=True)
 
+    start_latitude = models.FloatField(default=0.0)
+    start_longitude = models.FloatField(default=0.0)
+    end_latitude = models.FloatField(default=0.0)
+    end_longitude = models.FloatField(default=0.0)
+
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)
 

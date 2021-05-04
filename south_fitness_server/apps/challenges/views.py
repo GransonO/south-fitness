@@ -31,6 +31,10 @@ class Challenges(views.APIView):
                 steps_count=passed_data["steps_count"],
                 distance=passed_data["distance"],
                 caloriesBurnt=passed_data["caloriesBurnt"],
+                start_latitude=passed_data["startLat"],
+                start_longitude=passed_data["startLong"],
+                end_latitude=passed_data["endLat"],
+                end_longitude=passed_data["endLong"],
 
             )
             challenge_data.save()
@@ -134,7 +138,10 @@ class AllRegisteredActivities(views.APIView):
     @staticmethod
     def put(request):
         passed_data = request.data
-        query = JoinedClasses.objects.filter(video_id=passed_data["video_id"], user_id=passed_data["user_id"],).order_by('createdAt')
+        query = JoinedClasses.objects.filter(
+            video_id=passed_data["video_id"],
+            user_id=passed_data["user_id"],
+        ).order_by('createdAt')
         if query.count() > 0:
             # user in class
             return Response({
