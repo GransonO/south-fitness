@@ -1,5 +1,6 @@
 # Create your views here.
-import random
+from datetime import datetime
+import uuid
 
 import bugsnag
 from rest_framework import views,  status
@@ -22,12 +23,12 @@ class Challenges(views.APIView):
         passed_data = request.data
         try:
             # Save data to DB
-            random_code = random.randint(1, 999999)
             challenge_data = MvtChallenge(
-                challengeId=random_code,
+                challengeId=uuid.uuid1(),
                 challengeType=passed_data["challengeType"],
                 team=passed_data["team"],
                 user_id=passed_data["user_id"],
+                startTime=datetime.strptime(passed_data["startTime"], '%Y-%m-%d %H:%M:%S').date(),
                 steps_count=passed_data["steps_count"],
                 distance=passed_data["distance"],
                 caloriesBurnt=passed_data["caloriesBurnt"],
@@ -35,7 +36,6 @@ class Challenges(views.APIView):
                 start_longitude=passed_data["startLong"],
                 end_latitude=passed_data["endLat"],
                 end_longitude=passed_data["endLong"],
-
             )
             challenge_data.save()
             return Response({
@@ -165,3 +165,26 @@ class ChallengesGetAll(ListAPIView):
 
     def get_queryset(self):
         return JoinedClasses.objects.filter().order_by('createdAt')
+
+
+class TodayChallenges(ListAPIView):
+    """Get a user specific appointments"""
+    permission_classes = [AllowAny]
+    serializer_class = ChallengeSerializer
+
+    def get_queryset(self):
+        current_date = "{}-{}-{} 00:01:00".format(
+            datetime.now().year,
+            datetime.now().month,
+            datetime.now().day
+        )
+
+        now_date = "{}-{}-{} 23:00:00".format(
+            datetime.now().year,
+            datetime.now().month,
+            datetime.now().day,
+        )
+        return MvtChallenge.objects.filter(
+            createdAt__range=[current_date, now_date],
+            user_id=self.kwargs["user_id"]
+        ).order_by('createdAt')

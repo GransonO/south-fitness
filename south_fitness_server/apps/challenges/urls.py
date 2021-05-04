@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    Challenges,
+    Challenges, TodayChallenges,
     ChallengesAllView, ChallengeSpecificView,
     AllRegisteredActivities, ChallengesGetAll)
 
@@ -18,6 +18,11 @@ urlpatterns = [
     path('all/',
          ChallengesAllView.as_view(),
          name="all Challenges"
+         ),
+
+    path('today/<user_id>',
+         TodayChallenges.as_view(),
+         name="Today Challenges"
          ),
 
     path('join/',
