@@ -189,3 +189,46 @@ class TodayChallenges(ListAPIView):
             createdAt__range=[current_date, now_date],
             user_id=self.kwargs["user_id"]
         ).order_by('createdAt')
+
+
+class Participants(views.APIView):
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def post(request):
+        passed_data = request.data
+        members = JoinedClasses.objects.filter(video_id=passed_data["challenge_id"])
+        members_list = list(members)
+        new_list = []
+        dep_list = []
+        for member in members_list:
+            dep_list.append(
+                member.user_department
+            )
+            new_list.append(
+                {
+                    "video_id": member.video_id,
+                    "user_id": member.user_id,
+                    "user_department": member.user_department,
+                }
+            )
+        dep_list = list(dict.fromkeys(dep_list))
+        result_list = []
+
+        for item in dep_list:
+            item_count = 0
+            for x in new_list:
+                if x["user_department"] == item:
+                    item_count = item_count + 1
+
+            result_list.append(
+                {
+                    "name": item,
+                    "count": item_count
+                }
+            )
+
+        return Response({
+            "status": "success",
+            "members_list": result_list
+        }, status.HTTP_200_OK)
