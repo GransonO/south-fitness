@@ -230,5 +230,5 @@ class Participants(views.APIView):
 
         return Response({
             "status": "success",
-            "members_list": result_list
+            "members_list": sorted(result_list, key=lambda k: k['count'], reverse=True)
         }, status.HTTP_200_OK)
