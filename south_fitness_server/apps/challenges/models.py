@@ -32,6 +32,7 @@ class MvtChallenge(models.Model):
 class JoinedClasses(models.Model):
     video_id = models.CharField(max_length=250)
     user_id = models.CharField(max_length=250, default='non')
+    user_department = models.CharField(max_length=250, default='non')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)

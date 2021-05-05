@@ -31,5 +31,6 @@ class JoinedClassSerializer(ModelSerializer):
         fields = [
            "video_id",
             "user_id",
+            "user_department",
             "createdAt"
         ]

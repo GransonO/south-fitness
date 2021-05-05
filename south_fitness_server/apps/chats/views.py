@@ -195,7 +195,8 @@ class InstitutionGroups(ListAPIView):
 
     def get_queryset(self):
         return GroupsDB.objects.filter(
-            is_closed=False, institution=self.kwargs['institute'],
+            is_closed=False,
+            institution=self.kwargs['institute'],
             isVerified=True
         ).order_by('createdAt')
 
