@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (Chat, ChatsAllView, InstitutionGroups,
+from .views import (Chat, ChatsAllView, InstitutionGroups, RegisterGeneralMember,
                     ChatSpecificView, Groups, GroupsAllView, AllGroups)
 
 urlpatterns = [
@@ -36,5 +36,12 @@ urlpatterns = [
     path('groups/all/<institute>',
          InstitutionGroups.as_view(),
          name="InstitutionGroups"
+         ),
+
+    path('general/',
+         RegisterGeneralMember.as_view(),
+         name="RegisterGeneralMember"
          )
+
+
 ]

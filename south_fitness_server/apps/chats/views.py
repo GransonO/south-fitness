@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 from .models import ChatDB
 from .models import GroupsDB
+from .models import GeneralGroupMembers
 from .serializers import ChatSerializer
 from .serializers import GroupSerializer
 
@@ -200,3 +201,63 @@ class InstitutionGroups(ListAPIView):
             isVerified=True
         ).order_by('createdAt')
 
+
+class RegisterGeneralMember(views.APIView):
+    """
+       Register general member
+    """
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def post(request):
+        """ Add group to DB """
+        passed_data = request.data
+        try:
+            # Save data to DB
+            member_data = GeneralGroupMembers(
+                alias=passed_data["alias"],
+                user_id=passed_data["user_id"],
+                email=passed_data["email"],
+            )
+            member_data.save()
+            return Response({
+                "status": "success",
+                "code": 1
+                }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Chat Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
+    @staticmethod
+    def put(request):
+        payload = request.data
+        member = GeneralGroupMembers.objects.filter(user_id=payload["user_id"])
+        members_list = list(member)
+
+        if len(members_list) < 1:
+            return Response(
+                {
+                    "status": False,
+                    "user": "Not registered"
+                },
+                status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {
+                    "status": True,
+                    "message": "Registered",
+                    "alias": members_list[0].alias,
+                    "user_id": members_list[0].user_id,
+                    "email": members_list[0].email
+                },
+                status.HTTP_200_OK
+            )

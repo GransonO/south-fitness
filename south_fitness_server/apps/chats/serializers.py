@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from .models import ChatDB
 from .models import GroupsDB
+from .models import GeneralGroupMembers
 
 
 class ChatSerializer(ModelSerializer):
@@ -32,4 +33,16 @@ class GroupSerializer(ModelSerializer):
                 "group_image",
                 "isVerified",
                 "createdAt",
+        ]
+
+
+class GeneralMemberSerializer(ModelSerializer):
+
+    class Meta:
+        model = GeneralGroupMembers
+        fields = [
+                "alias",
+                "user_id",
+                "email",
+                "createdAt"
         ]

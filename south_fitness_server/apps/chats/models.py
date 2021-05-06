@@ -39,3 +39,17 @@ class GroupsDB(models.Model):
         """ String representation of db object """
         return 'group_id : {} ,group_title: {}'.format(
             self.group_id, self.group_title)
+
+
+class GeneralGroupMembers(models.Model):
+    alias = models.CharField(default=None, max_length=250,)
+    user_id = models.CharField(unique=True, max_length=250,)
+    email = models.CharField(unique=True, max_length=250,)
+
+    createdAt = models.DateTimeField(auto_now_add=True, null=True)
+    updatedAt = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        """ String representation of db object """
+        return 'alias : {} ,user_id: {}'.format(
+            self.alias, self.user_id)
