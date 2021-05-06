@@ -221,18 +221,18 @@ class RegisterGeneralMember(views.APIView):
             )
             member_data.save()
             return Response({
-                "status": "success",
+                "status": True,
                 "code": 1
                 }, status.HTTP_200_OK)
 
         except Exception as E:
             print("Error: {}".format(E))
             bugsnag.notify(
-                Exception('Chat Post: {}'.format(E))
+                Exception('General Member Post: {}'.format(E))
             )
             return Response({
                 "error": "{}".format(E),
-                "status": "failed",
+                "status": False,
                 "code": 0
                 }, status.HTTP_200_OK)
 
