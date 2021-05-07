@@ -235,7 +235,7 @@ class Participants(views.APIView):
         }, status.HTTP_200_OK)
 
     @staticmethod
-    def get():
+    def get(request):
         members = JoinedClasses.objects.filter()
         members_list = list(members)
         new_list = []
