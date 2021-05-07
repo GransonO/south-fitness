@@ -262,20 +262,12 @@ class ResetPass(views.APIView):
             result = Reset.objects.filter(user_email=passed_data["email"])
             print("--------------------------------{}".format(result.count()))
             if result.count() < 1:
-                # Save data to DB
-                print("--------------------------------Added to DB")
-                random_code = random.randint(1000, 9999)
-                reset_data = Reset(
-                    reset_code=random_code,
-                    user_email=passed_data["email"],
-                )
-                reset_data.save()
-                ResetPass.send_email(passed_data["email"], random_code)
+                # User does not exist
                 return Response({
-                    "status": "reset success",
-                    "code": 1,
-                    "success": True
-                    }, status.HTTP_200_OK)
+                    "status": "reset failed",
+                    "code": 0,
+                    "success": False
+                }, status.HTTP_200_OK)
             else:
                 # Update Reset
                 print("------------------------------Updated")
