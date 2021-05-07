@@ -309,5 +309,6 @@ class Participants(views.APIView):
 
         return Response({
             "status": "success",
+            "team": passed_data["user_department"],
             "members_list": sorted(result_list, key=lambda k: k['count'], reverse=True)
         }, status.HTTP_200_OK)
