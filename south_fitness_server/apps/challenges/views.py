@@ -235,7 +235,7 @@ class Participants(views.APIView):
         }, status.HTTP_200_OK)
 
     @staticmethod
-    def get(request):
+    def get():
         members = JoinedClasses.objects.filter()
         members_list = list(members)
         new_list = []
@@ -258,6 +258,46 @@ class Participants(views.APIView):
             item_count = 0
             for x in new_list:
                 if x["user_department"] == item:
+                    item_count = item_count + 1
+
+            result_list.append(
+                {
+                    "name": item,
+                    "count": item_count
+                }
+            )
+
+        return Response({
+            "status": "success",
+            "members_list": sorted(result_list, key=lambda k: k['count'], reverse=True)
+        }, status.HTTP_200_OK)
+
+    @staticmethod
+    def put(request):
+        passed_data = request.data
+        members = JoinedClasses.objects.filter(user_department=passed_data["user_department"])
+        members_list = list(members)
+        new_list = []
+        user_list = []
+        for member in members_list:
+            user_list.append(
+                member.username
+            )
+            new_list.append(
+                {
+                    "video_id": member.video_id,
+                    "user_id": member.user_id,
+                    "user_department": member.user_department,
+                    "username": member.username,
+                }
+            )
+        user_list = list(dict.fromkeys(user_list))
+        result_list = []
+
+        for item in user_list:
+            item_count = 0
+            for x in new_list:
+                if x["username"] == item:
                     item_count = item_count + 1
 
             result_list.append(
