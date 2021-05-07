@@ -114,6 +114,7 @@ class AllRegisteredActivities(views.APIView):
             video_data = JoinedClasses(
                 video_id=passed_data["video_id"],
                 user_id=passed_data["user_id"],
+                username=passed_data["username"],
                 user_department=passed_data["user_department"]
             )
             video_data.save()
