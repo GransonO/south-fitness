@@ -1,9 +1,9 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import BlogsDB, Comments
 
 
-class BlogSerializer(ModelSerializer):
-
+class BlogSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
     class Meta:
         model = BlogsDB
         fields = [
@@ -22,7 +22,7 @@ class BlogSerializer(ModelSerializer):
         ]
 
 
-class CommentsSerializer(ModelSerializer):
+class CommentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comments

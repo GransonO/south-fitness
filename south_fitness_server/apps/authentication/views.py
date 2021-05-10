@@ -104,20 +104,8 @@ class Register(views.APIView):
 
     @staticmethod
     def send_email(email, name, code):
-        print("----------------------------------------- Resetting password")
         subject = 'Welcome {} to South Fitness'.format(name)
-        body = 'Your path to wellness starts here. Use activation code: {} to activate your account.'.format(code)
-        message = """
-                    <html>
-                    <head></head>
-                    <body>
-                        <h5>Well hello there enthusiast</h5>
-                        <p>{}</p>
-                        <p>Reset your password for your security</p>
-                        <h5>South Fitness</h5>
-                    </body>
-                    </html>
-                    """.format(body)
+        message = EmailTemplates.register_email(name, code)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
         send_mail(subject, message, email_from, recipient_list, html_message=message)
@@ -338,17 +326,66 @@ class ResetPass(views.APIView):
     def send_email(email, code):
         print("----------------------------------------- Resetting password")
         subject = 'Password reset'
-        body = 'We received a request to reset your password. If you made the request, use the code {} to complete the process'.format(code)
-        message = """
-                    <html>
-                    <head></head>
-                    <body>
-                        <h5>Well hello there enthusiast</h5>
-                        <p>{}</p>
-                        <h5>South Fitness</h5>
-                    </body>
-                    </html>
-                    """.format(body)
+        message = EmailTemplates.reset_email(code)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
         send_mail(subject, message, email_from, recipient_list, html_message=message)
+
+
+class EmailTemplates:
+
+    @staticmethod
+    def register_email(name, code):
+        return """
+        <!DOCTYPE html>
+            <html lang="en">
+                <body style="text-align:center;">
+                    <img alt="Image" border="0" src="https://res.cloudinary.com/dolwj4vkq/image/upload/v1618138330/South_Fitness/ic_launcher.png" title="Image" width="300"/>
+                    </br>
+                    </br>
+                    <div style="color:#FFA500;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;line-height:1.2;padding-top:0px;padding-right:0px;padding-bottom:5px;padding-left:0px;">
+                        <div style="font-size: 12px; line-height: 1.2; font-family: 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; color: #FFA500; mso-line-height-alt: 14px;">
+                            <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="font-size: 18px;"><strong><span style="font-size: 18px;">Well hello {}</span></strong></span></p>
+                        </div>
+                    </div>
+                    <div style="color:#555555;font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Geneva, Verdana, sans-serif;line-height:1.2;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
+                        <div style="font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Geneva, Verdana, sans-serif; font-size: 12px; line-height: 1.2; color: #555555; mso-line-height-alt: 14px;">
+                            <p style="font-size: 17px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> Your path to wellness starts here.  </p>
+                            <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> </p>
+                            <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> You have been invited to the South Fitness Training Program</p>
+                            <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> </p>
+                            <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> Use activation code: {} to activate your account.</p>
+                            </br>
+                            <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> Your one time password is <strong>12345</strong>. </br> Kindly update it once you access your account</p>
+                            </br>
+                            <p style="font-size: 24px; line-height: 1.2; text-align: center; mso-line-height-alt: 29px; margin: 0;"><span style="font-size: 24px;">Welcome</span></p>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        """.format(name, code)
+
+    @staticmethod
+    def reset_email(code):
+        return """
+            <!DOCTYPE html>
+            <html lang="en">
+            <body style="text-align:center;">
+                <img alt="Image" border="0" src="https://res.cloudinary.com/dolwj4vkq/image/upload/v1618138330/South_Fitness/ic_launcher.png" title="Image" width="300"/>
+                <br>
+                <br>
+                <div style="color:#FFA500;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;line-height:1.2;padding-top:0px;padding-right:0px;padding-bottom:5px;padding-left:0px;">
+                    <div style="font-size: 12px; line-height: 1.2; font-family: 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; color: #FFA500; mso-line-height-alt: 14px;">
+                        <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 22px; margin: 0;"><span style="font-size: 18px;"><strong><span style="font-size: 18px;">Did you requested to have your password changed?</span></strong></span></p>
+                    </div>
+                </div>
+                <br>
+                <div style="color:#555555;font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Geneva, Verdana, sans-serif;line-height:1.2;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
+                    <div style="font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Geneva, Verdana, sans-serif; font-size: 12px; line-height: 1.2; color: #555555; mso-line-height-alt: 14px;">
+                        <p style="font-size: 15px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;">We received a request to reset your password. If you made the request, use the code <strong>{}</strong> to complete the process</p>
+                        <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> </p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        """.format(code)
