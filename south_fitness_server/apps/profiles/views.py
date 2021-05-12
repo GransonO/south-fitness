@@ -35,10 +35,11 @@ class Profiles(views.APIView):
                 }, status.HTTP_200_OK)
             else:
                 # Save data to DB
+                user_reg_id = uuid.uuid1()
                 profile_data = ProfilesDB(
                         fullname=passed_data["fullname"],
                         email=passed_data["email"],
-                        user_id=uuid.uuid1(),
+                        user_id=user_reg_id,
                         # birthDate=passed_data["birthDate"],
                         activation_code=passed_data["activation_code"],
                         team=passed_data["team"].upper(),
@@ -56,6 +57,7 @@ class Profiles(views.APIView):
                 profile_data.save()
                 return Response({
                     "status": "success",
+                    "user_id": user_reg_id,
                     "code": 1
                     }, status.HTTP_200_OK)
 
