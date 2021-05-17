@@ -3,8 +3,7 @@ import os
 import uuid
 import time
 import bugsnag
-from random import randint
-
+from datetime import date
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -122,6 +121,15 @@ class Videos(views.APIView):
 
 
 class VideoAllView(ListAPIView):
+    """Get a user specific appointments"""
+    permission_classes = [AllowAny]
+    serializer_class = VideoSerializer
+
+    def get_queryset(self):
+        return VideosDB.objects.filter(scheduledDate__gt=self.kwargs["yester_date"]).order_by('-createdAt')
+
+
+class VideoAdmin(ListAPIView):
     """Get a user specific appointments"""
     permission_classes = [AllowAny]
     serializer_class = VideoSerializer

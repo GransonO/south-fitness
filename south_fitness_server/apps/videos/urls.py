@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (Videos, VideoAllView, VideoSpecificView,
+from .views import (Videos, VideoAllView, VideoSpecificView, VideoAdmin,
                     TokenGenerator, VideoTrainerSpecific, DateRequest)
 
 urlpatterns = [
@@ -18,8 +18,13 @@ urlpatterns = [
          name="specific_video"
          ),
 
-    path('all/',
+    path('all/<yester_date>',
          VideoAllView.as_view(),
+         name="all_videos from today"
+         ),
+
+    path('admin/all/',
+         VideoAdmin.as_view(),
          name="all_videos"
          ),
 
