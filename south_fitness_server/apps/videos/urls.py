@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (Videos, VideoAllView, VideoSpecificView,
-                    TokenGenerator, VideoTrainerSpecific)
+                    TokenGenerator, VideoTrainerSpecific, DateRequest)
 
 urlpatterns = [
     path('',
@@ -26,5 +26,10 @@ urlpatterns = [
     path('access_token/',
          TokenGenerator.as_view(),
          name="Generate Token"
+         ),
+
+    path('date_request/<date>',
+         DateRequest.as_view(),
+         name="Date request"
          )
 ]

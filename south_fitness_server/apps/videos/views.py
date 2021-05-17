@@ -176,3 +176,11 @@ class TokenGenerator(views.APIView):
             video_channel_name=channel_name
         )
         return Response({'token': token, 'appID': app_id}, status.HTTP_200_OK)
+
+
+class DateRequest(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = VideoSerializer
+
+    def get_queryset(self):
+        return VideosDB.objects.filter(scheduledDate=self.kwargs['date']).order_by('createdAt')

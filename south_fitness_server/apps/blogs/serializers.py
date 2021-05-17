@@ -36,7 +36,8 @@ class BlogSerializer(serializers.ModelSerializer):
             "updatedAt"
         ]
 
-    def get_blog_comments(self, obj):
+    @staticmethod
+    def get_blog_comments(obj):
         return list(
                 Comments.objects.filter(blog_id=obj.blog_id).values()
         )
