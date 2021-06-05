@@ -40,7 +40,7 @@ class Register(views.APIView):
                 user = User.objects.create_user(username=passed_username, password=user_password)
                 user.first_name = passed_data["firstname"]
                 user.last_name = passed_data["lastname"]
-                user.email = passed_data["email"]
+                user.email = passed_data["email"].lower()
 
                 user.save()
                 try:
@@ -49,10 +49,10 @@ class Register(views.APIView):
                     random_code = random.randint(1000, 9999)
                     activation_data = Activation(
                         activation_code=random_code,
-                        user_email=passed_data["email"],
+                        user_email=passed_data["email"].lower(),
                     )
                     activation_data.save()
-                    Register.send_email(passed_data["email"], passed_data["firstname"], random_code)
+                    Register.send_email(passed_data["email"].lower(), passed_data["firstname"], random_code)
                 except Exception as E:
                     print("Activation error: {}".format(E))
                     bugsnag.notify(
@@ -95,7 +95,7 @@ class Register(views.APIView):
         """
         User = get_user_model()
         try:
-            user_exists = User.objects.filter(username=passed_data["email"]).exists()
+            user_exists = User.objects.filter(username=(passed_data["email"]).lower()).exists()
             return user_exists
 
         except Exception as e:
