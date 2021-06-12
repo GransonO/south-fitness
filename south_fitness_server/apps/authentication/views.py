@@ -35,12 +35,12 @@ class Register(views.APIView):
             print("--------------- 1 -----{}".format(user_exists))
             if not user_exists:
                 User = get_user_model()
-                passed_username = passed_data["email"]
+                passed_username = (passed_data["email"]).lower()
                 user_password = passed_data['password']
                 user = User.objects.create_user(username=passed_username, password=user_password)
                 user.first_name = passed_data["firstname"]
                 user.last_name = passed_data["lastname"]
-                user.email = passed_data["email"].lower()
+                user.email = (passed_data["email"]).lower()
 
                 user.save()
                 try:
@@ -49,10 +49,10 @@ class Register(views.APIView):
                     random_code = random.randint(1000, 9999)
                     activation_data = Activation(
                         activation_code=random_code,
-                        user_email=passed_data["email"].lower(),
+                        user_email=(passed_data["email"]).lower(),
                     )
                     activation_data.save()
-                    Register.send_email(passed_data["email"].lower(), passed_data["firstname"], random_code)
+                    Register.send_email((passed_data["email"]).lower(), passed_data["firstname"], random_code)
                 except Exception as E:
                     print("Activation error: {}".format(E))
                     bugsnag.notify(
@@ -150,7 +150,7 @@ class Login(views.APIView):
         try:
 
             User = get_user_model()
-            username = passed_data["email"]
+            username = (passed_data["email"]).lower()
             password = passed_data["password"]
             if (username is None) or (password is None):
                 raise exceptions.AuthenticationFailed(
@@ -159,8 +159,8 @@ class Login(views.APIView):
             if passed_user.exists():
 
                 user = User.objects.filter(username=username).first()
-                xfactor = ProfilesDB.objects.filter(email=passed_data["email"]).first()
-                profile = ProfilesDB.objects.filter(email=passed_data["email"])
+                xfactor = ProfilesDB.objects.filter(email=(passed_data["email"]).lower()).first()
+                profile = ProfilesDB.objects.filter(email=(passed_data["email"]).lower())
                 if user is None:
                     raise exceptions.AuthenticationFailed('user not found')
                 le_user = authenticate(username=username, password=password)
@@ -247,7 +247,7 @@ class ResetPass(views.APIView):
         passed_data = request.data
         try:
             # Check if it exists
-            result = Reset.objects.filter(user_email=passed_data["email"])
+            result = Reset.objects.filter(user_email=(passed_data["email"]).lower())
             print("--------------------------------{}".format(result.count()))
             if result.count() < 1:
                 # User does not exist
@@ -260,10 +260,10 @@ class ResetPass(views.APIView):
                 # Update Reset
                 print("------------------------------Updated")
                 random_code = random.randint(1000, 9999)
-                Reset.objects.filter(user_email=passed_data["email"]).update(
+                Reset.objects.filter(user_email=(passed_data["email"]).lower()).update(
                     reset_code=random_code,
                     )
-                ResetPass.send_email(passed_data["email"], random_code)
+                ResetPass.send_email((passed_data["email"]).lower(), random_code)
                 return Response({
                         "status": "reset success",
                         "code": 1,
@@ -288,7 +288,7 @@ class ResetPass(views.APIView):
         passed_data = request.data
 
         User = get_user_model()
-        username = passed_data["email"]
+        username = (passed_data["email"]).lower()
         password = passed_data["password"]
         reset_code = passed_data["code"]
         response = Response()
