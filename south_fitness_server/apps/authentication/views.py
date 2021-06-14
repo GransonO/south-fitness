@@ -108,6 +108,7 @@ class Register(views.APIView):
         message = EmailTemplates.register_email(name, code)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
+        print("-----subject: {}, message: {}, email_from: {}, recipient_list: {}".format(subject, message, email_from, recipient_list))
         send_mail(subject, message, email_from, recipient_list, html_message=message)
 
 

@@ -35,3 +35,20 @@ class JoinedClassSerializer(ModelSerializer):
             "user_department",
             "createdAt"
         ]
+
+
+class ActivitiesClassSerializer(ModelSerializer):
+
+    class Meta:
+        model = JoinedClasses
+        fields = [
+            "activity_id",
+            "title",
+            "description",
+            "uploaded_by",
+            "image_url",
+            "video_url",
+            "is_active",
+            "createdAt",
+            "updatedAt"
+        ]

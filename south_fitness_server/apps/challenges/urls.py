@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     Challenges, TodayChallenges, Participants,
     ChallengesAllView, ChallengeSpecificView,
-    AllRegisteredActivities, ChallengesGetAll)
+    AllRegisteredActivities, ChallengesGetAll, AllActivitiesView, Activities)
 
 urlpatterns = [
     path('',
@@ -43,6 +43,16 @@ urlpatterns = [
     path('members/',
          Participants.as_view(),
          name="Members in Challenge"
-         )
+         ),
+
+    path('activities/',
+         Activities.as_view(),
+         name="Add, Update, delete activities "
+         ),
+
+    path('all_activities/',
+         AllActivitiesView.as_view(),
+         name="Get all suggested activities"
+         ),
 
 ]

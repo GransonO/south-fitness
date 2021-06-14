@@ -1,9 +1,7 @@
 # Create your views here.
-import os
 import uuid
 import time
 import bugsnag
-from datetime import date
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -87,10 +85,6 @@ class Videos(views.APIView):
 
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         print("message sent : {}".format(x))
-
-    @staticmethod
-    def get(request):
-        pass
 
     @staticmethod
     def put(request):
