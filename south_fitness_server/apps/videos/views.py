@@ -15,9 +15,7 @@ import json
 
 
 class Videos(views.APIView):
-    """
-        Add notifications details and save in DB
-    """
+    """ Add notifications details and save in DB """
     permission_classes = [AllowAny]
 
     @staticmethod
@@ -40,7 +38,6 @@ class Videos(views.APIView):
                 type=passed_data["type"],
                 session_id=session_uuid,
                 isScheduled=passed_data["isScheduled"],
-                isLive=False,
                 image_url=passed_data["image_url"],
                 duration=passed_data["duration"],
                 scheduledTime=passed_data["scheduledTime"],
