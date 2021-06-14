@@ -39,6 +39,8 @@ class Videos(views.APIView):
                 video_url=passed_data["video_url"],
                 type=passed_data["type"],
                 session_id=session_uuid,
+                isScheduled=passed_data["isScheduled"],
+                isLive=False,
                 image_url=passed_data["image_url"],
                 duration=passed_data["duration"],
                 scheduledTime=passed_data["scheduledTime"],
