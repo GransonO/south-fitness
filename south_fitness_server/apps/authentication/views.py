@@ -34,9 +34,11 @@ class Register(views.APIView):
             user_exists = Register.get_user_exist(passed_data)
             print("--------------- 1 -----{}".format(user_exists))
             if not user_exists:
+                password_code = random.randint(10000, 99999)
+
                 User = get_user_model()
                 passed_username = (passed_data["email"]).lower()
-                user_password = passed_data['password']
+                user_password = password_code
                 user = User.objects.create_user(username=passed_username, password=user_password)
                 user.first_name = passed_data["firstname"]
                 user.last_name = passed_data["lastname"]
@@ -52,7 +54,7 @@ class Register(views.APIView):
                         user_email=(passed_data["email"]).lower(),
                     )
                     activation_data.save()
-                    Register.send_email((passed_data["email"]).lower(), passed_data["firstname"], random_code)
+                    Register.send_email((passed_data["email"]).lower(), passed_data["firstname"], random_code, password_code)
                 except Exception as E:
                     print("Activation error: {}".format(E))
                     bugsnag.notify(
@@ -103,9 +105,9 @@ class Register(views.APIView):
             return False
 
     @staticmethod
-    def send_email(email, name, code):
+    def send_email(email, name, code, password):
         subject = 'Welcome {} to South Fitness'.format(name)
-        message = EmailTemplates.register_email(name, code)
+        message = EmailTemplates.register_email(name, code, password)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
         print("-----subject: {}, message: {}, email_from: {}, recipient_list: {}".format(subject, message, email_from, recipient_list))
@@ -336,7 +338,7 @@ class ResetPass(views.APIView):
 class EmailTemplates:
 
     @staticmethod
-    def register_email(name, code):
+    def register_email(name, code, password):
         return """
         <!DOCTYPE html>
             <html lang="en">
@@ -356,7 +358,7 @@ class EmailTemplates:
                             <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> </p>
                             <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> Use activation code: {} to activate your account.</p>
                             </br>
-                            <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> Your one time password is <strong>12345</strong>. </br> Kindly update it once you access your account</p>
+                            <p style="font-size: 14px; line-height: 1.2; mso-line-height-alt: 17px; margin: 0;"> Your one time password is <strong>{}</strong>. </br> Kindly update it once you access your account</p>
                             </br>
                             </br>
                             <p style="font-size: 18px; line-height: 1.2; text-align: center; mso-line-height-alt: 29px; margin: 0;"><span style="font-size: 24px;">Welcome</span></p>
@@ -364,7 +366,7 @@ class EmailTemplates:
                     </div>
                 </body>
             </html>
-        """.format(name, code)
+        """.format(name, code, password)
 
     @staticmethod
     def reset_email(code):
