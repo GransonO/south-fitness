@@ -250,7 +250,7 @@ class ResetPass(views.APIView):
         passed_data = request.data
         try:
             # Check if it exists
-            result = Reset.objects.filter(user_email=(passed_data["email"]).lower())
+            result = ProfilesDB.objects.filter(email=(passed_data["email"]).lower())
             print("--------------------------------{}".format(result.count()))
             if result.count() < 1:
                 # User does not exist
