@@ -268,7 +268,7 @@ class ResetPass(views.APIView):
                 if result.count() < 1:
                     # Reset object does not exist, add reset details
                     add_reset = Reset(
-                        email=(passed_data["email"]).lower(),
+                        user_email=(passed_data["email"]).lower(),
                         reset_code=random_code,
                     )
                     add_reset.save()
