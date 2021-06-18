@@ -263,7 +263,7 @@ class ResetPass(views.APIView):
 
                 random_code = random.randint(1000, 9999)
                 # check if reset before
-                result = Reset.objects.filter(email=(passed_data["email"]).lower())
+                result = Reset.objects.filter(user_email=(passed_data["email"]).lower())
                 print("--------------------------------{}".format(result.count()))
                 if result.count() < 1:
                     # Reset object does not exist, add reset details
