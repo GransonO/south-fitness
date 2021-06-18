@@ -260,12 +260,25 @@ class ResetPass(views.APIView):
                     "success": False
                 }, status.HTTP_200_OK)
             else:
-                # Update Reset
-                print("------------------------------Updated")
+
                 random_code = random.randint(1000, 9999)
-                Reset.objects.filter(user_email=(passed_data["email"]).lower()).update(
-                    reset_code=random_code,
+                # check if reset before
+                result = Reset.objects.filter(email=(passed_data["email"]).lower())
+                print("--------------------------------{}".format(result.count()))
+                if result.count() < 1:
+                    # Reset object does not exist, add reset details
+                    add_reset = Reset(
+                        email=(passed_data["email"]).lower(),
+                        reset_code=random_code,
                     )
+                    add_reset.save()
+                else:
+                    # Update Reset
+                    print("------------------------------Updated")
+                    Reset.objects.filter(user_email=(passed_data["email"]).lower()).update(
+                        reset_code=random_code,
+                        )
+
                 ResetPass.send_email((passed_data["email"]).lower(), random_code)
                 return Response({
                         "status": "reset success",
@@ -276,12 +289,12 @@ class ResetPass(views.APIView):
         except Exception as E:
             print("Error: {}".format(E))
             bugsnag.notify(
-                Exception('ProfilesRef Post: {}'.format(E))
+                Exception('Reset Post: {}'.format(E))
             )
             return Response({
                 # "error": "{}".format(E),
                 "status": "reset failed",
-                "code": 0,
+                "code": 2,
                 "success": False
                 }, status.HTTP_200_OK)
 
