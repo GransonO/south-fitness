@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 
 from .agora.RtcTokenBuilder import RtcTokenBuilder, Role_Subscriber
-from .models import VideosDB, ActivitiesDB, JoinedVidsActs
+from .models import VideosDB, ActivitiesDB, JoinedVidsActs, VidsARatings
 from .serializers import VideoSerializer, ActivitySerializer
 import requests
 import json
@@ -60,6 +60,35 @@ class Videos(views.APIView):
                 "status": "failed",
                 "code": 0
                 }, status.HTTP_200_OK)
+
+    @staticmethod
+    def put(request):
+        passed_data = request.data
+        try:
+            rate_data = VidsARatings(
+                activity_id=passed_data["activity_id"],
+                user_id=passed_data["user_id"],
+                user_department=passed_data["user_department"],
+                username=passed_data["username"],
+                trainer_rating=passed_data["trainer_rating"],
+                activity_rating=passed_data["activity_rating"],
+            )
+            rate_data.save()
+            return Response({
+                "status": "success",
+                "code": 1
+            }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Rating Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+            }, status.HTTP_200_OK)
 
     @staticmethod
     def notify_staff(all_tokens, message):

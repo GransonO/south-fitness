@@ -36,6 +36,23 @@ class VideosDB(models.Model):
             self.title, self.type)
 
 
+class VidsARatings(models.Model):
+    activity_id = models.CharField(max_length=250)
+    user_id = models.CharField(max_length=250, default='non')
+    user_department = models.CharField(max_length=250, default='non')
+    username = models.CharField(max_length=250, default='non')
+    trainer_rating = models.FloatField(default=0.0)
+    activity_rating = models.FloatField(default=0.0)
+
+    createdAt = models.DateTimeField(auto_now_add=True, null=True)
+    updatedAt = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        """ String representation of db object """
+        return 'activity_id : {}'.format(
+            self.activity_id)
+
+
 class ActivitiesDB(models.Model):
 
     activity_id = models.CharField(unique=True, max_length=550)
