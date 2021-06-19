@@ -85,33 +85,6 @@ class Videos(views.APIView):
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         print("message sent : {}".format(x))
 
-    @staticmethod
-    def put(request):
-        passedData = request.data
-        try:
-            vid_data = VideosDB.objects.get(video_id=passedData["video_id"])
-
-            VideosDB.objects.filter(
-                video_id=passedData["video_id"]).update(
-                    views_count=vid_data.views_count + 1,
-                    participants="{},{}".format(vid_data.participants, passedData["team"].upper())
-                    )
-            return Response({
-                    "status": "success",
-                    "code": 1
-                    }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('Update Videos count: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "code": 0
-                }, status.HTTP_200_OK)
-
 
 class VideoAllView(ListAPIView):
     """Get a user specific appointments"""
@@ -266,14 +239,20 @@ class Activities(views.APIView):
         passed_data = request.data
 
         try:
-            # Save data to DB
-            joined_data = JoinedVidsActs(
+            # Check if user in class
+            is_in_class = JoinedVidsActs.objects.filter(
                 activity_id=passed_data["activity_id"],
-                user_id=passed_data["user_id"],
-                user_department=passed_data["user_department"],
-                username=passed_data["username"],
-            )
-            joined_data.save()
+                user_id=passed_data["user_id"])
+
+            if is_in_class.count() < 1:
+                # Save data to DB
+                joined_data = JoinedVidsActs(
+                    activity_id=passed_data["activity_id"],
+                    user_id=passed_data["user_id"],
+                    user_department=passed_data["user_department"],
+                    username=passed_data["username"],
+                )
+                joined_data.save()
 
             return Response({
                 "status": "success",
