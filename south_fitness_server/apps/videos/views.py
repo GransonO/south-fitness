@@ -65,15 +65,17 @@ class Videos(views.APIView):
     def put(request):
         passed_data = request.data
         try:
-            rate_data = VidsARatings(
-                activity_id=passed_data["activity_id"],
-                user_id=passed_data["user_id"],
-                user_department=passed_data["user_department"],
-                username=passed_data["username"],
-                trainer_rating=passed_data["trainer_rating"],
-                activity_rating=passed_data["activity_rating"],
-            )
-            rate_data.save()
+            rate = VidsARatings.objects.filter(activity_id=passed_data["activity_id"], user_id=passed_data["user_id"])
+            if rate.count() < 1:
+                rate_data = VidsARatings(
+                    activity_id=passed_data["activity_id"],
+                    user_id=passed_data["user_id"],
+                    user_department=passed_data["user_department"],
+                    username=passed_data["username"],
+                    trainer_rating=passed_data["trainer_rating"],
+                    activity_rating=passed_data["activity_rating"],
+                )
+                rate_data.save()
             return Response({
                 "status": "success",
                 "code": 1
