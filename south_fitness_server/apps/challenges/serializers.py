@@ -10,9 +10,7 @@ class ChallengeSerializer(ModelSerializer):
                 "challengeId",
                 "challengeType",
                 "team",
-
                 "user_id",
-
                 "distance",
                 "steps_count",
                 "caloriesBurnt",
@@ -34,21 +32,4 @@ class JoinedClassSerializer(ModelSerializer):
             "username",
             "user_department",
             "createdAt"
-        ]
-
-
-class ActivitiesClassSerializer(ModelSerializer):
-
-    class Meta:
-        model = JoinedClasses
-        fields = [
-            "activity_id",
-            "title",
-            "description",
-            "uploaded_by",
-            "image_url",
-            "video_url",
-            "is_active",
-            "createdAt",
-            "updatedAt"
         ]

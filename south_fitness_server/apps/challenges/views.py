@@ -9,8 +9,8 @@ from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
-from .models import MvtChallenge, JoinedClasses, ExtraActivities
-from .serializers import ChallengeSerializer, JoinedClassSerializer, ActivitiesClassSerializer
+from .models import MvtChallenge, JoinedClasses
+from .serializers import ChallengeSerializer, JoinedClassSerializer
 
 
 class Challenges(views.APIView):
@@ -314,78 +314,3 @@ class Participants(views.APIView):
             "team": passed_data["user_department"],
             "members_list": sorted(result_list, key=lambda k: k['count'], reverse=True)
         }, status.HTTP_200_OK)
-
-
-class Activities(views.APIView):
-    permission_classes = [AllowAny]
-
-    @staticmethod
-    def post(request):
-        """ Add Activities to DB """
-        passed_data = request.data
-
-        activity_id = uuid.uuid1()
-        try:
-            # Save data to DB
-            activity_data = ExtraActivities(
-                activity_id=activity_id,
-                uploaded_by=passed_data["uploaded_by"],
-                instructor=passed_data["instructor"],
-                title=passed_data["title"],
-                description=passed_data["description"],
-                video_url=passed_data["video_url"],
-                type=passed_data["type"],
-                image_url=passed_data["image_url"],
-                duration=passed_data["duration"],
-                is_active=True
-            )
-            activity_data.save()
-
-            return Response({
-                "status": "success",
-                "code": 1
-                }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('Activity Post: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "code": 0
-                }, status.HTTP_200_OK)
-
-    @staticmethod
-    def notify_staff(all_tokens, message):
-        """Send notification to the doctor"""
-        url = 'https://fcm.googleapis.com/fcm/send'
-
-        myHeaders = {
-            "Authorization": "key=AAAAxTAONtw:APA91bHOkfYKzBkGvUj4NMzK8JTaWHDwf8g_GAxDeMPvijZ2IdWu3C1mjdsIRSKl1c8oBaGP4C7YSrSsJ-H09zofTepJEREMu7-8KTV5oSK9lqlBoCtyNb8wDJIHBG7IHkQXC4V3dbRU",
-            "content-type": "application/json"
-            }
-
-        messageBody = {
-            "title": "New support",
-            "text": message,
-            "icon": "https://res.cloudinary.com/dolwj4vkq/image/upload/v1578849920/RFH/RFH-colored-white-icon.png",
-        }
-
-        myData = {
-            "registration_ids": all_tokens,
-            "notification": messageBody,
-        }
-
-        x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
-        print("message sent : {}".format(x))
-
-
-class AllActivitiesView(ListAPIView):
-    """Get all suggested activities"""
-    permission_classes = [AllowAny]
-    serializer_class = ActivitiesClassSerializer
-
-    def get_queryset(self):
-        return ExtraActivities.objects.filter(is_active=True).order_by('-createdAt')

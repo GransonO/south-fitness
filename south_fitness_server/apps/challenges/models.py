@@ -44,25 +44,6 @@ class JoinedClasses(models.Model):
             self.video_id)
 
 
-class ExtraActivities(models.Model):
-    """All Extra ACTIVITIES"""
-    activity_id = models.CharField(max_length=250, unique=True)
-    title = models.CharField(max_length=250)
-    description = models.CharField(max_length=1250)
-    uploaded_by = models.CharField(max_length=250)
-    instructor = models.CharField(max_length=250)
-    image_url = models.CharField(max_length=1250)
-    video_url = models.CharField(max_length=1250)
-    is_active = models.BooleanField(default=False)
-    createdAt = models.DateTimeField(auto_now_add=True, null=True)
-    updatedAt = models.DateTimeField(auto_now=True, null=True)
-
-    def __str__(self):
-        """ String representation of db object """
-        return 'title : {}'.format(
-            self.title)
-
-
 class JoinedActivities(models.Model):
     activity_id = models.CharField(max_length=250)
     user_id = models.CharField(max_length=250, default='non')
