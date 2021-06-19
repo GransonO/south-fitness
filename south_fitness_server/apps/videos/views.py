@@ -213,6 +213,7 @@ class Activities(views.APIView):
                 video_url=passed_data["video_url"],
                 image_url=passed_data["image_url"],
                 type=passed_data["type"],
+                sets=passed_data["sets"],
                 session_id=session_uuid,
                 duration=passed_data["duration"],
                 duration_ext=passed_data["duration_ext"],

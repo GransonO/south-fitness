@@ -50,6 +50,7 @@ class ActivitySerializer(ModelSerializer):
             "duration_ext",
             "level",
             "equip",
+            "sets",
             "isComplete",
             "createdAt",
             "updatedAt"
