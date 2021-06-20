@@ -247,6 +247,40 @@ class Participants(views.APIView):
         }, status.HTTP_200_OK)
 
 
+class AddParticipant(views.APIView):
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def post(request):
+        """ Add Profiles to DB """
+        passed_data = request.data
+        try:
+            # Save data to DB
+            challenge_data = JoinedClasses(
+                challenge_id=passed_data["challenge_id"],
+                user_id=passed_data["user_id"],
+                user_department=passed_data["user_department"],
+                username=passed_data["username"]
+            )
+
+            challenge_data.save()
+            return Response({
+                "status": "success",
+                "code": 1
+            }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Challenge Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
+
 class UserJoinedChallenges(ListAPIView):
     """Get a user specific appointments"""
     permission_classes = [AllowAny]
