@@ -280,6 +280,32 @@ class AddParticipant(views.APIView):
                 "code": 0
                 }, status.HTTP_200_OK)
 
+    @staticmethod
+    def put(request):
+        passed_data = request.data
+        try:
+            members = JoinedClasses.objects.filter(
+                challenge_id=passed_data["challenge_id"],
+                user_id=passed_data["user_id"])
+            if members.count() > 0:
+                members.delete()
+
+            return Response({
+                "status": "success",
+                "code": 0
+            }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Video Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+            }, status.HTTP_200_OK)
+
 
 class UserJoinedChallenges(ListAPIView):
     """Get a user specific appointments"""
