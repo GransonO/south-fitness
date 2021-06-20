@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
 from .models import MvtChallenge, JoinedClasses, ExtraChallenges
-from .serializers import ChallengeSerializer, ExtraChallengeSerializer
+from .serializers import ChallengeSerializer, ExtraChallengeSerializer, JoinedClassSerializer
 
 
 class Challenges(views.APIView):
@@ -168,7 +168,7 @@ class Participants(views.APIView):
         }, status.HTTP_200_OK)
 
     @staticmethod
-    def get():
+    def get(request):
         members = JoinedClasses.objects.filter()
         members_list = list(members)
         new_list = []
@@ -245,6 +245,17 @@ class Participants(views.APIView):
             "team": passed_data["user_department"],
             "members_list": sorted(result_list, key=lambda k: k['count'], reverse=True)
         }, status.HTTP_200_OK)
+
+
+class UserJoinedChallenges(ListAPIView):
+    """Get a user specific appointments"""
+    permission_classes = [AllowAny]
+    serializer_class = JoinedClassSerializer
+
+    def get_queryset(self):
+        return JoinedClasses.objects.filter(
+            user_id=self.kwargs["user_id"]
+        ).order_by('createdAt')
 
 
 class ListedChallenge(views.APIView):

@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import MvtChallenge, ExtraChallenges
+from .models import MvtChallenge, ExtraChallenges, JoinedClasses
 
 
 class ChallengeSerializer(ModelSerializer):
@@ -40,4 +40,17 @@ class ExtraChallengeSerializer(ModelSerializer):
             "level",
             "duration",
             "duration_ext"
+        ]
+
+
+class JoinedClassSerializer(ModelSerializer):
+
+    class Meta:
+        model = JoinedClasses
+        fields = [
+           "challenge_id",
+            "user_id",
+            "username",
+            "user_department",
+            "createdAt"
         ]

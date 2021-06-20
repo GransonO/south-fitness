@@ -40,23 +40,8 @@ class JoinedClasses(models.Model):
 
     def __str__(self):
         """ String representation of db object """
-        return 'video_id : {}'.format(
-            self.video_id)
-
-
-class JoinedActivities(models.Model):
-    activity_id = models.CharField(max_length=250)
-    user_id = models.CharField(max_length=250, default='non')
-    user_department = models.CharField(max_length=250, default='non')
-    username = models.CharField(max_length=250, default='non')
-
-    createdAt = models.DateTimeField(auto_now_add=True, null=True)
-    updatedAt = models.DateTimeField(auto_now=True, null=True)
-
-    def __str__(self):
-        """ String representation of db object """
-        return 'activity_id : {}'.format(
-            self.activity_id)
+        return 'challenge_id : {}'.format(
+            self.challenge_id)
 
 
 class ExtraChallenges(models.Model):
