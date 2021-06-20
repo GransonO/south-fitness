@@ -1,16 +1,14 @@
 # Create your views here.
 from datetime import datetime
 import uuid
-import requests
-import json
 
 import bugsnag
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
-from .models import MvtChallenge, JoinedClasses
-from .serializers import ChallengeSerializer, JoinedClassSerializer
+from .models import MvtChallenge, JoinedClasses, ExtraChallenges
+from .serializers import ChallengeSerializer, ExtraChallengeSerializer
 
 
 class Challenges(views.APIView):
@@ -104,73 +102,6 @@ class ChallengeSpecificView(ListAPIView):
             ).order_by('createdAt')
 
 
-class AllRegisteredActivities(views.APIView):
-    """" Get all users challenges """
-    permission_classes = [AllowAny]
-
-    @staticmethod
-    def post(request):
-        passed_data = request.data
-        try:
-            # Save data to DB
-            video_data = JoinedClasses(
-                video_id=passed_data["video_id"],
-                user_id=passed_data["user_id"],
-                username=passed_data["username"],
-                user_department=passed_data["user_department"]
-            )
-            video_data.save()
-
-            return Response({
-                "status": "success",
-                "state": True,
-                "code": 1
-            }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('Challenge Post: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "state": False,
-                "code": 0
-            }, status.HTTP_200_OK)
-
-    @staticmethod
-    def put(request):
-        passed_data = request.data
-        query = JoinedClasses.objects.filter(
-            video_id=passed_data["video_id"],
-            user_id=passed_data["user_id"],
-        ).order_by('createdAt')
-        if query.count() > 0:
-            # user in class
-            return Response({
-                "status": "success",
-                "state": True,
-                "code": 1
-            }, status.HTTP_200_OK)
-        else:
-            # user Not in class
-            return Response({
-                "status": "success",
-                "state": False,
-                "code": 1
-            }, status.HTTP_200_OK)
-
-
-class ChallengesGetAll(ListAPIView):
-    """Get a user specific appointments"""
-    permission_classes = [AllowAny]
-    serializer_class = JoinedClassSerializer
-
-    def get_queryset(self):
-        return JoinedClasses.objects.filter().order_by('createdAt')
-
-
 class TodayChallenges(ListAPIView):
     """Get a user specific appointments"""
     permission_classes = [AllowAny]
@@ -200,7 +131,7 @@ class Participants(views.APIView):
     @staticmethod
     def post(request):
         passed_data = request.data
-        members = JoinedClasses.objects.filter(video_id=passed_data["challenge_id"])
+        members = JoinedClasses.objects.filter(challenge_id=passed_data["challenge_id"])
         members_list = list(members)
         new_list = []
         dep_list = []
@@ -210,7 +141,7 @@ class Participants(views.APIView):
             )
             new_list.append(
                 {
-                    "video_id": member.video_id,
+                    "challenge_id": member.challenge_id,
                     "user_id": member.user_id,
                     "user_department": member.user_department,
                 }
@@ -237,7 +168,7 @@ class Participants(views.APIView):
         }, status.HTTP_200_OK)
 
     @staticmethod
-    def get(request):
+    def get():
         members = JoinedClasses.objects.filter()
         members_list = list(members)
         new_list = []
@@ -248,7 +179,7 @@ class Participants(views.APIView):
             )
             new_list.append(
                 {
-                    "video_id": member.video_id,
+                    "challenge_id": member.challenge_id,
                     "user_id": member.user_id,
                     "user_department": member.user_department,
                 }
@@ -287,7 +218,7 @@ class Participants(views.APIView):
             )
             new_list.append(
                 {
-                    "video_id": member.video_id,
+                    "challenge_id": member.challenge_id,
                     "user_id": member.user_id,
                     "user_department": member.user_department,
                     "username": member.username,
@@ -314,3 +245,83 @@ class Participants(views.APIView):
             "team": passed_data["user_department"],
             "members_list": sorted(result_list, key=lambda k: k['count'], reverse=True)
         }, status.HTTP_200_OK)
+
+
+class ListedChallenge(views.APIView):
+    """Posting general challenges"""
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def post(request):
+        """ Add appointment to DB """
+        passed_data = request.data
+
+        challenge_id = uuid.uuid1()
+        session_uuid = uuid.uuid1()
+        try:
+            # Save data to DB
+            extra_data = ExtraChallenges(
+                challenge_id=challenge_id,
+                uploaded_by=passed_data["uploaded_by"],
+                uploader_id=passed_data["uploader_id"],
+                title=passed_data["title"],
+                details=passed_data["details"],
+                video_url=passed_data["video_url"],
+                type=passed_data["type"],
+                session_id=session_uuid,
+                level=passed_data["level"],
+                image_url=passed_data["image_url"],
+                duration=passed_data["duration"],
+                duration_ext=passed_data["duration_ext"]
+            )
+            extra_data.save()
+
+            return Response({
+                "status": "success",
+                "code": 1
+                }, status.HTTP_200_OK)
+
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Video Post: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
+    @staticmethod
+    def put(request):
+        """Update challenge State"""
+        try:
+            result = ExtraChallenges.objects.filter(challenge_id=request.data["challenge_id"])
+            if result.count() > 0:
+                ExtraChallenges.objects.filter(
+                    challenge_id=request.data["challenge_id"]).update(
+                    isComplete=request.data["isComplete"])
+                return Response({
+                    "status": "success",
+                    "code": 1
+                }, status.HTTP_200_OK)
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('ExtraChallenges Put: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
+
+
+class GetListedChallenge(ListAPIView):
+    """Get a user specific appointments"""
+    permission_classes = [AllowAny]
+    serializer_class = ExtraChallengeSerializer
+
+    def get_queryset(self):
+
+        return ExtraChallenges.objects.filter().order_by('createdAt')

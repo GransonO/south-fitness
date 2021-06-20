@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     Challenges, TodayChallenges, Participants,
     ChallengesAllView, ChallengeSpecificView,
-    AllRegisteredActivities, ChallengesGetAll)
+    ListedChallenge, GetListedChallenge)
 
 urlpatterns = [
     path('',
@@ -25,23 +25,20 @@ urlpatterns = [
          name="Today Challenges"
          ),
 
-    path('join/',
-         AllRegisteredActivities.as_view(),
-         name="join Challenges"
-         ),
-
-    path('join/user/<user_id>',
-         AllRegisteredActivities.as_view(),
-         name="join Challenges"
-         ),
-
-    path('joined/<challenge_id>',
-         ChallengesGetAll.as_view(),
-         name="All members in Challenges"
-         ),
-
     path('members/',
          Participants.as_view(),
          name="Members in Challenge"
+         ),
+
+    path('listed/',
+         ListedChallenge.as_view(),
+         name="The Listed Challenges"
+         ),
+
+    path('listed/all/',
+         GetListedChallenge.as_view(),
+         name="All Listed Challenges"
          )
+
+
 ]
