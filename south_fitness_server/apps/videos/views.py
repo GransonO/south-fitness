@@ -171,7 +171,9 @@ class TokenGenerator(views.APIView):
         current_timestamp = int(time.time())
         privilege_expired_ts = current_timestamp + expire_time_in_seconds
 
-        if passed_data["can_start"]:
+        print("----------------------------- {}".format(passed_data["can_start"]))
+
+        if passed_data["can_start"] is True:
             # Started by trainer
             token = RtcTokenBuilder.buildTokenWithUid(
                 app_id, app_certificate, channel_name, user_account, Role_Subscriber, privilege_expired_ts)
@@ -189,7 +191,9 @@ class TokenGenerator(views.APIView):
                 app_id, app_certificate, channel_name, user_account, Role_Subscriber, privilege_expired_ts)
 
             result = VideosDB.objects.filter(video_id=passed_data["video_id"])
-            return Response({'token': token, 'appID': app_id, 'isStarted': result.isLive}, status.HTTP_200_OK)
+            video_list = list(result)
+            print("----------------------------- {}".format(video_list[0].isLive))
+            return Response({'token': token, 'appID': app_id, 'isStarted': video_list[0].isLive}, status.HTTP_200_OK)
 
 
 class DateRequest(ListAPIView):
