@@ -343,6 +343,7 @@ class ListedChallenge(views.APIView):
                 level=passed_data["level"],
                 image_url=passed_data["image_url"],
                 duration=passed_data["duration"],
+                points=passed_data["points"],
                 duration_ext=passed_data["duration_ext"]
             )
             extra_data.save()

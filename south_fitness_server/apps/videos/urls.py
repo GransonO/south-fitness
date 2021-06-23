@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (Videos, VideoAllView, VideoSpecificView, VideoAdmin,
+from .views import (Videos, VideoAllView, VideoSpecificView, VideoAdmin, History,
                     TokenGenerator, VideoTrainerSpecific, DateRequest, Participants,
                     Activities, ActivitiesAllView, ActivitiesAdmin, ActivitiesSpecificView)
 
@@ -68,5 +68,10 @@ urlpatterns = [
     path('participants/',
          Participants.as_view(),
          name="all_videos"
+         ),
+
+    path('history/',
+         History.as_view(),
+         name="User History"
          ),
 ]

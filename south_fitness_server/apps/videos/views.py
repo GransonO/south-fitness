@@ -10,6 +10,7 @@ from rest_framework.generics import ListAPIView
 from .agora.RtcTokenBuilder import RtcTokenBuilder, Role_Subscriber
 from .models import VideosDB, ActivitiesDB, JoinedVidsActs, VidsARatings
 from .serializers import VideoSerializer, ActivitySerializer
+from ..challenges.models import JoinedClasses, ExtraChallenges
 import requests
 import json
 
@@ -38,6 +39,7 @@ class Videos(views.APIView):
                 type=passed_data["type"],
                 session_id=session_uuid,
                 isScheduled=passed_data["isScheduled"],
+                points=passed_data["points"],
                 image_url=passed_data["image_url"],
                 duration=passed_data["duration"],
                 scheduledTime=passed_data["scheduledTime"],
@@ -476,4 +478,66 @@ class Participants(views.APIView):
             "status": "success",
             "team": passed_data["user_department"],
             "members_list": sorted(result_list, key=lambda k: k['count'], reverse=True)
+        }, status.HTTP_200_OK)
+
+
+class History(views.APIView):
+    """Get all user activities"""
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def post(request):
+        # get Activities from
+        vids_acts_list = []
+        joined_classes = []
+        passed_data = request.data
+
+        # JoinedVidsActs videos
+        vids_acts = JoinedVidsActs.objects.filter(createdAt__range=["2021-06-19", "2021-06-28"])
+        vids_list = list(vids_acts)
+        for item in vids_list:
+            # for videos only
+            vids = VideosDB.objects.filter(video_id=item.activity_id)
+            if vids.count() > 0:
+                list_item = list(vids)
+                vids_acts_list.append({
+                    "activity_id": list_item[0].video_id,
+                    "title": list_item[0].title,
+                    "image_url": list_item[0].image_url,
+                    "type": list_item[0].type,
+                    "points": list_item[0].points
+                })
+
+            # Activities
+            acts = ActivitiesDB.objects.filter(activity_id=item.activity_id)
+            if acts.count() > 0:
+                list_item = list(acts)
+                vids_acts_list.append({
+                    "activity_id": list_item[0].activity_id,
+                    "title": list_item[0].title,
+                    "image_url": list_item[0].image_url,
+                    "type": list_item[0].type,
+                    "points": list_item[0].points
+                })
+
+        # JoinedClasses Challenges
+        joined_list = JoinedClasses.objects.filter(createdAt__range=["2021-06-19", "2021-06-28"])
+        for item in joined_list:
+            # for videos only
+            vids = ExtraChallenges.objects.filter(challenge_id=item.challenge_id)
+            if vids.count() > 0:
+                list_item = list(vids)
+                joined_classes.append({
+                    "activity_id": list_item[0].challenge_id,
+                    "title": list_item[0].title,
+                    "image_url": list_item[0].image_url,
+                    "type": list_item[0].type,
+                    "points": list_item[0].points
+                })
+
+        final_list = vids_acts_list + joined_classes
+
+        return Response({
+            "status": "success",
+            "history_list": final_list
         }, status.HTTP_200_OK)

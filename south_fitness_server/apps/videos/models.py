@@ -20,6 +20,7 @@ class VideosDB(models.Model):
     scheduledDate = models.DateField(null=True)
     isComplete = models.BooleanField(default=False)
     isLive = models.BooleanField(default=False)
+    points = models.IntegerField(default=0)
 
     participants = models.CharField(max_length=5000, default='non')
 
@@ -66,6 +67,7 @@ class ActivitiesDB(models.Model):
     session_id = models.CharField(max_length=550, default='non')
     sets = models.IntegerField(default=0)
     duration = models.IntegerField(default=0)
+    points = models.IntegerField(default=0)
     duration_ext = models.CharField(max_length=15, default="1 Week")
     level = models.CharField(max_length=15, default="Beginner")
     equip = models.CharField(max_length=250, default="Minimum")

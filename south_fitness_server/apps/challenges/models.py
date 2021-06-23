@@ -53,6 +53,7 @@ class ExtraChallenges(models.Model):
     video_url = models.CharField(max_length=1050, default='non')
     image_url = models.CharField(max_length=1050, default='non')
     type = models.CharField(max_length=550, default='non')
+    points = models.IntegerField(default=0)
     session_id = models.CharField(max_length=550, default='non')
     duration = models.CharField(max_length=250, default='10 mins')
     duration_ext = models.CharField(max_length=550, default='WEEKS')
