@@ -493,51 +493,61 @@ class History(views.APIView):
         passed_data = request.data
 
         # JoinedVidsActs videos
-        vids_acts = JoinedVidsActs.objects.filter(createdAt__range=["2021-06-19", "2021-06-28"])
-        vids_list = list(vids_acts)
-        for item in vids_list:
-            # for videos only
-            vids = VideosDB.objects.filter(video_id=item.activity_id)
-            if vids.count() > 0:
-                list_item = list(vids)
-                vids_acts_list.append({
-                    "activity_id": list_item[0].video_id,
-                    "title": list_item[0].title,
-                    "image_url": list_item[0].image_url,
-                    "type": list_item[0].type,
-                    "points": list_item[0].points
-                })
+        try:
+            vids_acts = JoinedVidsActs.objects.filter(
+                createdAt__range=[passed_data["date_from"], passed_data["date_to"]], user_id=passed_data["user_id"])
+            vids_list = list(vids_acts)
+            for item in vids_list:
+                # for videos only
+                vids = VideosDB.objects.filter(video_id=item.activity_id)
+                if vids.count() > 0:
+                    list_item = list(vids)
+                    vids_acts_list.append({
+                        "activity_id": list_item[0].video_id,
+                        "title": list_item[0].title,
+                        "image_url": list_item[0].image_url,
+                        "type": list_item[0].type,
+                        "points": list_item[0].points
+                    })
 
-            # Activities
-            acts = ActivitiesDB.objects.filter(activity_id=item.activity_id)
-            if acts.count() > 0:
-                list_item = list(acts)
-                vids_acts_list.append({
-                    "activity_id": list_item[0].activity_id,
-                    "title": list_item[0].title,
-                    "image_url": list_item[0].image_url,
-                    "type": list_item[0].type,
-                    "points": list_item[0].points
-                })
+                # Activities
+                acts = ActivitiesDB.objects.filter(activity_id=item.activity_id)
+                if acts.count() > 0:
+                    list_item = list(acts)
+                    vids_acts_list.append({
+                        "activity_id": list_item[0].activity_id,
+                        "title": list_item[0].title,
+                        "image_url": list_item[0].image_url,
+                        "type": list_item[0].type,
+                        "points": list_item[0].points
+                    })
 
-        # JoinedClasses Challenges
-        joined_list = JoinedClasses.objects.filter(createdAt__range=["2021-06-19", "2021-06-28"])
-        for item in joined_list:
-            # for videos only
-            vids = ExtraChallenges.objects.filter(challenge_id=item.challenge_id)
-            if vids.count() > 0:
-                list_item = list(vids)
-                joined_classes.append({
-                    "activity_id": list_item[0].challenge_id,
-                    "title": list_item[0].title,
-                    "image_url": list_item[0].image_url,
-                    "type": list_item[0].type,
-                    "points": list_item[0].points
-                })
+            # JoinedClasses Challenges
+            joined_list = JoinedClasses.objects.filter(
+                createdAt__range=[passed_data["date_from"], passed_data["date_to"]], user_id=passed_data["user_id"])
+            for item in joined_list:
+                # for videos only
+                vids = ExtraChallenges.objects.filter(challenge_id=item.challenge_id)
+                if vids.count() > 0:
+                    list_item = list(vids)
+                    joined_classes.append({
+                        "activity_id": list_item[0].challenge_id,
+                        "title": list_item[0].title,
+                        "image_url": list_item[0].image_url,
+                        "type": list_item[0].type,
+                        "points": list_item[0].points
+                    })
 
-        final_list = vids_acts_list + joined_classes
+            final_list = vids_acts_list + joined_classes
 
-        return Response({
-            "status": "success",
-            "history_list": final_list
-        }, status.HTTP_200_OK)
+            return Response({
+                "status": "success",
+                "history_list": final_list
+            }, status.HTTP_200_OK)
+        except Exception as E:
+            bugsnag.notify(
+                Exception('History Pull: {}'.format(E))
+            )
+            return Response({
+                "status": "fail"
+            }, status.HTTP_200_OK)
