@@ -123,6 +123,7 @@ class Groups(views.APIView):
                 group_slogan=passedData["group_slogan"],
                 group_image=passedData["group_image"],
                 channel_id=channel_uuid,
+                isVerified=True
             )
             group_data.save()
             return Response({
