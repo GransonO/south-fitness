@@ -184,9 +184,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Email data
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST = ''
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'postmaster@sandbox51870243c7f44e3397f04b163c4f8d60.mailgun.org'
-EMAIL_HOST_PASSWORD = '5c8d031c71f062a56bcdba929da19b7e-c4d287b4-ced5e197'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = 'Southfitness'

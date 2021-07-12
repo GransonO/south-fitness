@@ -3,9 +3,10 @@ import bugsnag
 import datetime
 import jwt
 import random
+import os
+from dotenv import load_dotenv
 
 import requests
-from django.core.mail import send_mail
 from rest_framework import exceptions
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
@@ -48,7 +49,6 @@ class Register(views.APIView):
                 user.save()
                 try:
                     # Save data to DB
-                    print("--------------------------------Added to DB")
                     random_code = random.randint(1000, 9999)
                     activation_data = Activation(
                         activation_code=random_code,
@@ -107,13 +107,24 @@ class Register(views.APIView):
 
     @staticmethod
     def send_simple_message(email, name, code, password):
-        return requests.post(
-            "https://api.mailgun.net/v3/sandbox51870243c7f44e3397f04b163c4f8d60.mailgun.org/messages",
-            auth=("api", "d5dca3d5ce4430f5aa8973aac1fc0753-c4d287b4-289c0f7d"),
+        load_dotenv()
+        mailgun_domain = os.getenv('MAILGUN_DOMAIN')
+        mailgun_api_key = os.getenv('MAILGUN_KEY')
+        print("--------------------------------Domain : {}".format(mailgun_domain))
+        print("--------------------------------key : {}".format(mailgun_api_key))
+        value = requests.post(
+            mailgun_domain,
+            auth=("api", mailgun_api_key),
             data={"from": "South Fitness <southfitness@epitomesoftware.live>",
                   "to": [email, ],
                   "subject": 'Welcome {} to South Fitness'.format(name),
                   "html": EmailTemplates.register_email(name, code, password)})
+        print("--------------------------------return value : {}".format(value))
+
+    @staticmethod
+    def put(request):
+        Register.send_simple_message("oyombegranson@gmail.com", "Granson", "4567", "Power123679")
+        return Response({"Sent successfully"})
 
 
 class Login(views.APIView):
@@ -345,9 +356,12 @@ class ResetPass(views.APIView):
         print("----------------------------------------- Resetting password")
         subject = 'Password reset'
         message = EmailTemplates.reset_email(code)
+        load_dotenv()
+        mailgun_domain = os.getenv('MAILGUN_DOMAIN')
+        mailgun_api_key = os.getenv('MAILGUN_KEY')
         return requests.post(
-            "https://api.mailgun.net/v3/sandbox51870243c7f44e3397f04b163c4f8d60.mailgun.org/messages",
-            auth=("api", "d5dca3d5ce4430f5aa8973aac1fc0753-c4d287b4-289c0f7d"),
+            mailgun_domain,
+            auth=("api", mailgun_api_key),
             data={"from": "South Fitness <southfitness@epitomesoftware.live>",
                   "to": [email, ],
                   "subject": subject,

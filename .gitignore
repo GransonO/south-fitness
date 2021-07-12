@@ -98,3 +98,4 @@ logfile
 whoosh_index/
 
 migrations/
+.env
