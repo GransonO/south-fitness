@@ -4,6 +4,7 @@ import datetime
 import jwt
 import random
 
+import requests
 from django.core.mail import send_mail
 from rest_framework import exceptions
 from django.conf import settings
@@ -54,7 +55,7 @@ class Register(views.APIView):
                         user_email=(passed_data["email"]).lower(),
                     )
                     activation_data.save()
-                    Register.send_email((passed_data["email"]).lower(), passed_data["firstname"], random_code, password_code)
+                    Register.send_simple_message((passed_data["email"]).lower(), passed_data["firstname"], random_code, password_code)
                 except Exception as E:
                     print("Activation error: {}".format(E))
                     bugsnag.notify(
@@ -105,13 +106,14 @@ class Register(views.APIView):
             return False
 
     @staticmethod
-    def send_email(email, name, code, password):
-        subject = 'Welcome {} to South Fitness'.format(name)
-        message = EmailTemplates.register_email(name, code, password)
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [email, ]
-        print("-----subject: {}, message: {}, email_from: {}, recipient_list: {}".format(subject, message, email_from, recipient_list))
-        send_mail(subject, message, email_from, recipient_list, html_message=message)
+    def send_simple_message(email, name, code, password):
+        return requests.post(
+            "https://api.mailgun.net/v3/sandbox51870243c7f44e3397f04b163c4f8d60.mailgun.org/messages",
+            auth=("api", "d5dca3d5ce4430f5aa8973aac1fc0753-c4d287b4-289c0f7d"),
+            data={"from": "South Fitness <mailgun@southfitness.live>",
+                  "to": [email, ],
+                  "subject": 'Welcome {} to South Fitness'.format(name),
+                  "html": EmailTemplates.register_email(name, code, password)})
 
 
 class Login(views.APIView):
@@ -343,9 +345,15 @@ class ResetPass(views.APIView):
         print("----------------------------------------- Resetting password")
         subject = 'Password reset'
         message = EmailTemplates.reset_email(code)
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [email, ]
-        send_mail(subject, message, email_from, recipient_list, html_message=message)
+        return requests.post(
+            "https://api.mailgun.net/v3/sandbox51870243c7f44e3397f04b163c4f8d60.mailgun.org/messages",
+            auth=("api", "d5dca3d5ce4430f5aa8973aac1fc0753-c4d287b4-289c0f7d"),
+            data={"from": "South Fitness <southfitness@epitomesoftware.live>",
+                  "to": [email, ],
+                  "subject": subject,
+                  "html": message
+                  }
+        )
 
 
 class EmailTemplates:
