@@ -110,7 +110,7 @@ class Register(views.APIView):
         return requests.post(
             "https://api.mailgun.net/v3/sandbox51870243c7f44e3397f04b163c4f8d60.mailgun.org/messages",
             auth=("api", "d5dca3d5ce4430f5aa8973aac1fc0753-c4d287b4-289c0f7d"),
-            data={"from": "South Fitness <mailgun@southfitness.live>",
+            data={"from": "South Fitness <southfitness@epitomesoftware.live>",
                   "to": [email, ],
                   "subject": 'Welcome {} to South Fitness'.format(name),
                   "html": EmailTemplates.register_email(name, code, password)})
