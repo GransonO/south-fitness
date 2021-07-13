@@ -49,8 +49,8 @@ class JoinedClassSerializer(ModelSerializer):
         model = JoinedClasses
         fields = [
            "challenge_id",
-            "user_id",
-            "username",
-            "user_department",
-            "createdAt"
+           "user_id",
+           "username",
+           "user_department",
+           "createdAt"
         ]

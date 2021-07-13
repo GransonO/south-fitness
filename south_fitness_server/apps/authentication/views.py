@@ -4,9 +4,10 @@ import datetime
 import jwt
 import random
 import os
-from dotenv import load_dotenv
 
-import requests
+from dotenv import load_dotenv
+from mailjet_rest import Client
+
 from rest_framework import exceptions
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
@@ -36,12 +37,12 @@ class Register(views.APIView):
             user_exists = Register.get_user_exist(passed_data)
             print("--------------- 1 -----{}".format(user_exists))
             if not user_exists:
-                password_code = random.randint(10000, 99999)
+                password_code = "SF-{}".format(random.randint(1000, 9999))
 
-                User = get_user_model()
+                user = get_user_model()
                 passed_username = (passed_data["email"]).lower()
                 user_password = password_code
-                user = User.objects.create_user(username=passed_username, password=user_password)
+                user = user.objects.create_user(username=passed_username, password=user_password)
                 user.first_name = passed_data["firstname"]
                 user.last_name = passed_data["lastname"]
                 user.email = (passed_data["email"]).lower()
@@ -55,7 +56,22 @@ class Register(views.APIView):
                         user_email=(passed_data["email"]).lower(),
                     )
                     activation_data.save()
-                    Register.send_simple_message((passed_data["email"]).lower(), passed_data["firstname"], random_code, password_code)
+                    value = Register.send_simple_message((passed_data["email"]).lower(), passed_data["firstname"], random_code, password_code)
+                    if value == 200:
+                        activation_data.save()
+                    else:
+                        return Response({
+                            "status": "failed",
+                            "message": "Email sending error",
+                            "code": 1
+                        }, status.HTTP_200_OK)
+
+                    return Response({
+                        "status": "success",
+                        "message": "Registration success",
+                        "code": 1
+                    }, status.HTTP_200_OK)
+
                 except Exception as E:
                     print("Activation error: {}".format(E))
                     bugsnag.notify(
@@ -67,11 +83,6 @@ class Register(views.APIView):
                             "code": 0
                             }, status.HTTP_200_OK)
 
-                return Response({
-                        "status": "success",
-                        "message": "Registration success",
-                        "code": 1
-                        }, status.HTTP_200_OK)
             else:
                 return Response({
                     "status": "failed",
@@ -96,9 +107,9 @@ class Register(views.APIView):
         """
         Check if exists
         """
-        User = get_user_model()
+        user = get_user_model()
         try:
-            user_exists = User.objects.filter(username=(passed_data["email"]).lower()).exists()
+            user_exists = user.objects.filter(username=(passed_data["email"]).lower()).exists()
             return user_exists
 
         except Exception as e:
@@ -108,23 +119,29 @@ class Register(views.APIView):
     @staticmethod
     def send_simple_message(email, name, code, password):
         load_dotenv()
-        mailgun_domain = os.getenv('MAILGUN_DOMAIN')
-        mailgun_api_key = os.getenv('MAILGUN_KEY')
-        print("--------------------------------Domain : {}".format(mailgun_domain))
-        print("--------------------------------key : {}".format(mailgun_api_key))
-        value = requests.post(
-            mailgun_domain,
-            auth=("api", mailgun_api_key),
-            data={"from": "South Fitness <southfitness@epitomesoftware.live>",
-                  "to": [email, ],
-                  "subject": 'Welcome {} to South Fitness'.format(name),
-                  "html": EmailTemplates.register_email(name, code, password)})
-        print("--------------------------------return value : {}".format(value))
-
-    @staticmethod
-    def put(request):
-        Register.send_simple_message("oyombegranson@gmail.com", "Granson", "4567", "Power123679")
-        return Response({"Sent successfully"})
+        api_key = os.environ['MJ_API_KEY_PUBLIC']
+        api_secret = os.environ['MJ_API_KEY_PRIVATE']
+        mailjet = Client(auth=(api_key, api_secret), version='v3.1')
+        data = {
+            'Messages': [
+                {
+                    "From": {
+                        "Email": "southfitness@epitomesoftware.live",
+                        "Name": "South Fitness"
+                    },
+                    "To": [
+                        {
+                            "Email": email,
+                            "Name": name
+                        }
+                    ],
+                    "Subject": 'Welcome {} to South Fitness'.format(name),
+                    "HTMLPart":  EmailTemplates.register_email(name, code, password)
+                }
+            ]
+        }
+        result = mailjet.send.create(data=data)
+        return result.status_code
 
 
 class Login(views.APIView):
@@ -287,17 +304,25 @@ class ResetPass(views.APIView):
                     add_reset.save()
                 else:
                     # Update Reset
-                    print("------------------------------Updated")
-                    Reset.objects.filter(user_email=(passed_data["email"]).lower()).update(
-                        reset_code=random_code,
-                        )
-
-                ResetPass.send_email((passed_data["email"]).lower(), random_code)
-                return Response({
-                        "status": "reset success",
-                        "code": 1,
-                        "success": True
-                        }, status.HTTP_200_OK)
+                    value = ResetPass.send_support_email((passed_data["email"]).lower(), random_code)
+                    if value == 200:
+                        print("------------------------------Updated ")
+                        Reset.objects.filter(
+                            user_email=(passed_data["email"]).lower()
+                        ).update(
+                            reset_code=random_code,
+                            )
+                        return Response({
+                                "status": "reset success",
+                                "code": 1,
+                                "success": True
+                                }, status.HTTP_200_OK)
+                    else:
+                        return Response({
+                                "status": "reset failed",
+                                "code": 0,
+                                "success": True
+                                }, status.HTTP_200_OK)
 
         except Exception as E:
             print("Error: {}".format(E))
@@ -305,7 +330,6 @@ class ResetPass(views.APIView):
                 Exception('Reset Post: {}'.format(E))
             )
             return Response({
-                # "error": "{}".format(E),
                 "status": "reset failed",
                 "code": 2,
                 "success": False
@@ -316,7 +340,7 @@ class ResetPass(views.APIView):
 
         passed_data = request.data
 
-        User = get_user_model()
+        user = get_user_model()
         username = (passed_data["email"]).lower()
         password = passed_data["password"]
         reset_code = passed_data["code"]
@@ -331,10 +355,10 @@ class ResetPass(views.APIView):
             }
             return response
         else:
-            passed_user = User.objects.filter(username=username)
+            passed_user = user.objects.filter(username=username)
             if passed_user.exists():
                 # Update user password
-                passed_user = User.objects.filter(username=username).first()
+                passed_user = user.objects.filter(username=username).first()
                 passed_user.set_password(password)
                 passed_user.save()
                 response.data = {
@@ -352,22 +376,33 @@ class ResetPass(views.APIView):
             return response
 
     @staticmethod
-    def send_email(email, code):
-        print("----------------------------------------- Resetting password")
+    def send_support_email(email, code):
         subject = 'Password reset'
         message = EmailTemplates.reset_email(code)
         load_dotenv()
-        mailgun_domain = os.getenv('MAILGUN_DOMAIN')
-        mailgun_api_key = os.getenv('MAILGUN_KEY')
-        return requests.post(
-            mailgun_domain,
-            auth=("api", mailgun_api_key),
-            data={"from": "South Fitness <southfitness@epitomesoftware.live>",
-                  "to": [email, ],
-                  "subject": subject,
-                  "html": message
-                  }
-        )
+        api_key = os.environ['MJ_API_KEY_PUBLIC']
+        api_secret = os.environ['MJ_API_KEY_PRIVATE']
+        mailjet = Client(auth=(api_key, api_secret), version='v3.1')
+        data = {
+            'Messages': [
+                {
+                    "From": {
+                        "Email": "southfitness@epitomesoftware.live",
+                        "Name": "South Fitness"
+                    },
+                    "To": [
+                        {
+                            "Email": email,
+                            "Name": ""
+                        }
+                    ],
+                    "Subject": subject,
+                    "HTMLPart": message
+                }
+            ]
+        }
+        result = mailjet.send.create(data=data)
+        return result.status_code
 
 
 class EmailTemplates:
