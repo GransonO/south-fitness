@@ -54,6 +54,8 @@ class Register(views.APIView):
                     activation_data = Activation(
                         activation_code=random_code,
                         user_email=(passed_data["email"]).lower(),
+                        user_type=passed_data["user_type"],
+                        institution=passed_data["institution"]
                     )
                     activation_data.save()
                     value = Register.send_simple_message((passed_data["email"]).lower(), passed_data["firstname"], random_code, password_code)

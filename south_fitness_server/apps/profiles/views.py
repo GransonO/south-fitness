@@ -34,6 +34,7 @@ class Profiles(views.APIView):
                     "message": "Update failed, wrong activation code passed"
                 }, status.HTTP_200_OK)
             else:
+                activate_list = list(activate)
                 # Save data to DB
                 user_reg_id = uuid.uuid1()
                 profile_data = ProfilesDB(
@@ -53,6 +54,8 @@ class Profiles(views.APIView):
                         discipline=passed_data["discipline"],
                         # Work Out Duration
                         workout_duration=passed_data["workout_duration"],
+                        user_type=activate_list[0].user_type,
+                        institution=activate_list[0].institution,
                 )
                 profile_data.save()
                 return Response({

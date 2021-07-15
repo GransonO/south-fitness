@@ -10,7 +10,7 @@ from rest_framework.generics import ListAPIView
 from .agora.RtcTokenBuilder import RtcTokenBuilder, Role_Subscriber
 from .models import VideosDB, ActivitiesDB, JoinedVidsActs, VidsARatings
 from .serializers import VideoSerializer, ActivitySerializer
-from ..challenges.models import JoinedClasses, ExtraChallenges
+from ..challenges.models import JoinedClasses, ExtraChallenges, MvtChallenge
 import requests
 import json
 
@@ -529,6 +529,20 @@ class History(views.APIView):
                 # for videos only
                 vids = ExtraChallenges.objects.filter(challenge_id=item.challenge_id)
                 if vids.count() > 0:
+                    list_item = list(vids)
+                    joined_classes.append({
+                        "activity_id": list_item[0].challenge_id,
+                        "title": list_item[0].title,
+                        "image_url": list_item[0].image_url,
+                        "type": list_item[0].type,
+                        "points": list_item[0].points
+                    })
+
+            # Daily Challenges
+            daily_list = MvtChallenge.objects.filter(
+                createdAt__range=[passed_data["date_from"], passed_data["date_to"]], user_id=passed_data["user_id"])
+            for item in daily_list:
+                # for daily_challenges only
                     list_item = list(vids)
                     joined_classes.append({
                         "activity_id": list_item[0].challenge_id,

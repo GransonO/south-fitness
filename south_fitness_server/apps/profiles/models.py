@@ -22,8 +22,8 @@ class ProfilesDB(models.Model):
     goal = models.CharField(max_length=550, default='non')
     discipline = models.CharField(max_length=550, default='non')
     workout_duration = models.CharField(max_length=550, default='non')
-    user_type = models.CharField(max_length=100, default='user')
-    institution = models.CharField(max_length=100, default='SOUTH_FITNESS')
+    user_type = models.CharField(max_length=100, default='USER')
+    institution = models.CharField(max_length=100, default='EPITOME')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)
