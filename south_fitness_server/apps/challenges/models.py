@@ -34,6 +34,7 @@ class JoinedClasses(models.Model):
     user_id = models.CharField(max_length=250, default='non')
     user_department = models.CharField(max_length=250, default='non')
     username = models.CharField(max_length=250, default='non')
+    points = models.IntegerField(default=0)
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)

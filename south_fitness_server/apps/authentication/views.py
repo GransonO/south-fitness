@@ -4,6 +4,7 @@ import datetime
 import jwt
 import random
 import os
+import asyncio
 
 from dotenv import load_dotenv
 from mailjet_rest import Client
@@ -20,6 +21,8 @@ from .models import Reset, Activation
 
 from .serializers import UserSerializer
 from ..profiles.serializers import ProfileSerializer
+
+loop = asyncio.get_event_loop()
 
 
 class Register(views.APIView):
@@ -58,16 +61,16 @@ class Register(views.APIView):
                         institution=passed_data["institution"]
                     )
                     activation_data.save()
-                    value = Register.send_simple_message((passed_data["email"]).lower(), passed_data["firstname"], random_code, password_code)
-                    if value == 200:
-                        activation_data.save()
-                    else:
-                        return Response({
-                            "status": "failed",
-                            "message": "Email sending error",
-                            "code": 1
-                        }, status.HTTP_200_OK)
-
+                    loop.run_in_executor(
+                        None,
+                        Register.send_message(
+                            (passed_data["email"]).lower(),
+                            passed_data["firstname"],
+                            random_code,
+                            password_code
+                        ),
+                        None
+                    )
                     return Response({
                         "status": "success",
                         "message": "Registration success",
@@ -119,7 +122,7 @@ class Register(views.APIView):
             return False
 
     @staticmethod
-    def send_simple_message(email, name, code, password):
+    def send_message(email, name, code, password):
         load_dotenv()
         api_key = os.environ['MJ_API_KEY_PUBLIC']
         api_secret = os.environ['MJ_API_KEY_PRIVATE']
@@ -276,9 +279,6 @@ class ResetPass(views.APIView):
 
     @staticmethod
     def post(request):
-        # Pass email
-        # send reset code
-        # Compare code attached to email
         passed_data = request.data
         try:
             # Check if it exists
@@ -296,7 +296,6 @@ class ResetPass(views.APIView):
                 random_code = random.randint(1000, 9999)
                 # check if reset before
                 result = Reset.objects.filter(user_email=(passed_data["email"]).lower())
-                print("--------------------------------{}".format(result.count()))
                 if result.count() < 1:
                     # Reset object does not exist, add reset details
                     add_reset = Reset(
@@ -306,25 +305,21 @@ class ResetPass(views.APIView):
                     add_reset.save()
                 else:
                     # Update Reset
-                    value = ResetPass.send_support_email((passed_data["email"]).lower(), random_code)
-                    if value == 200:
-                        print("------------------------------Updated ")
-                        Reset.objects.filter(
-                            user_email=(passed_data["email"]).lower()
-                        ).update(
-                            reset_code=random_code,
-                            )
-                        return Response({
-                                "status": "reset success",
-                                "code": 1,
-                                "success": True
-                                }, status.HTTP_200_OK)
-                    else:
-                        return Response({
-                                "status": "reset failed",
-                                "code": 0,
-                                "success": True
-                                }, status.HTTP_200_OK)
+                    loop.run_in_executor(
+                        None,
+                        ResetPass.send_support_email((passed_data["email"]).lower(), random_code),
+                        None
+                    )
+                    Reset.objects.filter(
+                        user_email=(passed_data["email"]).lower()
+                    ).update(
+                        reset_code=random_code,
+                        )
+                    return Response({
+                            "status": "reset success",
+                            "code": 1,
+                            "success": True
+                            }, status.HTTP_200_OK)
 
         except Exception as E:
             print("Error: {}".format(E))

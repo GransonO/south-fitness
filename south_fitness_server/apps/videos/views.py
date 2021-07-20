@@ -65,6 +65,7 @@ class Videos(views.APIView):
 
     @staticmethod
     def put(request):
+        """This has been used for ratings"""
         passed_data = request.data
         try:
             rate = VidsARatings.objects.filter(activity_id=passed_data["activity_id"], user_id=passed_data["user_id"])
@@ -298,6 +299,7 @@ class Activities(views.APIView):
                     user_id=passed_data["user_id"],
                     user_department=passed_data["user_department"],
                     username=passed_data["username"],
+                    points=passed_data["points"],
                 )
                 joined_data.save()
 
@@ -490,6 +492,7 @@ class History(views.APIView):
         # get Activities from
         vids_acts_list = []
         joined_classes = []
+        daily_challenges = []
         passed_data = request.data
 
         # JoinedVidsActs videos
@@ -542,17 +545,24 @@ class History(views.APIView):
             daily_list = MvtChallenge.objects.filter(
                 createdAt__range=[passed_data["date_from"], passed_data["date_to"]], user_id=passed_data["user_id"])
             for item in daily_list:
+                image_url = ""
                 # for daily_challenges only
-                    list_item = list(vids)
-                    joined_classes.append({
-                        "activity_id": list_item[0].challenge_id,
-                        "title": list_item[0].title,
-                        "image_url": list_item[0].image_url,
-                        "type": list_item[0].type,
-                        "points": list_item[0].points
-                    })
+                if item.challengeType == "Cycling":
+                    image_url = "https://res.cloudinary.com/dolwj4vkq/image/upload/v1620142203/South_Fitness/bike.jpg"
+                elif item.challengeType == "Running":
+                    image_url = "https://res.cloudinary.com/dolwj4vkq/image/upload/v1620141989/South_Fitness/runner.jpg"
+                elif item.challengeType == "Walking":
+                    image_url = "https://res.cloudinary.com/dolwj4vkq/image/upload/v1620142299/South_Fitness/walking.jpg"
 
-            final_list = vids_acts_list + joined_classes
+                joined_classes.append({
+                    "activity_id": item.challengeId,
+                    "title": "Daily {} challenge".format(item.challengeType),
+                    "image_url": image_url,
+                    "type": item.challengeType,
+                    "points": 20  # Default for daily challenges
+                })
+
+            final_list = vids_acts_list + joined_classes + daily_challenges
 
             return Response({
                 "status": "success",

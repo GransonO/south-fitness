@@ -35,6 +35,7 @@ class ExtraChallengeSerializer(ModelSerializer):
             "video_url",
             "image_url",
             "type",
+            "points",
             "session_id",
             "isComplete",
             "level",
