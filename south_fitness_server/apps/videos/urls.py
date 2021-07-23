@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import (Videos, VideoAllView, VideoSpecificView, VideoAdmin, History,
-                    TokenGenerator, VideoTrainerSpecific, DateRequest, Participants,
+from .views import (Videos, VideoAllView, VideoSpecificView, VideoAdmin, History, VideoUpdate,
+                    TokenGenerator, VideoTrainerSpecific, DateRequest, Participants, ActivityUpdate,
                     Activities, ActivitiesAllView, ActivitiesAdmin, ActivitiesSpecificView)
 
 urlpatterns = [
@@ -17,6 +17,11 @@ urlpatterns = [
     path('<video_id>',
          VideoSpecificView.as_view(),
          name="specific_video"
+         ),
+
+    path('update/',
+         VideoUpdate.as_view(),
+         name="Update video"
          ),
 
     path('all/<yester_date>',
@@ -42,7 +47,12 @@ urlpatterns = [
     # Activities
     path('activities/',
          Activities.as_view(),
-         name="Videos"
+         name="Activity"
+         ),
+
+    path('activities/update/',
+         ActivityUpdate.as_view(),
+         name="Update Activities"
          ),
 
     path('activities/<uploader_id>',

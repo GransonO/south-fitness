@@ -9,7 +9,7 @@ from rest_framework.generics import ListAPIView
 from .models import ChatDB
 from .models import GroupsDB
 from .models import GeneralGroupMembers
-from .serializers import ChatSerializer
+from .serializers import ChatSerializer, GeneralMemberSerializer
 from .serializers import GroupSerializer
 
 
@@ -22,20 +22,13 @@ class Chat(views.APIView):
     @staticmethod
     def post(request):
         """ Add group to DB """
-        passedData = request.data
         try:
             # Save data to DB
             message_uuid = uuid.uuid1()
+            serializer = ChatSerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(message_id=message_uuid)
 
-            chat_data = ChatDB(
-                message_id=message_uuid,
-                group_id=passedData["group_id"],
-                user_id=passedData["user_id"],
-                message=passedData["message"],
-                reply_body=passedData["reply_body"],
-                username=passedData["username"],
-            )
-            chat_data.save()
             return Response({
                 "status": "success",
                 "code": 1
@@ -147,9 +140,9 @@ class Groups(views.APIView):
         passed_data = request.data
         # Check This later
         try:
-            participant = GroupsDB.objects.get(group_id=passed_data["group_id"])
+            group = GroupsDB.objects.get(group_id=passed_data["group_id"])
             serializer = GroupSerializer(
-                participant, data=passed_data, partial=True)
+                group, data=passed_data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
@@ -212,15 +205,11 @@ class RegisterGeneralMember(views.APIView):
     @staticmethod
     def post(request):
         """ Add group to DB """
-        passed_data = request.data
         try:
             # Save data to DB
-            member_data = GeneralGroupMembers(
-                alias=passed_data["alias"],
-                user_id=passed_data["user_id"],
-                email=passed_data["email"],
-            )
-            member_data.save()
+            serializer = GeneralMemberSerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response({
                 "status": True,
                 "code": 1

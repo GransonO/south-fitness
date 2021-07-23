@@ -49,6 +49,4 @@ urlpatterns = [
          GetListedChallenge.as_view(),
          name="All Listed Challenges"
          )
-
-
 ]

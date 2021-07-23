@@ -54,33 +54,6 @@ class Challenges(views.APIView):
                 "code": 0
                 }, status.HTTP_200_OK)
 
-    @staticmethod
-    def put(request):
-        passed_data = request.data
-        # Check This later
-        try:
-            participant = MvtChallenge.objects.get(user_id=passed_data["user_id"])
-            serializer = ChallengeSerializer(
-                participant, data=passed_data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-            return Response({
-                    "status": "success",
-                    "code": 1
-                    }, status.HTTP_200_OK)
-
-        except Exception as E:
-            print("Error: {}".format(E))
-            bugsnag.notify(
-                Exception('Profile Post: {}'.format(E))
-            )
-            return Response({
-                "error": "{}".format(E),
-                "status": "failed",
-                "code": 0
-                }, status.HTTP_200_OK)
-
 
 class ChallengesAllView(ListAPIView):
     """Get a user specific appointments"""
@@ -325,29 +298,13 @@ class ListedChallenge(views.APIView):
     @staticmethod
     def post(request):
         """ Add appointment to DB """
-        passed_data = request.data
-
         challenge_id = uuid.uuid1()
         session_uuid = uuid.uuid1()
         try:
             # Save data to DB
-            extra_data = ExtraChallenges(
-                challenge_id=challenge_id,
-                uploaded_by=passed_data["uploaded_by"],
-                uploader_id=passed_data["uploader_id"],
-                title=passed_data["title"],
-                details=passed_data["details"],
-                video_url=passed_data["video_url"],
-                type=passed_data["type"],
-                session_id=session_uuid,
-                level=passed_data["level"],
-                image_url=passed_data["image_url"],
-                duration=passed_data["duration"],
-                points=passed_data["points"],
-                duration_ext=passed_data["duration_ext"]
-            )
-            extra_data.save()
-
+            serializer = ExtraChallengeSerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(challenge_id=challenge_id, session_id=session_uuid)
             return Response({
                 "status": "success",
                 "code": 1
@@ -368,15 +325,15 @@ class ListedChallenge(views.APIView):
     def put(request):
         """Update challenge State"""
         try:
-            result = ExtraChallenges.objects.filter(challenge_id=request.data["challenge_id"])
-            if result.count() > 0:
-                ExtraChallenges.objects.filter(
-                    challenge_id=request.data["challenge_id"]).update(
-                    isComplete=request.data["isComplete"])
-                return Response({
-                    "status": "success",
-                    "code": 1
-                }, status.HTTP_200_OK)
+            result = ExtraChallenges.objects.get(challenge_id=request.data["challenge_id"])
+            serializer = ExtraChallengeSerializer(result, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            return Response({
+                "status": "success",
+                "code": 1
+            }, status.HTTP_200_OK)
         except Exception as E:
             print("Error: {}".format(E))
             bugsnag.notify(

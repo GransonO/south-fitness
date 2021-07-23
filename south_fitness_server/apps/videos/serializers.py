@@ -3,7 +3,6 @@ from .models import VideosDB, ActivitiesDB, JoinedVidsActs
 
 
 class VideoSerializer(ModelSerializer):
-
     class Meta:
         model = VideosDB
         fields = [
@@ -51,6 +50,7 @@ class ActivitySerializer(ModelSerializer):
             "level",
             "equip",
             "sets",
+            "points",
             "isComplete",
             "createdAt",
             "updatedAt"
@@ -58,11 +58,10 @@ class ActivitySerializer(ModelSerializer):
 
 
 class JoinedClassSerializer(ModelSerializer):
-
     class Meta:
         model = JoinedVidsActs
         fields = [
-           "activity_id",
+            "activity_id",
             "user_id",
             "username",
             "user_department",

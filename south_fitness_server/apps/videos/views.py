@@ -9,7 +9,7 @@ from rest_framework.generics import ListAPIView
 
 from .agora.RtcTokenBuilder import RtcTokenBuilder, Role_Subscriber
 from .models import VideosDB, ActivitiesDB, JoinedVidsActs, VidsARatings
-from .serializers import VideoSerializer, ActivitySerializer
+from .serializers import VideoSerializer, ActivitySerializer, JoinedClassSerializer
 from ..challenges.models import JoinedClasses, ExtraChallenges, MvtChallenge
 import requests
 import json
@@ -22,30 +22,13 @@ class Videos(views.APIView):
     @staticmethod
     def post(request):
         """ Add appointment to DB """
-        passed_data = request.data
-
         video_uuid = uuid.uuid1()
         session_uuid = uuid.uuid1()
         try:
             # Save data to DB
-            video_data = VideosDB(
-                video_id=video_uuid,
-                uploaded_by=passed_data["uploaded_by"],
-                instructor=passed_data["instructor"],
-                uploader_id=passed_data["uploader_id"],
-                title=passed_data["title"],
-                details=passed_data["details"],
-                video_url=passed_data["video_url"],
-                type=passed_data["type"],
-                session_id=session_uuid,
-                isScheduled=passed_data["isScheduled"],
-                points=passed_data["points"],
-                image_url=passed_data["image_url"],
-                duration=passed_data["duration"],
-                scheduledTime=passed_data["scheduledTime"],
-                scheduledDate=passed_data["scheduledDate"]
-            )
-            video_data.save()
+            serializer = VideoSerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(video_id=video_uuid, session_id=session_uuid)
 
             return Response({
                 "status": "success",
@@ -118,6 +101,35 @@ class Videos(views.APIView):
 
         x = requests.post(url, headers=myHeaders, data=json.dumps(myData))
         print("message sent : {}".format(x))
+
+
+class VideoUpdate(views.APIView):
+
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def put(request):
+        """Update challenge State"""
+        try:
+            result = VideosDB.objects.get(video_id=request.data["video_id"])
+            serializer = VideoSerializer(result, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            return Response({
+                "status": "success",
+                "code": 1
+            }, status.HTTP_200_OK)
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Video Put: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
 
 
 class VideoAllView(ListAPIView):
@@ -216,31 +228,14 @@ class Activities(views.APIView):
     @staticmethod
     def post(request):
         """ Add appointment to DB """
-        passed_data = request.data
 
         activity_uuid = uuid.uuid1()
         session_uuid = uuid.uuid1()
         try:
             # Save data to DB
-            activity_data = ActivitiesDB(
-                activity_id=activity_uuid,
-                uploaded_by=passed_data["uploaded_by"],
-                uploader_id=passed_data["uploader_id"],
-                title=passed_data["title"],
-                details=passed_data["details"],
-                video_url=passed_data["video_url"],
-                image_url=passed_data["image_url"],
-                type=passed_data["type"],
-                sets=passed_data["sets"],
-                session_id=session_uuid,
-                duration=passed_data["duration"],
-                duration_ext=passed_data["duration_ext"],
-                level=passed_data["level"],
-                equip=passed_data["equip"],
-                isComplete=passed_data["isComplete"],
-            )
-            activity_data.save()
-
+            serializer = ActivitySerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(activity_id=activity_uuid, session_id=session_uuid)
             return Response({
                 "status": "success",
                 "code": 1
@@ -294,14 +289,9 @@ class Activities(views.APIView):
 
             if is_in_class.count() < 1:
                 # Save data to DB
-                joined_data = JoinedVidsActs(
-                    activity_id=passed_data["activity_id"],
-                    user_id=passed_data["user_id"],
-                    user_department=passed_data["user_department"],
-                    username=passed_data["username"],
-                    points=passed_data["points"],
-                )
-                joined_data.save()
+                serializer = JoinedClassSerializer(data=request.data, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
 
             return Response({
                 "status": "success",
@@ -318,6 +308,35 @@ class Activities(views.APIView):
                 "status": "failed",
                 "code": 0
             }, status.HTTP_200_OK)
+
+
+class ActivityUpdate(views.APIView):
+
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def put(request):
+        """Update challenge State"""
+        try:
+            result = ActivitiesDB.objects.get(activity_id=request.data["activity_id"])
+            serializer = ActivitySerializer(result, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            return Response({
+                "status": "success",
+                "code": 1
+            }, status.HTTP_200_OK)
+        except Exception as E:
+            print("Error: {}".format(E))
+            bugsnag.notify(
+                Exception('Video Put: {}'.format(E))
+            )
+            return Response({
+                "error": "{}".format(E),
+                "status": "failed",
+                "code": 0
+                }, status.HTTP_200_OK)
 
 
 class ActivitiesAllView(ListAPIView):
