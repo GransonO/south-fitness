@@ -60,7 +60,7 @@ urlpatterns = [
          name="trainer_videos"
          ),
 
-    path('specific/<video_id>',
+    path('activity/specific/<activity_id>',
          ActivitiesSpecificView.as_view(),
          name="specific_video"
          ),

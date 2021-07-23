@@ -364,7 +364,7 @@ class ActivitiesSpecificView(ListAPIView):
 
     def get_queryset(self):
         return ActivitiesDB.objects.filter(
-            video_id=self.kwargs['video_id']
+            activity_id=self.kwargs['activity_id']
             ).order_by('createdAt')
 
 
