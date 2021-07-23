@@ -10,7 +10,7 @@ class Institutions(models.Model):
     institute_admin_name = models.CharField(max_length=250, default='non')
     institute_admin_email = models.CharField(max_length=250, default='non')
     institute_primary_color = models.CharField(max_length=250, default='non')
-    institute_primary_secondary = models.CharField(max_length=250, default='non')
+    institute_secondary_color = models.CharField(max_length=250, default='non')
     institute_logo = models.CharField(max_length=1250, default='non')
     is_active = models.BooleanField(default=True)
 
