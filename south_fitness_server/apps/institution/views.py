@@ -70,4 +70,13 @@ class AllInstitutions(generics.ListAPIView):
     serializer_class = InstitutionSerializer
 
     def get_queryset(self):
-        return Institutions.objects.filter().order_by('createdAt')
+        return Institutions.objects.filter(is_active=True).order_by('createdAt')
+
+
+class SpecificInstitutions(generics.ListAPIView):
+
+    permission_classes = [AllowAny]
+    serializer_class = InstitutionSerializer
+
+    def get_queryset(self):
+        return Institutions.objects.filter(institute_id=self.kwargs["institute_id"]).order_by('createdAt')
