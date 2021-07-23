@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (Videos, VideoAllView, VideoSpecificView, VideoAdmin, History, VideoUpdate,
+from .views import (Videos, VideoAllView, VideoSpecificView, VideoAdmin, History, VideoUpdate, ActivitiesTrainerSpecific,
                     TokenGenerator, VideoTrainerSpecific, DateRequest, Participants, ActivityUpdate,
                     Activities, ActivitiesAllView, ActivitiesAdmin, ActivitiesSpecificView)
 
@@ -56,7 +56,7 @@ urlpatterns = [
          ),
 
     path('activities/<uploader_id>',
-         VideoTrainerSpecific.as_view(),
+         ActivitiesTrainerSpecific.as_view(),
          name="trainer_videos"
          ),
 
