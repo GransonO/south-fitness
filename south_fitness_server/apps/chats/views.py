@@ -169,7 +169,7 @@ class GroupsAllView(ListAPIView):
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        return GroupsDB.objects.filter(isVerified=True).order_by('-createdAt')
+        return GroupsDB.objects.filter(isVerified=True, is_closed=False).order_by('-createdAt')
 
 
 class AllGroups(ListAPIView):

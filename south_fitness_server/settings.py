@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'south_fitness_server.apps.teams',
     'south_fitness_server.apps.challenges',
     'south_fitness_server.apps.chats',
+    'south_fitness_server.apps.institution',
 
     # third party apps
     'corsheaders',

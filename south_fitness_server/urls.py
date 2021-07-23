@@ -28,6 +28,7 @@ from .apps.teams import urls as teamsUrls
 from .apps.blogs import urls as blogsUrls
 from .apps.challenges import urls as challengeUrls
 from .apps.chats import urls as chatUrls
+from .apps.institution import urls as InstitutionUrls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -85,5 +86,10 @@ urlpatterns = [
     path(
         'chats/',
         include(chatUrls),
+        name="chats"),
+
+    path(
+        'institution/',
+        include(InstitutionUrls),
         name="chats"),
 ]
