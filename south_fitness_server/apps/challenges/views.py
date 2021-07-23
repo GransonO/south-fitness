@@ -7,6 +7,8 @@ from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
+
+from ..videos.models import JoinedVidsActs
 from .models import MvtChallenge, JoinedClasses, ExtraChallenges
 from .serializers import ChallengeSerializer, ExtraChallengeSerializer, JoinedClassSerializer
 
@@ -142,7 +144,7 @@ class Participants(views.APIView):
 
     @staticmethod
     def get(request):
-        members = JoinedClasses.objects.filter()
+        members = JoinedVidsActs.objects.filter()
         members_list = list(members)
         new_list = []
         dep_list = []
@@ -152,7 +154,7 @@ class Participants(views.APIView):
             )
             new_list.append(
                 {
-                    "challenge_id": member.challenge_id,
+                    "challenge_id": member.activity_id,
                     "user_id": member.user_id,
                     "user_department": member.user_department,
                 }
