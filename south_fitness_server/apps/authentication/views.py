@@ -19,7 +19,7 @@ from rest_framework.permissions import AllowAny
 from ..profiles.models import ProfilesDB
 from .models import Reset, Activation
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ActivationSerializer
 from ..profiles.serializers import ProfileSerializer
 
 loop = asyncio.get_event_loop()
@@ -199,6 +199,7 @@ class Login(views.APIView):
 
                 user = User.objects.filter(username=username).first()
                 xfactor = ProfilesDB.objects.filter(email=(passed_data["email"]).lower()).first()
+                institution = Activation.objects.filter(user_email=(passed_data["email"]).lower()).first()
                 profile = ProfilesDB.objects.filter(email=(passed_data["email"]).lower())
                 if user is None:
                     raise exceptions.AuthenticationFailed('user not found')
@@ -214,6 +215,7 @@ class Login(views.APIView):
 
                 serialized_user = UserSerializer(user).data
                 serialized_profile = ProfileSerializer(xfactor).data
+                serialized_activate = ActivationSerializer(institution).data
 
                 access_token = generate_access_token(user)
                 refresh_token = generate_refresh_token(user)
@@ -225,6 +227,8 @@ class Login(views.APIView):
                     'profile': serialized_profile,
                     "status": "success",
                     "isRegistered": profile.count() > 0,
+                    "institution_id": serialized_activate["institution_id"],
+                    "institution": serialized_activate["institution"],
                     "message": "Login success",
                     "code": 1
                 }
@@ -242,7 +246,7 @@ class Login(views.APIView):
             print("------------{}-----------".format(e))
             return Response({
                 "status": "failed",
-                "message": "Registration Failed",
+                "message": "Login Failed",
                 "code": 2  # Login error
             }, status.HTTP_200_OK)
 
