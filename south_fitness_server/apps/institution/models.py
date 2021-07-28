@@ -11,6 +11,8 @@ class Institutions(models.Model):
     institute_admin_email = models.CharField(max_length=250, default='non')
     institute_primary_color = models.CharField(max_length=250, default='non')
     institute_secondary_color = models.CharField(max_length=250, default='non')
+    institute_primary_hex = models.CharField(max_length=250, default='non')
+    institute_secondary_hex = models.CharField(max_length=250, default='non')
     institute_logo = models.CharField(max_length=1250, default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1627289273/South_Fitness/insitutions/logo.png')
     is_active = models.BooleanField(default=True)
 
