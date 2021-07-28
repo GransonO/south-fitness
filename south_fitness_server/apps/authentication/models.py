@@ -26,6 +26,7 @@ class Activation(models.Model):
     user_email = models.CharField(unique=True, max_length=250, default='non')
     user_type = models.CharField(max_length=250, default='USER')
     institution = models.CharField(max_length=250, default='EPITOME')
+    institution_id = models.CharField(max_length=550, default='EPITOME')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)

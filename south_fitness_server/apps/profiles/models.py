@@ -24,6 +24,7 @@ class ProfilesDB(models.Model):
     workout_duration = models.CharField(max_length=550, default='non')
     user_type = models.CharField(max_length=100, default='USER')
     institution = models.CharField(max_length=100, default='EPITOME')
+    institution_id = models.CharField(max_length=520, default='EPITOME-UID')
     is_active = models.BooleanField(default=True)
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)

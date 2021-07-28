@@ -58,7 +58,8 @@ class Register(views.APIView):
                         activation_code=random_code,
                         user_email=(passed_data["email"]).lower(),
                         user_type=passed_data["user_type"],
-                        institution=passed_data["institution"]
+                        institution=passed_data["institution"],
+                        institution_id=passed_data["institution_id"],
                     )
                     activation_data.save()
                     loop.run_in_executor(
@@ -303,6 +304,12 @@ class ResetPass(views.APIView):
                         reset_code=random_code,
                     )
                     add_reset.save()
+                    return Response({
+                        "status": "success",
+                        "code": 0,
+                        "success": True
+                    }, status.HTTP_200_OK)
+
                 else:
                     # Update Reset
                     loop.run_in_executor(
