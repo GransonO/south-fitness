@@ -112,7 +112,7 @@ class Groups(views.APIView):
                 group_title=passedData["group_title"],
                 group_id=channel_uuid,
                 creator_name=passedData["creator_name"],
-                institution=passedData["institution"],
+                institution_id=passedData["institution_id"],
                 group_slogan=passedData["group_slogan"],
                 group_image=passedData["group_image"],
                 channel_id=channel_uuid,
@@ -191,7 +191,7 @@ class InstitutionGroups(ListAPIView):
     def get_queryset(self):
         return GroupsDB.objects.filter(
             is_closed=False,
-            institution=self.kwargs['institute'],
+            institution_id=self.kwargs['institute'],
             isVerified=True
         ).order_by('createdAt')
 

@@ -30,7 +30,7 @@ class GroupsDB(models.Model):
     channel_id = models.CharField(max_length=250, default='non')
     group_image = models.CharField(max_length=550, default='non')
     isVerified = models.BooleanField(default=False)
-    institution = models.CharField(max_length=100, default='SOUTH_FITNESS')
+    institution_id = models.CharField(max_length=200, default='SOUTH_FITNESS')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)
