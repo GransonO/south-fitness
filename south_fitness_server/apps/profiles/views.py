@@ -167,5 +167,5 @@ class ProfileInstitutionSpecific(ListAPIView):
 
     def get_queryset(self):
         return ProfilesDB.objects.filter(
-            institution=self.kwargs['institution']
+            institution_id=self.kwargs['institution']
             ).order_by('createdAt')
