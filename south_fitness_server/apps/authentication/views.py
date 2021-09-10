@@ -1,4 +1,6 @@
 # Create your views here.
+import uuid
+
 import bugsnag
 import datetime
 import jwt
@@ -38,13 +40,11 @@ class Register(views.APIView):
         try:
             # Check if it exists
             user_exists = Register.get_user_exist(passed_data)
-            print("--------------- 1 -----{}".format(user_exists))
             if not user_exists:
-                password_code = "SF-{}".format(random.randint(1000, 9999))
+                user_password = "SF_{}".format(random.randint(10000, 99999))
 
                 user = get_user_model()
                 passed_username = (passed_data["email"]).lower()
-                user_password = password_code
                 user = user.objects.create_user(username=passed_username, password=user_password)
                 user.first_name = passed_data["firstname"]
                 user.last_name = passed_data["lastname"]
@@ -62,13 +62,27 @@ class Register(views.APIView):
                         institution_id=passed_data["institution_id"],
                     )
                     activation_data.save()
+
+                    user_reg_id = uuid.uuid1()
+                    profile_data = ProfilesDB(
+                        fullname="{} {}".format(passed_data["firstname"], passed_data["lastname"]),
+                        email=passed_data["email"],
+                        user_id=user_reg_id,
+                        activation_code=random_code,
+                        user_type=passed_data["user_type"],
+                        institution=passed_data["institution"],
+                        institution_id=passed_data["institution_id"],
+                        is_active=False
+                    )
+                    profile_data.save()
+
                     loop.run_in_executor(
                         None,
                         Register.send_message(
                             (passed_data["email"]).lower(),
                             passed_data["firstname"],
                             random_code,
-                            password_code
+                            user_password
                         ),
                         None
                     )
@@ -196,14 +210,14 @@ class Login(views.APIView):
                     'username and password required')
             passed_user = User.objects.filter(username=username)
             if passed_user.exists():
-
-                user = User.objects.filter(username=username).first()
+                user = passed_user.first()
                 xfactor = ProfilesDB.objects.filter(email=(passed_data["email"]).lower()).first()
-                institution = Activation.objects.filter(user_email=(passed_data["email"]).lower()).first()
                 profile = ProfilesDB.objects.filter(email=(passed_data["email"]).lower())
+
                 if user is None:
                     raise exceptions.AuthenticationFailed('user not found')
                 le_user = authenticate(username=username, password=password)
+
                 if le_user is None:
                     response.data = {
                         "status": "failed",
@@ -215,7 +229,7 @@ class Login(views.APIView):
 
                 serialized_user = UserSerializer(user).data
                 serialized_profile = ProfileSerializer(xfactor).data
-                serialized_activate = ActivationSerializer(institution).data
+                # serialized_activate = ActivationSerializer(institution).data
 
                 access_token = generate_access_token(user)
                 refresh_token = generate_refresh_token(user)
@@ -226,9 +240,9 @@ class Login(views.APIView):
                     'user': serialized_user,
                     'profile': serialized_profile,
                     "status": "success",
-                    "isRegistered": profile.count() > 0,
-                    "institution_id": serialized_activate["institution_id"],
-                    "institution": serialized_activate["institution"],
+                    "isRegistered": profile[0].is_active,
+                    "institution_id": profile[0].institution_id,
+                    "institution": profile[0].institution,
                     "message": "Login success",
                     "code": 1
                 }
@@ -316,11 +330,7 @@ class ResetPass(views.APIView):
 
                 else:
                     # Update Reset
-                    loop.run_in_executor(
-                        None,
-                        ResetPass.send_support_email((passed_data["email"]).lower(), random_code),
-                        None
-                    )
+                    ResetPass.send_support_email((passed_data["email"]).lower(), random_code),
                     Reset.objects.filter(
                         user_email=(passed_data["email"]).lower()
                     ).update(

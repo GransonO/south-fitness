@@ -22,45 +22,30 @@ class Profiles(views.APIView):
         """ Add Profiles to DB """
         passed_data = request.data
         try:
-            activate = Activation.objects.filter(
-                user_email=passed_data["email"],
+            user_profile = ProfilesDB.objects.filter(
+                email=passed_data["email"],
                 activation_code=int(passed_data["activation_code"])
             )
             print("------user_email : {} activation_code : {} ----------- {}".format(passed_data["email"], passed_data["activation_code"], activate.count()))
-            if activate.count() < 1:
+            if user_profile.count() < 1:
                 return Response({
                     "status": "Failed",
                     "code": 0,
-                    "message": "Update failed, wrong activation code passed"
+                    "message": "Update failed, user not found"
                 }, status.HTTP_200_OK)
             else:
-                activate_list = list(activate)
-                # Save data to DB
-                user_reg_id = uuid.uuid1()
-                profile_data = ProfilesDB(
-                        fullname=passed_data["fullname"],
-                        email=passed_data["email"],
-                        user_id=user_reg_id,
-                        # birthDate=passed_data["birthDate"],
-                        activation_code=passed_data["activation_code"],
-                        team=passed_data["team"].upper(),
-                        # Part 2
-                        gender=passed_data["gender"],
-                        height=passed_data["height"],
-                        weight=passed_data["weight"],
-                        # Goals
-                        goal=passed_data["goal"],
-                        # Discipline
-                        discipline=passed_data["discipline"],
-                        # Work Out Duration
-                        workout_duration=passed_data["workout_duration"],
-                        user_type=activate_list[0].user_type,
-                        institution=activate_list[0].institution,
+                active_profile = ProfilesDB.objects.get(
+                    email=passed_data["email"],
+                    activation_code=int(passed_data["activation_code"])
                 )
-                profile_data.save()
+                # Save data to DB
+                profile_data = ProfileSerializer(
+                    active_profile, passed_data, partial=True
+                )
+                profile_data.save(is_active=True)
                 return Response({
                     "status": "success",
-                    "user_id": user_reg_id,
+                    "user_id": user_profile[0].user_id,
                     "code": 1
                     }, status.HTTP_200_OK)
 
