@@ -41,6 +41,7 @@ class Profiles(views.APIView):
                 profile_data = ProfileSerializer(
                     active_profile, passed_data, partial=True
                 )
+                profile_data.is_valid()
                 profile_data.save(is_active=True)
                 return Response({
                     "status": "success",
