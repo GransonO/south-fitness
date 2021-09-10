@@ -26,7 +26,6 @@ class Profiles(views.APIView):
                 email=passed_data["email"],
                 activation_code=int(passed_data["activation_code"])
             )
-            print("------user_email : {} activation_code : {} ----------- {}".format(passed_data["email"], passed_data["activation_code"], activate.count()))
             if user_profile.count() < 1:
                 return Response({
                     "status": "Failed",
