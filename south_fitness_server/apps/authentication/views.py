@@ -385,11 +385,7 @@ class ResetPass(views.APIView):
                     "code": 1
                 }
             else:
-                response.data = {
-                    "status": "failed",
-                    "message": "user not found",
-                    "code": 0
-                }
+                response.data = dict(status="failed", message="user not found", code=0)
 
             return response
 

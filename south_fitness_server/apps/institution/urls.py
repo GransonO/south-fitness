@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Institution, AllInstitutions, SpecificInstitutions
+from .views import Institution, AllInstitutions, SpecificInstitutions, AddTheAdmin
 
 urlpatterns = [
     path('',
@@ -15,5 +15,10 @@ urlpatterns = [
     path('all/',
          AllInstitutions.as_view(),
          name="AllInstitutions"
+         ),
+
+    path('admin/',
+         AddTheAdmin.as_view(),
+         name="Add The Admin"
          ),
 ]
