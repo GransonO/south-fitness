@@ -223,6 +223,12 @@ class AddTheAdmin(views.APIView):
                     institution_id=active_profile[0].institution_id,
                     user_id=uuid.uuid1()
                 )
+
+                # Update user password
+                user = get_user_model()
+                passed_user = user.objects.filter(username=passed_data["email"]).first()
+                passed_user.set_password(passed_data["password"])
+                passed_user.save()
                 return Response({
                     "status": "success",
                     "code": 1
