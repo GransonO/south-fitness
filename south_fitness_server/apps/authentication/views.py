@@ -359,6 +359,7 @@ class ResetPass(views.APIView):
                         reset_code=random_code,
                     )
                     add_reset.save()
+                    ResetPass.send_support_email((passed_data["email"]).lower(), random_code),
                     return Response({
                         "status": "success",
                         "code": 0,
