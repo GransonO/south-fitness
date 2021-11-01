@@ -20,9 +20,9 @@ class Institutions(models.Model):
     institute_img2 = models.CharField(max_length=1250, default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1627461186/South_Fitness/insitutions/legUp.png')
     institute_img3 = models.CharField(max_length=1250, default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1627461186/South_Fitness/insitutions/legUp.png')
 
-    institute_message1 = models.CharField(max_length=1250, default='Message 1')
-    institute_message2 = models.CharField(max_length=1250, default='Message 2')
-    institute_message3 = models.CharField(max_length=1250, default='message 3')
+    institute_message1 = models.TextField(default='Message 1')
+    institute_message2 = models.TextField(default='Message 2')
+    institute_message3 = models.TextField(default='message 3')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)

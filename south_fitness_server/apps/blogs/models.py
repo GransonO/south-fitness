@@ -8,7 +8,7 @@ class BlogsDB(models.Model):
     uploaded_by = models.CharField(max_length=250, default='non')
     uploader_id = models.CharField(max_length=250, default='non')
     title = models.CharField(max_length=250, default='non')
-    body = models.CharField(max_length=5050, default='non')
+    body = models.TextField(default='non')
     image_url = models.CharField(max_length=1050, default='non')
     views_count = models.IntegerField(default=0)
     likes_count = models.IntegerField(default=0)
@@ -32,7 +32,7 @@ class Comments(models.Model):
     profile_image = models.CharField(
         max_length=550,
         default='https://res.cloudinary.com/dolwj4vkq/image/upload/v1619738022/South_Fitness/user.png')
-    body = models.CharField(max_length=5050, default='non')
+    body = models.TextField(default='non')
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)

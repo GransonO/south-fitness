@@ -12,8 +12,7 @@ class ProfilesDB(models.Model):
     team = models.CharField(max_length=250, default='non')
 
     gender = models.CharField(max_length=250, default='non')
-    image = models.CharField(
-        max_length=1250,
+    image = models. TextField(
         default="https://res.cloudinary.com/dolwj4vkq/image/upload/v1621266421/South_Fitness/profile_images/avatar.jpg"
     )
     height = models.FloatField(default=0.0)
