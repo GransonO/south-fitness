@@ -14,6 +14,7 @@ class BlogsDB(models.Model):
     likes_count = models.IntegerField(default=0)
     comments_count = models.IntegerField(default=0)
     reading_duration = models.CharField(max_length=250, default='10 mins')
+    deleted = models.BooleanField(default=False)
 
     createdAt = models.DateTimeField(auto_now_add=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, null=True)

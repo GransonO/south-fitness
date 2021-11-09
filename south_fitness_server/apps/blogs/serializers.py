@@ -33,6 +33,7 @@ class BlogSerializer(serializers.ModelSerializer):
             "likes_count",
             "comments_count",
             "comments",
+            "deleted",
             "updatedAt"
         ]
 
