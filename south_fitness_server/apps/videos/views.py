@@ -1,7 +1,9 @@
 # Create your views here.
+import os
 import uuid
 import time
 import bugsnag
+from dotenv import load_dotenv
 from rest_framework import views,  status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -178,8 +180,10 @@ class TokenGenerator(views.APIView):
     @staticmethod
     def post(request):
         passed_data = request.data
-        app_id = 'ecfc8ba2d43744588161f36ff1c71cfc'
-        app_certificate = '8c5f930076ca44108b93099d06020376'
+
+        load_dotenv()
+        app_id = os.environ['SF_AGORA_APP_ID']
+        app_certificate = os.environ['SF_AGORA_APP_CERTIFICATE']
         channel_name = passed_data["channel_name"]
         user_account = passed_data["username"]
         expire_time_in_seconds = 3600
